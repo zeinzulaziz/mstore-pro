@@ -1,0 +1,18 @@
+{
+  "HorizonLayout": [
+    {
+      "name": "flashSale",
+      "image": "",
+      "layout": "twoColumn",
+      "category": 194
+    }
+  ],
+
+  "VerticalLayout": {
+    "name": "Recents",
+    "image": "",
+    "layout": "twoColumn"
+  },
+
+  "MainColor": "#009688"
+}
