@@ -51,7 +51,7 @@ const AnnouncementTicker = ({theme, endpoint}) => {
     const looping = Animated.loop(
       Animated.timing(translateX, {
         toValue: -width * 2,
-        duration: 15000,
+        duration: 25000,
         useNativeDriver: true,
       }),
       {resetBeforeIteration: true},
