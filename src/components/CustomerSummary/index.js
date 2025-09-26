@@ -15,12 +15,12 @@ const CustomerSummary = ({theme}) => {
         <Text style={[styles.title, {color: theme.colors.text}]}>Member Club</Text>
         <Text style={[styles.value, {color: theme.colors.text}]}>{name}</Text>
       </View>
-      <View style={styles.separator} />
+      <View style={[styles.separator, {backgroundColor: theme.colors.border || 'rgba(0,0,0,0.1)'}]} />
       <View style={styles.item}>
         <Text style={[styles.title, {color: theme.colors.text}]}>DoB Rewards</Text>
         <Text style={[styles.value, {color: theme.colors.text}]}>327 points</Text>
       </View>
-      <View style={styles.separator} />
+      <View style={[styles.separator, {backgroundColor: theme.colors.border || 'rgba(0,0,0,0.1)'}]} />
       <View style={styles.item}>
         <Text style={[styles.title, {color: theme.colors.text}]}>Vouchers</Text>
         <Text style={[styles.value, {color: theme.colors.text}]}>10+ vouchers</Text>
@@ -33,11 +33,21 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginTop: 12,
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    borderRadius: 20,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
   item: {
     flex: 1,
@@ -49,13 +59,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.08)',
   },
   title: {
-    fontSize: 14,
-    opacity: 0.7,
+    fontSize: 11,
+    opacity: 0.6,
     marginBottom: 6,
+    fontWeight: '500',
+    letterSpacing: 0.3,
   },
   value: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
 });
 

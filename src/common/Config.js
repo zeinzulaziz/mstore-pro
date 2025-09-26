@@ -80,6 +80,15 @@ export default {
     cod: require('@images/payment_logo/cash_on_delivery.png'),
     paypal: require('@images/payment_logo/PayPal.png'),
     stripe: require('@images/payment_logo/stripe.png'),
+    // Midtrans payment methods - these IDs should match your WooCommerce payment method IDs
+    'midtrans_gopay_qris': require('@images/payment_logo/gopay_qris.png'),
+    'midtrans_shopeepay_qris': require('@images/payment_logo/shopeepay_qris.png'),
+    'midtrans_qris': require('@images/payment_logo/qris.png'),
+    // Alternative possible IDs for Midtrans
+    'midtrans': require('@images/payment_logo/midtrans.png'),
+    'gopay': require('@images/payment_logo/gopay_qris.png'),
+    'shopeepay': require('@images/payment_logo/shopeepay_qris.png'),
+    'qris': require('@images/payment_logo/qris.png'),
   },
 
   /**

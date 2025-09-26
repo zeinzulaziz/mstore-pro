@@ -59,6 +59,7 @@ import BannerSlider from './HorizonLayout/BannerSlider';
 import BannerImage from './HorizonLayout/BannerImage';
 import TextHighlight from './TextHighlight';
 import ColumnCategories from './ColumnCategories';
+import ApiCategories from './ApiCategories';
 import SubCategories from './SubCategories';
 import ActionSheets from './ActionSheets';
 import DisCount from './DisCount';
@@ -132,6 +133,7 @@ export {
   BannerImage,
   TextHighlight,
   ColumnCategories,
+  ApiCategories,
   SubCategories,
   DisCount,
   ActionSheets,

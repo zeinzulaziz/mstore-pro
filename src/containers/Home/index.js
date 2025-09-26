@@ -8,7 +8,7 @@ import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 
 import {Constants, withTheme} from '@common';
-import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ColumnCategories} from '@components';
+import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories} from '@components';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
 import * as CategoryRedux from '@redux/CategoryRedux';
@@ -32,6 +32,15 @@ const Home = React.memo(
     const fetchAllCountries = useCallback(() => {
       CountryRedux.actions.fetchAllCountries(dispatch);
     }, [dispatch]);
+
+    const setSelectedCategory = useCallback((category) => {
+      CategoryRedux.actions.setSelectedCategory(dispatch, category);
+    }, [dispatch]);
+
+    const onViewCategory = useCallback((category) => {
+      setSelectedCategory(category);
+      navigation.navigate('CategoryScreen');
+    }, [navigation, setSelectedCategory]);
 
     const isHorizontal = useMemo(
       () => layoutHome === Constants.Layout.horizon || layoutHome === 7,
@@ -67,10 +76,8 @@ const Home = React.memo(
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
-                <ColumnCategories
-                  onViewCategory={cat =>
-                    navigation.navigate('CategoryScreen', {category: cat})
-                  }
+                <ApiCategories
+                  onShowAll={onShowAll}
                 />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
@@ -100,10 +107,8 @@ const Home = React.memo(
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
-                <ColumnCategories
-                  onViewCategory={cat =>
-                    navigation.navigate('CategoryScreen', {category: cat})
-                  }
+                <ApiCategories
+                  onShowAll={onShowAll}
                 />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}

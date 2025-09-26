@@ -14,9 +14,9 @@ const Header = React.memo(({theme: {colors: text}}) => {
   return (
     <View style={styles.headerLogo}>
       <Image source={Config.LogoImage} style={styles.logo} />
-      <Text style={[styles.headerDate, {color: text}]}>
+      {/* <Text style={[styles.headerDate, {color: text}]}>
         {currentDate.toUpperCase()}
-      </Text>
+      </Text> */}
     </View>
   );
 });
