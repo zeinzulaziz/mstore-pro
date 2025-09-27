@@ -29,10 +29,14 @@ const AnnouncementTicker = ({theme, endpoint}) => {
           .filter(Boolean)
           .join(' • ');
       } else if (json && typeof json === 'object') {
-        message = json.text || json.message || json.title || '';
+        message = json.textarea || json.text || json.message || json.title || '';
       }
       if (message && message.trim().length > 0) {
-        setText(message.trim());
+        // Decode unicode escape sequences
+        const decodedMessage = message.replace(/\\u([0-9a-fA-F]{4})/g, (match, code) => {
+          return String.fromCharCode(parseInt(code, 16));
+        });
+        setText(decodedMessage.trim());
       }
     } catch (e) {
       // keep previous message on error

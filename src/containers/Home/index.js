@@ -78,9 +78,8 @@ const Home = React.memo(
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
                 <ApiCategories
                   onShowAll={onShowAll}
+                  style={{paddingBottom: 30, paddingLeft: 10, paddingRight: 10}}
                 />
-                {console.log('Rendering BrandFeature component')}
-                <BrandFeature />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}
@@ -111,9 +110,8 @@ const Home = React.memo(
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
                 <ApiCategories
                   onShowAll={onShowAll}
+                  style={{marginBottom: 30}}
                 />
-                {console.log('Rendering BrandFeature component')}
-                <BrandFeature />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}

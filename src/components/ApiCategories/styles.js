@@ -2,12 +2,15 @@ import React, { StyleSheet, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 // Center the grid properly with equal margins
-const horizontalPadding = 16;
-const gap = 12;
+const horizontalPadding = 10;
+const gap = 20;
 const columns = 5;
 const totalGapWidth = gap * (columns - 1);
 const availableWidth = width - (horizontalPadding * 2);
-const widthItem = (availableWidth - totalGapWidth) / columns;
+const widthItem = Math.floor((availableWidth - totalGapWidth) / columns);
+const totalUsedWidth = (widthItem * columns) + totalGapWidth;
+const remainingSpace = availableWidth - totalUsedWidth;
+const extraPadding = Math.floor(remainingSpace / 2);
 
 export default StyleSheet.create({
   item: {
@@ -35,13 +38,16 @@ export default StyleSheet.create({
     fontWeight: '500',
   },
   list: {
-    paddingBottom: 10,
-    paddingHorizontal: horizontalPadding,
+    paddingBottom: 20,
+    paddingHorizontal: horizontalPadding + extraPadding,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     alignItems: 'center',
   },
   wrap: {
     alignItems: 'center',
-  },
+    marginBottom: 10,
+  }
 });

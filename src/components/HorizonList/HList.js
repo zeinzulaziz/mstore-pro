@@ -20,6 +20,7 @@ import {
   BannerImage,
   PostList,
   BlogList,
+  BrandFeature,
 } from '@components';
 
 import styles from './styles';
@@ -198,6 +199,8 @@ class HorizonList extends PureComponent {
             config={config}
           />
         );
+      case 'brandFeature':
+        return <BrandFeature />;
     }
 
     return (

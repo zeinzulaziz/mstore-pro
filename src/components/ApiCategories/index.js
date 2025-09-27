@@ -17,6 +17,7 @@ class ApiCategories extends PureComponent {
       theme: {
         colors: {background},
       },
+      style,
     } = this.props;
 
     // filter only the parent categories
@@ -28,6 +29,7 @@ class ApiCategories extends PureComponent {
         data={cates}
         renderItem={this.renderItem}
         numColumns={5}
+        style={style}
         contentContainerStyle={[styles.list, {backgroundColor: background}]}
       />
     );
@@ -35,7 +37,9 @@ class ApiCategories extends PureComponent {
 
   renderItem = ({item, index}) => {
     const isLastInRow = (index + 1) % 5 === 0;
+    const isLastRow = index >= Math.floor(this.props.categories.filter(cate => cate.parent == 0).length / 5) * 5;
     const itemStyle = isLastInRow ? styles.itemLast : styles.item;
+    const wrapStyle = isLastRow ? styles.wrapLastRow : styles.wrap;
     
     return (
       <TouchableScale
@@ -47,7 +51,7 @@ class ApiCategories extends PureComponent {
           <Image source={Images.categoryPlaceholder} style={styles.image} />
         )}
         <View style={styles.content}>
-          <View style={styles.wrap}>
+          <View style={wrapStyle}>
             <Text style={styles.name}>{item.name}</Text>
           </View>
         </View>
