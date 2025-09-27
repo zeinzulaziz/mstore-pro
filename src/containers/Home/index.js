@@ -8,7 +8,7 @@ import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 
 import {Constants, withTheme} from '@common';
-import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories} from '@components';
+import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature} from '@components';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
 import * as CategoryRedux from '@redux/CategoryRedux';
@@ -79,6 +79,8 @@ const Home = React.memo(
                 <ApiCategories
                   onShowAll={onShowAll}
                 />
+                {console.log('Rendering BrandFeature component')}
+                <BrandFeature />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}
@@ -110,6 +112,8 @@ const Home = React.memo(
                 <ApiCategories
                   onShowAll={onShowAll}
                 />
+                {console.log('Rendering BrandFeature component')}
+                <BrandFeature />
                 <BannerPostsSlider
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}

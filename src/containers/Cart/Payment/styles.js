@@ -69,7 +69,7 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
   message: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     textAlign: 'center',
     padding: 24,
@@ -103,7 +103,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   label: {
-    fontSize: 20,
+    fontSize: 14,
     color: Color.Text,
     fontFamily: Constants.fontHeader,
     paddingLeft: 16,

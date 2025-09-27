@@ -70,6 +70,7 @@ import SelectCountry from './SelectCountry';
 import BannerPostsSlider from './BannerPostsSlider';
 import CustomerSummary from './CustomerSummary';
 import AnnouncementTicker from './AnnouncementTicker';
+import BrandFeature from './BrandFeature';
 
 export {
   ProductList,
@@ -144,4 +145,5 @@ export {
   BannerPostsSlider,
   CustomerSummary,
   AnnouncementTicker,
+  BrandFeature,
 };

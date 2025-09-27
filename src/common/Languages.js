@@ -250,6 +250,8 @@ export default new LocalizedStrings({
 
     OutOfStock: 'OUT OF STOCK',
     ShippingType: 'Shipping method',
+    BrandFeature: 'Featured Brands',
+    BrandFeatureSubtitle: 'Discover our trusted brands',
 
     // Place holder
     TypeFirstName: 'Type your first name',
@@ -576,6 +578,8 @@ export default new LocalizedStrings({
 
     OutOfStock: 'نفذت الكمية',
     ShippingType: 'طريقة الشحن',
+    BrandFeature: 'العلامات التجارية المميزة',
+    BrandFeatureSubtitle: 'اكتشف علاماتنا التجارية الموثوقة',
 
     // Place holder
     TypeFirstName: 'اكتب اسمك الأول',

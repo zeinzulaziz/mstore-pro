@@ -116,7 +116,7 @@ export default {
   showStatusBar: true,
   LogoImage: require('@images/logo-main.png'),
   LogoWithText: require('@images/logo_with_text.png'),
-  LogoLoading: require('@images/logo.png'),
+  LogoLoading: require('@images/ic_add.png'),
 
   showAdmobAds: false,
   AdMob: {
