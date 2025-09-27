@@ -11,41 +11,35 @@ const CustomerSummary = ({theme}) => {
   const name = Tools.getName(user);
 
   return (
-    <View style={[styles.container, {backgroundColor: '#f8f9fa'}]}> 
+    <View style={[styles.container, {backgroundColor: '#fbf2e6'}]}> 
       <View style={styles.item}>
-        <View style={styles.textContainer}>
+        <View style={styles.labelRow}>
           <View style={styles.iconContainer}>
-            <Icon name="person" size={14} color="#fff" />
+            <Icon name="person" size={10} color="#fff" />
           </View>
-          <View style={styles.textContent}>
-            <Text style={[styles.title, {color: theme.colors.text}]}>Member Club</Text>
-            <Text style={[styles.value, {color: theme.colors.text}]}>{name}</Text>
-          </View>
+          <Text style={[styles.title, {color: theme.colors.text}]}>Member Club</Text>
         </View>
+        <Text style={[styles.value, {color: theme.colors.text}]}>{name}</Text>
       </View>
       <View style={[styles.separator, {backgroundColor: theme.colors.border || 'rgba(0,0,0,0.1)'}]} />
       <View style={styles.item}>
-        <View style={styles.textContainer}>
+        <View style={styles.labelRow}>
           <View style={[styles.iconContainer, {backgroundColor: '#e74c3c'}]}>
-            <Icon name="star" size={14} color="#fff" />
+            <Icon name="star" size={10} color="#fff" />
           </View>
-          <View style={styles.textContent}>
-            <Text style={[styles.title, {color: theme.colors.text}]}>DoB Rewards</Text>
-            <Text style={[styles.value, {color: theme.colors.text}]}>327 points</Text>
-          </View>
+          <Text style={[styles.title, {color: theme.colors.text}]}>DoB Rewards</Text>
         </View>
+        <Text style={[styles.value, {color: theme.colors.text}]}>327 points</Text>
       </View>
       <View style={[styles.separator, {backgroundColor: theme.colors.border || 'rgba(0,0,0,0.1)'}]} />
       <View style={styles.item}>
-        <View style={styles.textContainer}>
+        <View style={styles.labelRow}>
           <View style={[styles.iconContainer, {backgroundColor: '#f39c12'}]}>
-            <Icon name="local-offer" size={14} color="#fff" />
+            <Icon name="local-offer" size={9} color="#fff" />
           </View>
-          <View style={styles.textContent}>
-            <Text style={[styles.title, {color: theme.colors.text}]}>Vouchers</Text>
-            <Text style={[styles.value, {color: theme.colors.text}]}>10+ vouchers</Text>
-          </View>
+          <Text style={[styles.title, {color: theme.colors.text}]}>Vouchers</Text>
         </View>
+        <Text style={[styles.value, {color: theme.colors.text}]}>10+ vouchers</Text>
       </View>
     </View>
   );
@@ -73,42 +67,38 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'left',
   },
-  textContainer: {
+  labelRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
+    marginBottom: 4,
   },
   iconContainer: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 16,
+    height: 16,
+    borderRadius: 10,
     backgroundColor: '#3498db',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 8,
-  },
-  textContent: {
-    flex: 1,
-    alignItems: 'flex-start',
+    marginRight: 6,
   },
   separator: {
-    width: 1,
+    width: 0,
     height: 40,
     backgroundColor: 'rgba(0,0,0,0.08)',
   },
   title: {
-    fontSize: 11,
+    fontSize: 10,
     opacity: 0.6,
-    marginBottom: 2,
-    fontWeight: '500',
+    marginBottom: 5,
+    fontWeight: '400',
     letterSpacing: 0.3,
     textAlign: 'left',
   },
   value: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
     letterSpacing: 0.2,
     textAlign: 'left',
   },
