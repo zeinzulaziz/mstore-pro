@@ -26,9 +26,7 @@ const BrandFeature = React.memo(props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-  const autoplayTimer = useRef(null);
 
   const {
     theme: {
@@ -52,16 +50,16 @@ const BrandFeature = React.memo(props => {
     });
   }, [dispatch]);
 
-  // Start autoplay when brands are loaded
-  useEffect(() => {
-    if (brands && brands.length > 0) {
-      startAutoplay();
-    }
-    
-    return () => {
-      stopAutoplay();
-    };
-  }, [brands]);
+  // Autoplay disabled - no automatic scrolling
+  // useEffect(() => {
+  //   if (brands && brands.length > 0) {
+  //     startAutoplay();
+  //   }
+  //   
+  //   return () => {
+  //     stopAutoplay();
+  //   };
+  // }, [brands]);
 
   const onPressBrand = brand => {
     // Navigate to brand products or brand detail
@@ -73,32 +71,7 @@ const BrandFeature = React.memo(props => {
     });
   };
 
-  // Autoplay function
-  const startAutoplay = () => {
-    if (autoplayTimer.current) {
-      clearInterval(autoplayTimer.current);
-    }
-    
-    autoplayTimer.current = setInterval(() => {
-      setCurrentIndex(prevIndex => {
-        const nextIndex = (prevIndex + 1) % brands.length;
-        if (flatListRef.current) {
-          flatListRef.current.scrollToIndex({
-            index: nextIndex,
-            animated: true,
-          });
-        }
-        return nextIndex;
-      });
-    }, 3000); // Change every 3 seconds
-  };
-
-  const stopAutoplay = () => {
-    if (autoplayTimer.current) {
-      clearInterval(autoplayTimer.current);
-      autoplayTimer.current = null;
-    }
-  };
+  // Autoplay functions removed - no automatic scrolling
 
   const renderBrandItem = ({item, index}) => {
     // console.log('Brand item:', JSON.stringify(item, null, 2));
@@ -191,26 +164,7 @@ const BrandFeature = React.memo(props => {
     </View>
   );
 
-  const renderProgressDots = () => {
-    if (!brands || brands.length <= 1) return null;
-    
-    return (
-      <View style={styles.progressDotsContainer}>
-        {brands.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.progressDot,
-              {
-                backgroundColor: index === currentIndex ? '#a96b4f' : '#e0e0e0',
-                opacity: index === currentIndex ? 0 : 0,
-              },
-            ]}
-          />
-        ))}
-      </View>
-    );
-  };
+  // Progress dots removed - no longer needed
 
   // Debug logging
 //   console.log('BrandFeature render - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching, 'error:', brandsError);
@@ -245,12 +199,7 @@ const BrandFeature = React.memo(props => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.brandsList}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        onScrollBeginDrag={stopAutoplay} // Stop autoplay when user scrolls
-        onScrollEndDrag={startAutoplay} // Resume autoplay when user stops scrolling
-        onMomentumScrollEnd={(event) => {
-          const newIndex = Math.round(event.nativeEvent.contentOffset.x / (width * 0.8));
-          setCurrentIndex(newIndex);
-        }}
+        // Autoplay disabled - no scroll handlers needed
         getItemLayout={(data, index) => ({
           length: width * 0.8,
           offset: width * 0.8 * index,
@@ -258,7 +207,7 @@ const BrandFeature = React.memo(props => {
         })}
         initialScrollIndex={0}
       />
-      {renderProgressDots()}
+      {/* Progress dots removed */}
     </View>
   );
 });
