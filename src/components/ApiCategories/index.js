@@ -5,28 +5,87 @@ import {View, FlatList, Image, Text} from 'react-native';
 import {connect} from 'react-redux';
 
 import {toast} from '@app/Omni';
-import {Languages, Images, withTheme} from '@common';
+import {Languages, Images, withTheme, Config} from '@common';
 import {ImageCache, TouchableScale} from '@components';
 
 import styles from './styles';
 
 class ApiCategories extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      homeCategories: [],
+      loading: false,
+    };
+  }
+
+  componentDidMount() {
+    this.fetchHomeCategories();
+  }
+
+  fetchHomeCategories = async () => {
+    try {
+      this.setState({loading: true});
+      
+      // Ambil semua kategori dari WooCommerce Store API
+      const res1 = await fetch(`${Config.WooCommerce.url}/wp-json/wc/store/v1/products/categories`);
+      const allCategories = await res1.json();
+      
+      // Ambil daftar ID kategori yang dipilih dari API custom
+      const res2 = await fetch(`${Config.WooCommerce.url}/wp-json/mytheme/v1/home-categories`);
+      const selectedIds = await res2.json();
+      
+      console.log('All categories from WooCommerce:', allCategories.length);
+      console.log('Selected IDs from custom API:', selectedIds);
+      
+      // Filter kategori berdasarkan ID yang dipilih
+      const homeCategories = allCategories.filter(cat =>
+        selectedIds.some(selected => selected.id === cat.id)
+      );
+      
+      console.log('Filtered home categories:', homeCategories.length);
+      console.log('Home categories:', homeCategories.map(c => ({id: c.id, name: c.name})));
+      
+      this.setState({
+        homeCategories: homeCategories,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Error fetching home categories:', error);
+      this.setState({loading: false});
+    }
+  };
+
   render() {
     const {
-      categories,
       theme: {
         colors: {background},
       },
       style,
     } = this.props;
 
-    // filter only the parent categories
-    const cates = categories.filter(cate => cate.parent == 0);
+    const {homeCategories, loading} = this.state;
+
+    if (loading) {
+      return (
+        <View style={[styles.loadingContainer, {backgroundColor: background}]}>
+          <Text>Loading categories...</Text>
+        </View>
+      );
+    }
+
+    if (homeCategories.length === 0) {
+      return (
+        <View style={[styles.loadingContainer, {backgroundColor: background}]}>
+          <Text>No categories available</Text>
+        </View>
+      );
+    }
 
     return (
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={cates}
+        data={homeCategories}
         renderItem={this.renderItem}
         numColumns={5}
         style={style}
@@ -36,8 +95,10 @@ class ApiCategories extends PureComponent {
   }
 
   renderItem = ({item, index}) => {
+    const {homeCategories} = this.state;
+    
     const isLastInRow = (index + 1) % 5 === 0;
-    const isLastRow = index >= Math.floor(this.props.categories.filter(cate => cate.parent == 0).length / 5) * 5;
+    const isLastRow = index >= Math.floor(homeCategories.length / 5) * 5;
     const itemStyle = isLastInRow ? styles.itemLast : styles.item;
     const wrapStyle = isLastRow ? styles.wrapLastRow : styles.wrap;
     
@@ -62,13 +123,14 @@ class ApiCategories extends PureComponent {
   showProductsByCategory = (category) => {
     const {
       onShowAll,
-      list,
       fetchProductsByCollections,
       setSelectedCategory,
     } = this.props;
     
-    // Find the category in the list (same logic as HList)
-    const selectedCategory = list.find(cat => cat.id === category.id) || category;
+    console.log('Category clicked:', category);
+    
+    // Use the category directly since we already have the complete data
+    const selectedCategory = category;
     
     // Set selected category in Redux (same as m-store does)
     setSelectedCategory({
@@ -87,11 +149,6 @@ class ApiCategories extends PureComponent {
     }, 0);
   };
 
-  componentDidMount() {
-    if (this.props.categories.length == 0) {
-      this.props.fetchCategories();
-    }
-  }
 }
 
 ApiCategories.defaultProps = {
@@ -100,8 +157,6 @@ ApiCategories.defaultProps = {
 
 const mapStateToProps = state => {
   return {
-    categories: state.categories.list,
-    list: state.categories.list, // For finding selected category
     netInfo: state.netInfo,
   };
 };
@@ -115,10 +170,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...ownProps,
     ...stateProps,
-    fetchCategories: () => {
-      if (!netInfo.isConnected) return toast(Languages.noConnection);
-      actions.fetchCategories(dispatch);
-    },
     setSelectedCategory: (category) => {
       actions.setSelectedCategory(dispatch, category);
     },

@@ -49,5 +49,10 @@ export default StyleSheet.create({
   wrap: {
     alignItems: 'center',
     marginBottom: 10,
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
