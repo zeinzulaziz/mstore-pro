@@ -41,14 +41,14 @@ const BrandFeature = React.memo(props => {
   const brandsError = useSelector(state => state.brands.error);
 
   useEffect(() => {
-    console.log('BrandFeature useEffect - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching);
+    // console.log('BrandFeature useEffect - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching);
     
     // Force refresh brands data to get latest images
     setLoading(true);
     console.log('🔄 Force refreshing brands data...');
     BrandsRedux.actions.fetchBrands()(dispatch).finally(() => {
       setLoading(false);
-      console.log('Brands fetch completed');
+    //   console.log('Brands fetch completed');
     });
   }, [dispatch]);
 
@@ -65,6 +65,8 @@ const BrandFeature = React.memo(props => {
 
   const onPressBrand = brand => {
     // Navigate to brand products or brand detail
+    console.log('Brand clicked:', brand.name, 'ID:', brand.id);
+    console.log('Full brand object:', JSON.stringify(brand, null, 2));
     navigation.navigate('CategoryScreen', {
       brand: brand,
       title: brand.name,
@@ -99,7 +101,7 @@ const BrandFeature = React.memo(props => {
   };
 
   const renderBrandItem = ({item, index}) => {
-    console.log('Brand item:', JSON.stringify(item, null, 2));
+    // console.log('Brand item:', JSON.stringify(item, null, 2));
     
     // Use item.image?.src directly as suggested
     let brandImage = item.image?.src;
@@ -107,14 +109,14 @@ const BrandFeature = React.memo(props => {
     // Convert HTTP to HTTPS for security
     if (brandImage && brandImage.startsWith('http://')) {
       brandImage = brandImage.replace('http://', 'https://');
-      console.log('Converted HTTP to HTTPS:', brandImage);
+    //   console.log('Converted HTTP to HTTPS:', brandImage);
     }
     
-    console.log('Brand image URL:', brandImage);
-    console.log('Brand image is truthy:', !!brandImage);
-    console.log('Brand image type:', typeof brandImage);
-    console.log('Brand image starts with https:', brandImage?.startsWith('https://'));
-    console.log('Brand image starts with http:', brandImage?.startsWith('http://'));
+    // console.log('Brand image URL:', brandImage);
+    // console.log('Brand image is truthy:', !!brandImage);
+    // console.log('Brand image type:', typeof brandImage);
+    // console.log('Brand image starts with https:', brandImage?.startsWith('https://'));
+    // console.log('Brand image starts with http:', brandImage?.startsWith('http://'));
     
     const isLastItem = index === brands.length - 1;
 
@@ -130,10 +132,10 @@ const BrandFeature = React.memo(props => {
               style={styles.brandImage}
               resizeMode="contain"
               onLoad={() => {
-                console.log('Brand image loaded successfully:', item.name, brandImage);
+                // console.log('Brand image loaded successfully:', item.name, brandImage);
               }}
               onError={(error) => {
-                console.log('Brand image failed to load:', item.name, 'URL:', brandImage, 'Error:', error.nativeEvent);
+                // console.log('Brand image failed to load:', item.name, 'URL:', brandImage, 'Error:', error.nativeEvent);
               }}
             />
           ) : (
@@ -201,7 +203,7 @@ const BrandFeature = React.memo(props => {
               styles.progressDot,
               {
                 backgroundColor: index === currentIndex ? '#a96b4f' : '#e0e0e0',
-                opacity: index === currentIndex ? 1 : 0.5,
+                opacity: index === currentIndex ? 0 : 0,
               },
             ]}
           />
@@ -211,7 +213,7 @@ const BrandFeature = React.memo(props => {
   };
 
   // Debug logging
-  console.log('BrandFeature render - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching, 'error:', brandsError);
+//   console.log('BrandFeature render - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching, 'error:', brandsError);
 
   if (loading || isFetching) {
     return (

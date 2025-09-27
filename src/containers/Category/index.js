@@ -41,15 +41,105 @@ class CategoryScreen extends PureComponent {
 
     this.openCategoryPicker = () => this.setState({modalVisible: true});
     this.closeCategoryPicker = () => this.setState({modalVisible: false});
+    this.fetchProductsByBrand = this.fetchProductsByBrand.bind(this);
+  }
+
+  fetchProductsByBrand(brandId) {
+    const {actions} = require('@redux/ProductRedux');
+    const {dispatch, clearProducts, brand} = this.props;
+    
+    if (!dispatch) {
+      console.error('Dispatch not available in props');
+      return;
+    }
+    
+    // Clear existing products first
+    console.log('Clearing existing products...');
+    clearProducts();
+    
+    // Use WooCommerce Store API with brand parameter for server-side filtering
+    const brandName = brand ? brand.name : 'Unknown';
+    const url = `https://doseofbeauty.id/wp-json/wc/store/v1/products?brand=${encodeURIComponent(brandName)}&per_page=50&page=${this.pageNumber}`;
+    
+    console.log('Fetching products for brand ID:', brandId, 'Brand name:', brandName, 'from URL:', url);
+    
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Products fetched for brand:', brandName, ':', data.length, 'products');
+        console.log('Sample product data:', data[0]);
+        
+        // Server already filtered by brand, so use all products
+        const brandProducts = data;
+        
+        console.log('Products for brand', brandName, ':', brandProducts.length, 'products');
+        
+        // If no products found for this brand, show empty state
+        if (brandProducts.length === 0) {
+          console.log('No products found for brand:', brandName);
+          dispatch(actions.fetchProductsSuccess([]));
+          return;
+        }
+        
+        // Transform data to match expected format
+        const transformedProducts = brandProducts.map(product => ({
+          id: product.id,
+          name: product.name,
+          price: product.prices?.price || '0',
+          regular_price: product.prices?.regular_price || '0',
+          sale_price: product.prices?.sale_price || null,
+          images: product.images || [],
+          description: product.description || '',
+          short_description: product.short_description || '',
+          categories: product.categories || [],
+          tags: product.tags || [],
+          attributes: product.attributes || [],
+          variations: product.variations || [],
+          stock_status: product.is_in_stock ? 'instock' : 'outofstock',
+          stock_quantity: product.stock_quantity || 0,
+          weight: product.weight || '',
+          dimensions: product.dimensions || {},
+          permalink: product.permalink || '',
+          _brand: product.brands && product.brands[0] ? product.brands[0] : null,
+        }));
+        
+        console.log('Transformed products:', transformedProducts.length, 'products');
+        console.log('Sample transformed product:', transformedProducts[0]);
+        
+        // Dispatch to Redux store
+        console.log('Dispatching products to Redux...');
+        dispatch(actions.fetchProductsSuccess(transformedProducts));
+        console.log('Products dispatched to Redux successfully');
+        
+        // Check Redux state after dispatch
+        setTimeout(() => {
+          const {products} = this.props;
+          console.log('Redux state after dispatch - products.list length:', products.list ? products.list.length : 0);
+        }, 100);
+      })
+      .catch(error => {
+        console.error('Error fetching products by brand:', error);
+        dispatch(actions.fetchProductsFailure(error.message));
+      });
   }
 
   componentDidMount() {
     Timer.setTimeout(() => this.setState({loadingBuffer: false}), 1000);
 
-    const {fetchProductsByCategoryId, clearProducts, selectedCategory} =
+    const {fetchProductsByCategoryId, clearProducts, selectedCategory, brand} =
       this.props;
     clearProducts();
-    if (selectedCategory) {
+    
+    // If brand is provided, fetch products by brand
+    if (brand) {
+      console.log('Fetching products for brand:', brand.name, 'ID:', brand.id);
+      this.fetchProductsByBrand(brand.id);
+    } else if (selectedCategory) {
       fetchProductsByCategoryId(selectedCategory.id, this.pageNumber++);
     }
   }
@@ -106,7 +196,7 @@ class CategoryScreen extends PureComponent {
 
   render() {
     const {modalVisible, loadingBuffer, displayControlBar} = this.state;
-    const {products, selectedCategory, filters, fetchProductsByCategoryId} =
+    const {products, selectedCategory, filters, fetchProductsByCategoryId, brand, title} =
       this.props;
     const {
       theme: {
@@ -114,7 +204,13 @@ class CategoryScreen extends PureComponent {
       },
     } = this.props;
 
-    if (!selectedCategory) return null;
+    console.log('Category render - products:', products);
+    console.log('Category render - products.list:', products.list);
+    console.log('Category render - products.list length:', products.list ? products.list.length : 0);
+    console.log('Category render - brand:', brand);
+    console.log('Category render - selectedCategory:', selectedCategory);
+
+    if (!selectedCategory && !brand) return null;
 
     if (products.error) {
       return <Empty text={products.error} />;
@@ -130,8 +226,10 @@ class CategoryScreen extends PureComponent {
     });
 
     const name =
+      title || // Use title from navigation params
       (filters && filters.category && filters.category.name) ||
-      selectedCategory.name;
+      (brand && brand.name) ||
+      (selectedCategory && selectedCategory.name);
 
     return (
       <View style={[styles.container, {backgroundColor: background}]}>
@@ -155,6 +253,11 @@ class CategoryScreen extends PureComponent {
   renderList = data => {
     const {products, displayMode} = this.props;
     const isCardMode = displayMode == DisplayMode.CardMode;
+
+    console.log('renderList called with data:', data);
+    console.log('renderList data length:', data ? data.length : 0);
+    console.log('renderList data type:', typeof data);
+    console.log('renderList data is array:', Array.isArray(data));
 
     return (
       <FlatList
@@ -237,9 +340,13 @@ class CategoryScreen extends PureComponent {
   };
 
   onEndReached = () => {
-    const {products, fetchProductsByCategoryId, selectedCategory} = this.props;
+    const {products, fetchProductsByCategoryId, selectedCategory, brand} = this.props;
     if (!products.isFetching && products.stillFetch) {
-      if (this.newFilters) {
+      if (brand) {
+        // Load more products for brand
+        this.pageNumber++;
+        this.fetchProductsByBrand(brand.id);
+      } else if (this.newFilters) {
         fetchProductsByCategoryId(
           selectedCategory.id,
           this.pageNumber++,
@@ -253,16 +360,21 @@ class CategoryScreen extends PureComponent {
   };
 
   onRefreshHandle = () => {
-    const {fetchProductsByCategoryId, clearProducts, selectedCategory} =
+    const {fetchProductsByCategoryId, clearProducts, selectedCategory, brand} =
       this.props;
     this.pageNumber = 1;
     clearProducts();
-    fetchProductsByCategoryId(
-      selectedCategory.id,
-      this.pageNumber++,
-      20,
-      this.newFilters,
-    );
+    
+    if (brand) {
+      this.fetchProductsByBrand(brand.id);
+    } else {
+      fetchProductsByCategoryId(
+        selectedCategory.id,
+        this.pageNumber++,
+        20,
+        this.newFilters,
+      );
+    }
   };
 
   onListViewScroll(event: Object) {
@@ -290,6 +402,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   return {
     ...ownProps,
     ...stateProps,
+    dispatch, // Add dispatch to props
     fetchProductsByCategoryId: (
       categoryId,
       page,
@@ -315,8 +428,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+});
+
 export default connect(
   mapStateToProps,
-  undefined,
+  mapDispatchToProps,
   mergeProps,
 )(withTheme(CategoryScreen));
