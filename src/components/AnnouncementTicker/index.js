@@ -2,7 +2,7 @@
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Animated, Dimensions, ActivityIndicator} from 'react-native';
-import {withTheme} from '@common';
+import {withTheme, Fonts} from '@common';
 
 const {width} = Dimensions.get('window');
 
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     width: width * 3,
+    fontFamily: Fonts.medium,
   },
 });
 

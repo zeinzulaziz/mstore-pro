@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Color, Styles, Constants } from '@common';
+import { Color, Styles, Constants, Fonts } from '@common';
 
 const styles = StyleSheet.create({
   //main
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
   text_list: {
     color: Color.black,
     fontSize: Styles.FontSize.medium,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   text_grid: {
     color: Color.black,
     fontSize: Styles.FontSize.small,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   textRating: {
     fontSize: Styles.FontSize.small,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   cardPriceSale: {
     fontSize: 15,
     marginTop: 2,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   price: {
     color: Color.black,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   cardPrice: {
     fontSize: 18,
     marginBottom: 8,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.bold,
   },
   btnWishList: {
     position: 'absolute',

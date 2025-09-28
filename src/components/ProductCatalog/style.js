@@ -1,6 +1,7 @@
 /** @format */
 
 import { StyleSheet } from 'react-native';
+import { Fonts } from '@common';
 
 export default StyleSheet.create({
   container: {
@@ -19,5 +20,6 @@ export default StyleSheet.create({
   text: {
     fontSize: 16,
     marginRight: 5,
+    fontFamily: Fonts.medium,
   },
 });

@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, Dimensions } from 'react-native';
-import { Color, Constants } from '@common';
+import { Color, Constants, Fonts } from '@common';
 
 const { width } = Dimensions.get('window');
 
@@ -27,7 +27,7 @@ export default StyleSheet.create({
     color: 'rgba(51, 51, 51, 1)',
     lineHeight: 40,
     marginBottom: 10,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   flatlist: {
     flexWrap: 'wrap',

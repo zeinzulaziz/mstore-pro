@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, Dimensions } from 'react-native';
-import { Color, Constants } from '@common';
+import { Color, Constants, Fonts } from '@common';
 
 const { width } = Dimensions.get('window');
 
@@ -75,7 +75,7 @@ export default StyleSheet.create({
     padding: 24,
     marginTop: 8,
     paddingTop: 16,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     lineHeight: 20,
     backgroundColor: '#f8f9fa',
     marginHorizontal: 16,
@@ -105,7 +105,7 @@ export default StyleSheet.create({
   label: {
     fontSize: 14,
     color: Color.Text,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
     paddingLeft: 16,
     paddingRight: 16,
     marginBottom: 8,

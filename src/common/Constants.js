@@ -9,9 +9,9 @@ const Constants = {
   useReactotron: true,
 
   Language: 'en', // ar, en. Default to set redux. Only use first time
-  fontFamily: 'OpenSans',
-  fontHeader: 'Baloo',
-  fontHeaderAndroid: 'Baloo',
+  fontFamily: 'System',
+  fontHeader: 'System',
+  fontHeaderAndroid: 'System',
   WordPress: {
     defaultDateFormat: 'YYYY-MM-DD HH:mm:ss',
     checkout: 'mstore-checkout',

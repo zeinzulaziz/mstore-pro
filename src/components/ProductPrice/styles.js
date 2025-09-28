@@ -1,16 +1,18 @@
 /** @format */
 
 import { StyleSheet } from 'react-native';
-import { Color, Styles } from '@common';
+import { Color, Styles, Fonts } from '@common';
 
 export default StyleSheet.create({
   text_list: {
     color: Color.black,
     fontSize: Styles.FontSize.medium,
+    fontFamily: Fonts.bold,
   },
   text_grid: {
     color: Color.black,
     fontSize: Styles.FontSize.small,
+    fontFamily: Fonts.bold,
   },
   price_wrapper: {
     alignItems: 'center',
@@ -21,10 +23,12 @@ export default StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     fontSize: Styles.FontSize.tiny,
+    fontFamily: Fonts.regular,
   },
   price: {
     color: Color.black,
     fontSize: Styles.FontSize.tiny,
+    fontFamily: Fonts.regular,
   },
   saleWrap: {
     borderRadius: 5,
@@ -37,5 +41,6 @@ export default StyleSheet.create({
   sale_off: {
     color: Color.lightTextPrimary,
     fontSize: Styles.FontSize.small,
+    fontFamily: Fonts.bold,
   },
 });

@@ -15,6 +15,7 @@ import _Layout from './Layout';
 import _Validator from './Validator';
 import _Events from './Events';
 import _Device from './Device';
+import _Fonts from './Fonts';
 import {ThemeProvider, withTheme, themes} from './Theme';
 
 export const Color = _Color;
@@ -32,6 +33,7 @@ export const HorizonLayouts = AppConfig.HorizonLayout;
 export const Validator = _Validator;
 export const Events = _Events;
 export const Device = _Device;
+export const Fonts = _Fonts;
 
 export {ThemeProvider, withTheme, themes};
 

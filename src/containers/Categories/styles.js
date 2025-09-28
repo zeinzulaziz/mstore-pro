@@ -2,7 +2,7 @@
 
 import { Platform, Dimensions } from 'react-native';
 
-import { Constants, Styles } from '@common';
+import { Constants, Styles, Fonts } from '@common';
 
 const { width } = Dimensions.get('window');
 
@@ -61,12 +61,12 @@ export default {
   mainCategoryText: {
     color: 'white',
     fontSize: 25,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   numberOfProductsText: {
     color: 'white',
     fontSize: 12,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   overlay: {
     // alignItems: "center",

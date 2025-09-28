@@ -1,6 +1,7 @@
 /** @format */
 
 import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '@common';
 
 const {width} = Dimensions.get('window');
 
@@ -87,6 +88,7 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#333',
     paddingVertical: 4,
+    fontFamily: Fonts.regular,
   },
   searchButton: {
     backgroundColor: '#FF6B35',
@@ -118,5 +120,6 @@ export default StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: 'bold',
+    fontFamily: Fonts.bold,
   },
 });

@@ -8,6 +8,7 @@ import Device from './Device';
 import Color from './Color';
 import Config from './Config';
 import {themes} from './Theme';
+import Fonts from './Fonts';
 
 const {height, width} = Dimensions.get('window');
 
@@ -37,7 +38,7 @@ const Styles = {
     Inline: 20,
     SmallRating: 14,
   },
-  FontFamily: {},
+  FontFamily: Fonts,
 };
 
 Styles.Common = {
@@ -180,8 +181,7 @@ Styles.Common = {
     flex: 1,
     height: 40,
     backgroundColor: 'transparent',
-
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     ...Platform.select({
       ios: {
         marginBottom: !Config.showStatusBar ? 14 : 0,
@@ -200,7 +200,7 @@ Styles.Common = {
     fontSize: 16,
     height: 40,
     textAlign: 'center',
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     alignSelf: 'center',
     ...Platform.select({
       ios: {
@@ -217,7 +217,7 @@ Styles.Common = {
     fontSize: 16,
     textAlign: 'center',
     alignSelf: 'center',
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     marginBottom: !Config.showStatusBar
       ? isIphoneX()
         ? 40

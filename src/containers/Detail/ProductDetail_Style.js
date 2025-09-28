@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, Dimensions, I18nManager } from 'react-native';
-import { Constants, Styles } from '@common';
+import { Constants, Styles, Fonts } from '@common';
 import { Color } from '@common';
 
 const { width, height } = Dimensions.get('window');
@@ -82,19 +82,19 @@ export default StyleSheet.create({
     color: Color.Text,
     padding: 8,
     marginTop: 4,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   productPrice: {
     fontSize: 18,
     color: Color.blackTextSecondary,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.bold,
   },
   sale_price: {
     textDecorationLine: 'line-through',
     color: Color.blackTextDisable,
     marginLeft: 5,
     marginTop: 4,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   tabButton: {
     flexDirection: 'row',
@@ -105,7 +105,7 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,1)',
   },
   textTab: {
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
     color: 'rgba(183, 196, 203, 1)',
     fontSize: 16,
   },
@@ -156,7 +156,7 @@ export default StyleSheet.create({
     color: 'white',
     fontSize: 14,
     fontWeight: 'bold',
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   description: {
     padding: 20,
@@ -234,7 +234,7 @@ export default StyleSheet.create({
 
   attributeName: {
     color: '#aaa',
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     fontSize: 11,
   },
   dropdownStyle: {

@@ -3,7 +3,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
-import { Color, Config, Constants } from '@common';
+import { Color, Config, Constants, Fonts } from '@common';
 
 export default StyleSheet.create({
   fill: {
@@ -61,7 +61,7 @@ export default StyleSheet.create({
   btnBuyText: {
     color: 'white',
     fontSize: 14,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   btnBack: {
     flex: 0.5,
@@ -71,7 +71,7 @@ export default StyleSheet.create({
     color: '#999',
     fontSize: 14,
     fontWeight: 'bold',
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
 
   row: {
@@ -97,13 +97,13 @@ export default StyleSheet.create({
   label: {
     fontSize: 18,
     color: Color.Text,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
     textAlign: 'left',
   },
   value: {
     fontSize: 16,
     color: Color.headerTintColor,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
 
   contentEmpty: {
@@ -124,7 +124,7 @@ export default StyleSheet.create({
     width: 230,
     lineHeight: 40,
     opacity: 0.8,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   message: {
     fontSize: 14,
@@ -133,7 +133,7 @@ export default StyleSheet.create({
     width: Constants.Window.width,
     marginTop: 10,
     lineHeight: 25,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
 
   button: {
@@ -144,7 +144,7 @@ export default StyleSheet.create({
   },
   buttonText: {
     fontSize: 15,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   total: {
     fontSize: 16,

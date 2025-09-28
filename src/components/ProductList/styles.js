@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, Platform, Dimensions } from 'react-native';
-import { Constants } from '@common';
+import { Constants, Fonts } from '@common';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,7 +34,7 @@ export default StyleSheet.create({
   },
   headerText: {
     fontSize: 22,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
     width,
     marginBottom: 20,
     marginTop: 50,
@@ -83,5 +83,6 @@ export default StyleSheet.create({
   footerBtnText: {
     color: '#fff',
     fontSize: 12,
+    fontFamily: Fonts.regular,
   },
 });

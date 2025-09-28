@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash';
 import React from 'react';
 import { StyleSheet, TextInput, View, Text } from 'react-native';
+import { Fonts } from '@common';
 
 const Input = props => {
   return <StandardTextInput {...props} />;
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 3,
+    fontFamily: Fonts.medium,
   },
   textinput: {
     height: 40,
@@ -53,10 +55,12 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     borderRadius: 20,
     backgroundColor: '#F6F7F9',
+    fontFamily: Fonts.regular,
   },
   error: {
     color: 'red',
     marginLeft: 3,
+    fontFamily: Fonts.regular,
   },
 });
 

@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, Platform, Dimensions } from 'react-native';
-import { Constants } from '@common';
+import { Constants, Fonts } from '@common';
 
 const { width, height } = Dimensions.get('window');
 
@@ -109,7 +109,7 @@ export default StyleSheet.create({
     marginRight: 0,
     marginTop: 0,
     color: '#666',
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   icon: {
     marginRight: 8,
@@ -121,7 +121,7 @@ export default StyleSheet.create({
     fontSize: 18,
     color: '#666',
     letterSpacing: 2,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
 
   headerLogo: {
@@ -143,7 +143,7 @@ export default StyleSheet.create({
     marginBottom: 0,
     fontWeight: '400',
     opacity: 0.8,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
   },
   logo: {
     height: 50,

@@ -1,6 +1,7 @@
 /** @format */
 
 import {StyleSheet, Dimensions} from 'react-native';
+import {Fonts} from '@common';
 
 const {width} = Dimensions.get('window');
 
@@ -20,11 +21,13 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     textAlign: 'center',
+    fontFamily: Fonts.bold,
   },
   subtitle: {
     fontSize: 14,
     opacity: 0.7,
     textAlign: 'center',
+    fontFamily: Fonts.regular,
   },
   brandsList: {
     paddingRight: 16,
@@ -63,12 +66,14 @@ export default StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     lineHeight: 16,
+    fontFamily: Fonts.medium,
   },
   brandCount: {
     fontSize: 10,
     opacity: 0.7,
     textAlign: 'center',
     marginTop: 2,
+    fontFamily: Fonts.regular,
   },
   separator: {
     width: 8,
@@ -82,6 +87,7 @@ export default StyleSheet.create({
   loadingText: {
     marginLeft: 8,
     fontSize: 14,
+    fontFamily: Fonts.regular,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -90,6 +96,7 @@ export default StyleSheet.create({
   emptyText: {
     fontSize: 14,
     opacity: 0.7,
+    fontFamily: Fonts.regular,
   },
   placeholderContainer: {
     width: brandItemWidth * 0.7,
@@ -103,6 +110,7 @@ export default StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#6c757d',
+    fontFamily: Fonts.bold,
   },
   progressDotsContainer: {
     flexDirection: 'row',

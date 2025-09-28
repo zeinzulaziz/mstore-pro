@@ -6,7 +6,7 @@ import React, {
   Dimensions,
   PixelRatio,
 } from 'react-native';
-import { Color, Constants } from '@common';
+import { Color, Constants, Fonts } from '@common';
 
 const { width, height, scale } = Dimensions.get('window'),
   vw = width / 100,
@@ -32,9 +32,6 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#666',
     fontSize: 12,
-    fontFamily:
-      Platform.OS != 'android'
-        ? Constants.fontHeader
-        : Constants.fontHeaderAndroid,
+    fontFamily: Fonts.medium,
   },
 });

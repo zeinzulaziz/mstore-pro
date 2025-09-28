@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Color } from '@common';
+import { Color, Fonts } from '@common';
 import { Icon } from '@app/Omni';
 
 class Button extends PureComponent {
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: 'bold',
+    fontFamily: Fonts.bold,
   },
   icon: {
     marginRight: 10,

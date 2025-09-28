@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {withTheme, Tools} from '@common';
+import {withTheme, Tools, Fonts} from '@common';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -95,12 +95,14 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     letterSpacing: 0.3,
     textAlign: 'left',
+    fontFamily: Fonts.regular,
   },
   value: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.2,
     textAlign: 'left',
+    fontFamily: Fonts.medium,
   },
 });
 

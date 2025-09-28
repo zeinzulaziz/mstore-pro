@@ -1,4 +1,5 @@
 import React, { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '@common';
 
 const { width, height } = Dimensions.get('window');
 // Center the grid properly with equal margins
@@ -45,6 +46,7 @@ export default StyleSheet.create({
     fontSize: 11,
     textAlign: 'center',
     fontWeight: '500',
+    fontFamily: Fonts.medium,
   },
   list: {
     paddingBottom: 20,

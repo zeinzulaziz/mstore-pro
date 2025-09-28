@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
-import { Color } from '@common';
+import { Color, Fonts } from '@common';
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
@@ -36,6 +36,7 @@ export default StyleSheet.create({
     fontSize: 14,
     padding: 0,
     marginLeft: 10,
+    fontFamily: Fonts.regular,
   },
   icon: {
     width: 13,

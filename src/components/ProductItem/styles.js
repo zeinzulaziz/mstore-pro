@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet, I18nManager } from 'react-native';
-import { Constants, Color } from '@common';
+import { Constants, Color, Fonts } from '@common';
 
 export default StyleSheet.create({
   container: {
@@ -26,7 +26,7 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 15,
-    fontFamily: Constants.fontFamily,
+    fontFamily: Fonts.regular,
     color: Color.Text,
   },
   priceContainer: {
@@ -38,13 +38,13 @@ export default StyleSheet.create({
   price: {
     fontSize: 20,
     color: Color.Text,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.bold,
   },
   productVariant: textColor => ({
     marginLeft: 10,
     fontSize: 11,
     color: textColor,
-    fontFamily: Constants.fontHeader,
+    fontFamily: Fonts.regular,
   }),
   quantity: {
     marginRight: 10,

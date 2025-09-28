@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, I18nManager } from 'react-native';
-import { Color, Styles } from '@common';
+import { Color, Styles, Fonts } from '@common';
 
 const StandardText = props => (
   <Text
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     fontSize: Styles.FontSize.big,
     textAlign: 'left',
     width: null,
+    fontFamily: Fonts.medium,
   },
 });
 
