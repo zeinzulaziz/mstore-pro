@@ -10,6 +10,18 @@ import {ImageCache, TouchableScale} from '@components';
 
 import styles from './styles';
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text) => {
+  if (!text) return text;
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+};
+
 class ApiCategories extends PureComponent {
   constructor(props) {
     super(props);
@@ -113,7 +125,7 @@ class ApiCategories extends PureComponent {
         )}
         <View style={styles.content}>
           <View style={wrapStyle}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{decodeHtmlEntities(item.name)}</Text>
           </View>
         </View>
       </TouchableScale>
