@@ -2,11 +2,65 @@
 
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityIndicator} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {withTheme, Tools, Constants, Images} from '@common';
 
 const {width} = Dimensions.get('window');
 
-const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3'}) => {
+// Banner gradient styles - using explicit width/height like CSS background-size
+const bannerGradientBackground = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: 140, // Explicit height (200px - 60px = 140px)
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  overflow: 'hidden',
+  zIndex: -1,
+};
+const bannerRadialBase = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: 140, // Same height as container
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  overflow: 'hidden',
+};
+const bannerRadialGradient1 = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: 140, // Same height as container
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  overflow: 'hidden',
+};
+const bannerRadialGradient2 = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: 140, // Same height as container
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  overflow: 'hidden',
+};
+const bannerRadialGradient3 = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: 140, // Same height as container
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  overflow: 'hidden',
+};
+
+const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3', style, transparent = false}) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -199,7 +253,35 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   };
 
   return (
-    <View>
+    <View style={[style, {position: 'relative', elevation: 10, borderBottomLeftRadius: transparent ? 0 : 30, borderBottomRightRadius: transparent ? 0 : 30, overflow: 'hidden'}]}>
+      {/* Radial Gradient Background - only show if not transparent */}
+      {!transparent && (
+        <View style={bannerGradientBackground}>
+          {/* Base color */}
+          <View style={[bannerRadialBase, {backgroundColor: '#ffe9c5'}]} />
+          
+          {/* Radial gradient effect using multiple layers */}
+          <LinearGradient
+            colors={['#f08e4b', 'rgba(240, 142, 75, 0.3)', 'transparent']}
+            start={{x: 0.3, y: 0.2}}
+            end={{x: 0.8, y: 0.8}}
+            style={bannerRadialGradient1}
+          />
+          <LinearGradient
+            colors={['transparent', 'rgba(255, 233, 197, 0.8)', '#ffe9c5']}
+            start={{x: 0.1, y: 0.1}}
+            end={{x: 0.6, y: 0.6}}
+            style={bannerRadialGradient2}
+          />
+          <LinearGradient
+            colors={['rgba(240, 142, 75, 0.6)', 'transparent', 'rgba(255, 233, 197, 0.4)']}
+            start={{x: 0.4, y: 0.4}}
+            end={{x: 1, y: 1}}
+            style={bannerRadialGradient3}
+          />
+        </View>
+      )}
+      
       <FlatList
         ref={listRef}
         data={items}

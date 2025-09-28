@@ -71,6 +71,7 @@ import BannerPostsSlider from './BannerPostsSlider';
 import CustomerSummary from './CustomerSummary';
 import AnnouncementTicker from './AnnouncementTicker';
 import BrandFeature from './BrandFeature';
+import TopHeader from './TopHeader';
 
 export {
   ProductList,
@@ -146,4 +147,5 @@ export {
   CustomerSummary,
   AnnouncementTicker,
   BrandFeature,
+  TopHeader,
 };

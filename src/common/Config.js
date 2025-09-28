@@ -353,7 +353,7 @@ DefaultCountry: {
   },
 
   Layout: {
-    HideHomeLogo: false,
+    HideHomeLogo: true,
     HideLayoutModal: false,
   },
 

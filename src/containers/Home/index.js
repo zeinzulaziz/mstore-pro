@@ -8,7 +8,7 @@ import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 
 import {Constants, withTheme} from '@common';
-import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature} from '@components';
+import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature, TopHeader} from '@components';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
 import * as CategoryRedux from '@redux/CategoryRedux';
@@ -59,6 +59,10 @@ const Home = React.memo(
 
     return (
       <View style={[styles.container, {backgroundColor: background}]}>
+        <TopHeader 
+          onSearchPress={() => navigation.navigate('SearchScreen')}
+          onNotificationPress={() => navigation.navigate('NotificationScreen')}
+        />
         {isHorizontal && (
           <HorizonList
             navigation={navigation}
@@ -73,6 +77,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
+                  style={{marginTop: -20}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
@@ -87,6 +92,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
+                  transparent={true}
                 />
               </>
             )}
@@ -105,6 +111,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
+                  style={{marginTop: -20}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
@@ -119,6 +126,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
+                  transparent={true}
                 />
               </>
             )}
