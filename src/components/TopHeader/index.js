@@ -52,10 +52,11 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
       <View style={styles.headerContent}>
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <Text style={styles.logoText}>Do</Text>
-            <Text style={styles.logoTextBold}>B</Text>
-          </View>
+          <Image 
+            source={require('@images/logo_header.png')} 
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Search Bar */}

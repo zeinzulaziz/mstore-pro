@@ -253,7 +253,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   };
 
   return (
-    <View style={[style, {position: 'relative', elevation: 10, borderBottomLeftRadius: transparent ? 0 : 30, borderBottomRightRadius: transparent ? 0 : 30, overflow: 'hidden'}]}>
+    <View style={[style, {position: 'relative', borderBottomLeftRadius: transparent ? 0 : 30, borderBottomRightRadius: transparent ? 0 : 30, overflow: 'hidden'}]}>
       {/* Radial Gradient Background - only show if not transparent */}
       {!transparent && (
         <View style={bannerGradientBackground}>

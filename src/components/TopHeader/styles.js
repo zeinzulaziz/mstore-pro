@@ -12,8 +12,8 @@ export default StyleSheet.create({
     paddingVertical: 12,
     position: 'relative',
     zIndex: 0,
-    paddingTop: 20, // Reduced padding to match bottom
-    paddingBottom: 20, // Same as top padding
+    paddingTop: 10, // Reduced since SafeAreaView handles status bar
+    paddingBottom: 20,
   },
   gradientBackground: {
     position: 'absolute',
@@ -60,28 +60,16 @@ export default StyleSheet.create({
   logoContainer: {
     marginRight: 12,
   },
-  logo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logoText: {
-    fontSize: 24,
-    fontWeight: '300',
-    color: '#fff',
-    fontStyle: 'italic',
-  },
-  logoTextBold: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginLeft: 2,
+  logoImage: {
+    width: 40,
+    height: 40,
   },
   searchContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 25,
+    borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginHorizontal: 8,

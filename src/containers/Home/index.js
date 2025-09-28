@@ -3,6 +3,7 @@
 import * as React from 'react';
 import {useEffect, useMemo, useCallback} from 'react';
 import {View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
@@ -58,7 +59,7 @@ const Home = React.memo(
     }, [isConnected, countryList]);
 
     return (
-      <View style={[styles.container, {backgroundColor: background}]}>
+      <SafeAreaView style={[styles.container, {backgroundColor: background}]} edges={['top']}>
         <TopHeader 
           onSearchPress={() => navigation.navigate('SearchScreen')}
           onNotificationPress={() => navigation.navigate('NotificationScreen')}
@@ -77,7 +78,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
-                  style={{marginTop: -20}}
+                  style={{paddingTop: 10, marginTop: -10}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
@@ -111,7 +112,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
-                  style={{marginTop: -20}}
+                  style={{paddingTop: 10, marginTop: -10}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
@@ -133,7 +134,7 @@ const Home = React.memo(
           />
         )}
         <ModalLayout />
-      </View>
+      </SafeAreaView>
     );
   },
 );
