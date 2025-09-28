@@ -80,7 +80,7 @@ class ApiCategories extends PureComponent {
 
     if (loading) {
       return (
-        <View style={[styles.loadingContainer, {backgroundColor: '#fff'}]}>
+        <View style={[styles.loadingContainer, {backgroundColor: background}]}>
           <Text>Loading categories...</Text>
         </View>
       );
@@ -88,7 +88,7 @@ class ApiCategories extends PureComponent {
 
     if (homeCategories.length === 0) {
       return (
-        <View style={[styles.loadingContainer, {backgroundColor: '#fff'}]}>
+        <View style={[styles.loadingContainer, {backgroundColor: background}]}>
           <Text>No categories available</Text>
         </View>
       );
@@ -101,7 +101,7 @@ class ApiCategories extends PureComponent {
         renderItem={this.renderItem}
         numColumns={5}
         style={style}
-        contentContainerStyle={[styles.list, {backgroundColor: '#fff'}]}
+        contentContainerStyle={[styles.list, {backgroundColor: background}]}
       />
     );
   }

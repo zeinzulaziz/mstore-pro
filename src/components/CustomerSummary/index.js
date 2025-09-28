@@ -11,7 +11,7 @@ const CustomerSummary = ({theme = {}}) => {
   const name = Tools.getName(user);
 
   return (
-    <View style={[styles.container, {backgroundColor: '#fbf2e6'}]}> 
+    <View style={[styles.container, {backgroundColor: theme.colors.background || '#fff'}]}> 
       <View style={styles.item}>
         <View style={styles.labelRow}>
           <View style={styles.iconContainer}>
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 10,
     opacity: 0.6,
-    marginBottom: 5,
     fontWeight: '400',
     letterSpacing: 0.3,
     textAlign: 'left',

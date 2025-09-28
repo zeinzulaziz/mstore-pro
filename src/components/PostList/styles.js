@@ -6,22 +6,22 @@ import { Constants } from '@common';
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
-  flatlist: {
-    backgroundColor: '#fff',
+  flatlist: (theme) => ({
+    backgroundColor: theme?.colors?.background || '#fff',
     paddingBottom: 20,
-  },
+  }),
   more: {
     width,
     alignItems: 'center',
     marginBottom: 10,
     marginTop: 10,
   },
-  spinView: {
+  spinView: (theme) => ({
     width,
-    backgroundColor: '#fff',
+    backgroundColor: theme?.colors?.background || '#fff',
     flex: 1,
     paddingTop: 20,
-  },
+  }),
   header: {
     position: 'absolute',
     top: 0,

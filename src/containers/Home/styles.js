@@ -21,10 +21,10 @@ export default StyleSheet.create({
     marginLeft: 12,
     opacity: 0.8,
   },
-  fill: {
+  fill: (theme) => ({
     flex: 1,
-    backgroundColor: '#ffffff',
-  },
+    backgroundColor: theme?.colors?.background || '#ffffff',
+  }),
   header: {
     position: 'absolute',
     top: 0,

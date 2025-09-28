@@ -30,12 +30,12 @@ export default StyleSheet.create({
       },
     }),
   },
-  flatVertical: {
+  flatVertical: (theme) => ({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: '#fff',
-  },
+    backgroundColor: theme?.colors?.background || '#fff',
+  }),
   isListing: {
     marginTop: 60,
   },
@@ -45,13 +45,13 @@ export default StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-  spinView: {
+  spinView: (theme) => ({
     width,
-    backgroundColor: '#fff',
+    backgroundColor: theme?.colors?.background || '#fff',
     flex: 1,
     height,
     paddingTop: 20,
-  },
+  }),
   navbar: {
     position: 'absolute',
     top: 0,

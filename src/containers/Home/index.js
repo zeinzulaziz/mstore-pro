@@ -18,9 +18,13 @@ import * as CategoryRedux from '@redux/CategoryRedux';
 import styles from './styles';
 
 const Home = React.memo(
-  ({background, onViewProductScreen, showCategoriesScreen, onShowAll}) => {
+  ({theme = {}, onViewProductScreen, showCategoriesScreen, onShowAll}) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    
+    // Debug log to check theme
+    console.log('Home theme:', theme);
+    console.log('Home background:', theme?.colors?.background);
 
     const isConnected = useSelector(state => state.netInfo.isConnected);
     const countryList = useSelector(state => state.countries.list);
@@ -60,7 +64,7 @@ const Home = React.memo(
     }, [isConnected, countryList]);
 
     return (
-      <SafeAreaView style={[styles.container, {backgroundColor: '#fff'}]} edges={['top']}>
+      <SafeAreaView style={[styles.container, {backgroundColor: theme?.colors?.background || '#fff'}]} edges={['top']}>
         <TopHeader 
           onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
           onNotificationPress={() => navigation.navigate('NotificationScreen')}

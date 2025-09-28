@@ -67,7 +67,7 @@ const AnnouncementTicker = ({theme = {}, endpoint}) => {
 
   if (loading && !text) {
     return (
-      <View style={[styles.container, {backgroundColor: '#fff'}]}> 
+      <View style={[styles.container, {backgroundColor: theme.colors.background || '#fff'}]}> 
         <ActivityIndicator size="small" color="#666" />
       </View>
     );
@@ -76,7 +76,7 @@ const AnnouncementTicker = ({theme = {}, endpoint}) => {
   if (!text) return null;
 
   return (
-    <View style={[styles.container, {backgroundColor: '#fff'}]}> 
+    <View style={[styles.container, {backgroundColor: theme.colors.background || '#fff'}]}> 
       <Animated.Text
         numberOfLines={1}
         style={[

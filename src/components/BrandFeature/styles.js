@@ -43,7 +43,7 @@ export default StyleSheet.create({
   brandImageContainer: {
     width: brandItemWidth,
     height: brandItemWidth * 0.8,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
