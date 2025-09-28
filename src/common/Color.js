@@ -16,7 +16,7 @@ export default {
 
   // step indicate from the checkout page
   checkout: {
-    stepActive: '#2AB5B3',
+    stepActive: '#e39c7a',
   },
 
   // Product tabs
@@ -81,9 +81,9 @@ export default {
 
   lightGrey: 'rgba(247, 248, 250, 1)',
   lightGrey1: 'rgba(212, 220, 255, 1)',
-  darkOrange: 'rgba(255, 132, 11, 1)',
-  darkYellow: 'rgba(255, 164, 31, 1)',
-  yellow: 'rgba(255, 198, 53, 1)',
+  darkOrange: '#e39c7a',
+  darkYellow: '#e39c7a',
+  yellow: '#e39c7a',
   darkRed: '#8B0000',
   red: '#FF0000',
   lightgrey: '#D3D3D3',

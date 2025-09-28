@@ -258,7 +258,7 @@ class PaymentOptions extends PureComponent {
         color: '#666',
         flex: 1,
         textAlign: 'center',
-        width,
+        width: width - 30, // width - paddingHorizontal
         // paddingLeft: 20,
       },
     };

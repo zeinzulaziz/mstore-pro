@@ -10,16 +10,17 @@ export default StyleSheet.create({
     flex: 1,
     //backgroundColor: "white",
     flexWrap: 'wrap',
+    paddingHorizontal: 15,
   },
   paymentOption: {
     marginTop: 30,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
   },
   optionContainer: {
-    width: (width - 48) / 2, // Better spacing calculation
+    width: (width - 30 - 16) / 2, // width - paddingHorizontal - margin between cards
     height: 120,
     justifyContent: 'center',
     alignItems: 'center',
@@ -78,13 +79,13 @@ export default StyleSheet.create({
     fontFamily: Fonts.regular,
     lineHeight: 20,
     backgroundColor: '#f8f9fa',
-    marginHorizontal: 16,
+    marginHorizontal: 0,
     borderRadius: 8,
   },
   formCard: {
     marginTop: 10,
-    marginLeft: 30,
-    marginRight: 30,
+    marginLeft: 0,
+    marginRight: 0,
     marginBottom: 10,
   },
   btnNextContainer: {
@@ -106,8 +107,8 @@ export default StyleSheet.create({
     fontSize: 14,
     color: Color.Text,
     fontFamily: Fonts.bold,
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingLeft: 0,
+    paddingRight: 0,
     marginBottom: 8,
     fontWeight: '600',
   },

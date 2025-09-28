@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 20,
     paddingRight: 20,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: '#F6F7F9',
     fontFamily: Fonts.regular,
   },
