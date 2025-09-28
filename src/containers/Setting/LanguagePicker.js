@@ -36,12 +36,15 @@ class LanguagePicker extends PureComponent {
     const {switchLanguage, switchRtl, language} = this.props;
     const {selectedOption} = this.state;
     if (selectedOption !== language.lang) {
-      const isRtl = selectedOption === 'ar';
+      // Set RTL based on language - only Arabic uses RTL, English and Indonesian use LTR
+      const isRtl = false; // Force LTR for both English and Indonesian
 
       this.setState({isLoading: true});
 
       // change RTL
       I18nManager.forceRTL(isRtl);
+      // Also update RTL state to ensure it's false for Indonesian
+      switchRtl(isRtl);
       switchLanguage({
         lang: selectedOption,
         rtl: isRtl,
@@ -68,7 +71,7 @@ class LanguagePicker extends PureComponent {
           break;
         case 'ar':
           icon = Images.IconOmanFlag;
-          name = 'Arabic';
+          name = 'Indonesia';
           break;
         default:
           icon = Images.IconUkFlag;

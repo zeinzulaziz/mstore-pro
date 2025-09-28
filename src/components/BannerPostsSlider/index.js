@@ -108,8 +108,8 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={() => onPressPost && onPressPost(item)}
-        style={{width}}>
-        <View style={{width, height: 200, justifyContent: 'center', alignItems: 'center'}}>
+        style={{width, paddingHorizontal: 15}}>
+        <View style={{width: '100%', height: 200, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
           {!isLoaded && (
             <ActivityIndicator size="small" color="#666" />
           )}
@@ -121,7 +121,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
               }
             }}
             onLoadEnd={() => setImageLoaded(prev => ({...prev, [keyId]: true}))}
-            style={{width, height: 200, resizeMode: 'cover', position: 'absolute', top: 0, left: 0, opacity: isLoaded ? 1 : 0}}
+            style={{width: '100%', height: '100%', resizeMode: 'cover', position: 'absolute', top: 0, left: 0, opacity: isLoaded ? 1 : 0}}
           />
         </View>
       </TouchableOpacity>
@@ -130,11 +130,13 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
 
   if (loading && items.length === 0) {
     return (
-      <View style={{width, height: 200}}>
-        <Image
-          source={Images.PlaceHolder}
-          style={{width, height: 200, resizeMode: 'cover'}}
-        />
+      <View style={{width, height: 200, paddingHorizontal: 10}}>
+        <View style={{width: '100%', height: 200, borderRadius: 15, overflow: 'hidden'}}>
+          <Image
+            source={Images.PlaceHolder}
+            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+          />
+        </View>
       </View>
     );
   }
@@ -151,38 +153,47 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
 
   const renderDots = () => {
     return (
-      <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 8}}>
-        {items.map((_, i) => {
-          const widthInterpolate = progressAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 16],
-          });
-          const isActive = i === currentIndex;
-          return (
-            <View
-              key={`dot-${i}`}
-              style={{
-                width: 16,
-                height: 4,
-                marginHorizontal: 4,
-                borderRadius: 2,
-                backgroundColor: 'rgba(0,0,0,0.15)',
-                overflow: 'hidden',
-              }}>
-              {isActive ? (
-                <Animated.View
-                  style={{
-                    width: widthInterpolate,
-                    height: 4,
-                    backgroundColor: 'rgba(0,0,0,0.6)',
-                  }}
-                />
-              ) : (
-                <View style={{width: 0, height: 4}} />
-              )}
-            </View>
-          );
-        })}
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8, paddingHorizontal: 10}}>
+        <View style={{
+          flexDirection: 'row',
+          backgroundColor: '#ccc', // Light gray background
+          borderRadius: 15,
+          paddingHorizontal: 8,
+          paddingVertical: 6,
+          alignItems: 'center',
+        }}>
+          {items.map((_, i) => {
+            const widthInterpolate = progressAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 20],
+            });
+            const isActive = i === currentIndex;
+            return (
+              <View
+                key={`dot-${i}`}
+                style={{
+                  width: 20,
+                  height: 10,
+                  marginHorizontal: 2,
+                  borderRadius: 5,
+                  backgroundColor: '#fff',
+                  overflow: 'hidden',
+                }}>
+                {isActive ? (
+                  <Animated.View
+                    style={{
+                      width: widthInterpolate,
+                      height: 10,
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                    }}
+                  />
+                ) : (
+                  <View style={{width: 0, height: 10}} />
+                )}
+              </View>
+            );
+          })}
+        </View>
       </View>
     );
   };

@@ -15,15 +15,16 @@ export default class RtlSwitch extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {rtl: false};
+    this.state = {rtl: false}; // Always false for Indonesian
   }
 
   componentDidMount() {
-    Timer.setTimeout(() => this.setState({rtl: this.props.rtl}), 2000);
+    Timer.setTimeout(() => this.setState({rtl: false}), 2000); // Always false for Indonesian
   }
 
   changeSwitch = value => {
-    this.setState({rtl: value});
+    // Always set RTL to false for Indonesian
+    this.setState({rtl: false});
     const {switchRtl} = this.props;
 
     Alert.alert(Languages.Confirm, Languages.SwitchRtlConfirm, [
@@ -34,7 +35,7 @@ export default class RtlSwitch extends PureComponent {
       {
         text: Languages.OK,
         onPress: async () => {
-          await switchRtl(value);
+          await switchRtl(false); // Always false for Indonesian
           RNRestart.Restart();
         },
       },

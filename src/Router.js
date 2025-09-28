@@ -47,8 +47,8 @@ class Router extends React.PureComponent {
     // set default Language for App
     Languages.setLanguage(language.lang);
 
-    // Enable for mode RTL
-    I18nManager.forceRTL(language.lang === 'ar');
+    // Enable for mode RTL - only for true Arabic, not Indonesian
+    I18nManager.forceRTL(false); // Force LTR for all languages including Indonesian
 
     // init wooworker
     WooWorker.init({
