@@ -440,7 +440,7 @@ PODS:
     - React (< 1.0.0, >= 0.13.0)
   - react-native-restart (0.0.27):
     - React-Core
-  - react-native-safe-area-context (4.10.8):
+  - react-native-safe-area-context (4.14.1):
     - React-Core
   - react-native-viewpager (5.0.11):
     - React-Core
@@ -852,7 +852,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
   react-native-onesignal: 55ecc835638c7ee860583e080762cd9b7512671c
   react-native-restart: 0bc732f4461709022a742bb29bcccf6bbc5b4863
-  react-native-safe-area-context: b72c4611af2e86d80a59ac76279043d8f75f454c
+  react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
   react-native-viewpager: ddaf7a06b1864faed597e6742306a8d24c3e0785
   react-native-webview: 7feb9c48944d08ef6d7a3bbbe3f12eb76058e39b
   React-NativeModulesApple: 90508a0d94b0b66bb2ba14bc3bef65a00f5a8efb
