@@ -9,6 +9,7 @@ import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 
 import {Constants, withTheme} from '@common';
+import {ROUTER} from '@navigation/constants';
 import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature, TopHeader} from '@components';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
@@ -61,7 +62,7 @@ const Home = React.memo(
     return (
       <SafeAreaView style={[styles.container, {backgroundColor: background}]} edges={['top']}>
         <TopHeader 
-          onSearchPress={() => navigation.navigate('SearchScreen')}
+          onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
           onNotificationPress={() => navigation.navigate('NotificationScreen')}
         />
         {isHorizontal && (

@@ -20,6 +20,12 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
   const [searchText, setSearchText] = useState('');
   const notificationCount = 5; // Dummy notification count
 
+  const handleSearchPress = () => {
+    if (onSearchPress) {
+      onSearchPress(searchText);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Radial Gradient Background */}
@@ -67,11 +73,11 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
             placeholderTextColor="#666"
             value={searchText}
             onChangeText={setSearchText}
-            onFocus={() => onSearchPress && onSearchPress()}
+            onFocus={handleSearchPress}
           />
           <TouchableOpacity
             style={styles.searchButton}
-            onPress={() => onSearchPress && onSearchPress()}>
+            onPress={handleSearchPress}>
             <Icon name="search" size={20} color="#fff" />
           </TouchableOpacity>
         </View>

@@ -48,4 +48,8 @@ export default StyleSheet.create({
     height: 20,
     backgroundColor: '#ccc',
   },
+  backButton: {
+    padding: 8,
+    marginRight: 5,
+  },
 });

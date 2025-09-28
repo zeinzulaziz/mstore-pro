@@ -18,7 +18,7 @@ class Search extends PureComponent {
     this.page = props.currentSearchPage;
     this.limit = Constants.pagingLimit;
     this.state = {
-      text: '',
+      text: props.initialSearchText || '',
       isSubmit: false,
       loading: false,
       focus: true,
@@ -153,6 +153,7 @@ class Search extends PureComponent {
           onSubmitEditing={this.searchProduct}
           onClear={() => this.setState({text: '', filter: {}})}
           onFilter={() => this.props.onFilter(this.onFilter)}
+          onBack={this.onBack}
           isShowFilter={this.state.text !== '' || this.props.list.length > 0}
           haveFilter={Object.keys(this.state.filter).length > 0}
         />

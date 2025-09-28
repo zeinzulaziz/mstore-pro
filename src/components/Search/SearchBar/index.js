@@ -15,6 +15,7 @@ class SearchBar extends React.Component {
       // scrollY,
       onClear,
       onFilter,
+      onBack,
       // isShowFilter,
       haveFilter,
     } = this.props;
@@ -40,6 +41,11 @@ class SearchBar extends React.Component {
           },
           {backgroundColor: lineColor},
         ]}>
+        {onBack && (
+          <TouchableOpacity onPress={onBack} style={styles.backButton}>
+            <Icon name="arrow-back" size={24} color={text} />
+          </TouchableOpacity>
+        )}
         <Icon name={Icons.Ionicons.Search} size={20} color={text} />
         <TextInput
           placeholder={Languages.SearchPlaceHolder}

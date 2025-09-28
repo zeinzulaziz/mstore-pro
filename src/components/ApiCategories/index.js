@@ -47,16 +47,16 @@ class ApiCategories extends PureComponent {
       const res2 = await fetch(`${Config.WooCommerce.url}/wp-json/mytheme/v1/home-categories`);
       const selectedIds = await res2.json();
       
-      console.log('All categories from WooCommerce:', allCategories.length);
-      console.log('Selected IDs from custom API:', selectedIds);
+      // console.log('All categories from WooCommerce:', allCategories.length);
+      // console.log('Selected IDs from custom API:', selectedIds);
       
       // Filter kategori berdasarkan ID yang dipilih
       const homeCategories = allCategories.filter(cat =>
         selectedIds.some(selected => selected.id === cat.id)
       );
       
-      console.log('Filtered home categories:', homeCategories.length);
-      console.log('Home categories:', homeCategories.map(c => ({id: c.id, name: c.name})));
+      // console.log('Filtered home categories:', homeCategories.length);
+      // console.log('Home categories:', homeCategories.map(c => ({id: c.id, name: c.name})));
       
       this.setState({
         homeCategories: homeCategories,
@@ -119,10 +119,12 @@ class ApiCategories extends PureComponent {
         activeOpacity={0.9}
         style={itemStyle}
         onPress={() => this.showProductsByCategory(item)}>
-        {item.image && <ImageCache uri={item.image.src} style={styles.image} />}
-        {!item.image && (
-          <Image source={Images.categoryPlaceholder} style={styles.image} />
-        )}
+        <View style={styles.imageContainer}>
+          {item.image && <ImageCache uri={item.image.src} style={styles.image} />}
+          {!item.image && (
+            <Image source={Images.categoryPlaceholder} style={styles.image} />
+          )}
+        </View>
         <View style={styles.content}>
           <View style={wrapStyle}>
             <Text style={styles.name}>{decodeHtmlEntities(item.name)}</Text>

@@ -15,7 +15,7 @@ export const ROUTER = {
   WISHLIST: 'WishListScreen',
 
   // Search
-  SEARCH: 'Search',
+  SEARCH: 'SearchScreen',
   FILTERS: 'FiltersScreen',
 
   // Home

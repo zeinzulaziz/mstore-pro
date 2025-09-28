@@ -400,6 +400,14 @@ const AppNavigator = parentProps => {
           return getNavigationOptions({...props, theme});
         }}
       />
+
+      <AppStack.Screen
+        name={ROUTER.SEARCH}
+        component={SearchScreen}
+        options={props => {
+          return getNavigationOptions({...props, theme});
+        }}
+      />
     </AppStack.Navigator>
   );
 };

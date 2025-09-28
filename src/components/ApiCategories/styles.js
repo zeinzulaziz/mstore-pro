@@ -25,10 +25,19 @@ export default StyleSheet.create({
     marginRight: 0, // No right margin for last item in each row
     alignItems: 'center',
   },
-  image: {
+  imageContainer: {
     width: widthItem,
     height: widthItem,
     borderRadius: 16,
+    backgroundColor: '#ecc282',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
   },
   name: {
     marginTop: 8,
