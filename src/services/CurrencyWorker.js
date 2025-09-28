@@ -3,23 +3,14 @@
 import _ from 'lodash';
 
 const currencies = {
-  USD: {
-    symbol: '$',
-    name: 'US Dollar',
-    symbol_native: '$',
-    decimal_digits: 2,
-    rounding: 0,
-    code: 'USD',
-    name_plural: 'US dollars',
-  },
-  VND: {
-    symbol: '₫',
-    name: 'Vietnamese Dong',
-    symbol_native: '₫',
+  IDR: {
+    symbol: 'Rp',
+    name: 'Indonesian Rupiah',
+    symbol_native: 'Rp',
     decimal_digits: 0,
     rounding: 0,
-    code: 'VND',
-    name_plural: 'Vietnamese dong',
+    code: 'IDR',
+    name_plural: 'Indonesian rupiahs',
   },
   // CAD: {
   //   symbol: "CA$",

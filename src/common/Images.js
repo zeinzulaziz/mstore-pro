@@ -59,7 +59,7 @@ const Images = {
     Bag: require('@images/banner/bag.png'),
   },
   IconUkFlag: require('@images/ic_uk_country_flag.jpg'),
-  IconOmanFlag: require('@images/ic_oman_country_flag.jpg'),
+  IconOmanFlag: require('@images/ic_indonesia_country_flag.jpeg'),
   IconAdd: require('@images/ic_add.png'),
   IconCheck: require('@images/ic_check.png'),
 };
