@@ -175,7 +175,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
               }
             }}
             onLoadEnd={() => setImageLoaded(prev => ({...prev, [keyId]: true}))}
-            style={{width: '100%', height: '100%', resizeMode: 'contain', position: 'absolute', top: 0, left: 0, opacity: isLoaded ? 1 : 0}}
+            style={{width: '100%', height: '100%', resizeMode: 'cover', position: 'absolute', top: 0, left: 0, opacity: isLoaded ? 1 : 0}}
           />
         </View>
       </TouchableOpacity>

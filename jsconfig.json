@@ -13,6 +13,7 @@
       "@utils": ["utils"],
       "@expo": ["Expo"],
       "@redux": ["redux"],
+      "@cart": ["containers/Cart"],
 
       "@app/*": ["*"]
     }

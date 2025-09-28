@@ -8,7 +8,7 @@ import {Config, withTheme} from '@common';
 
 import styles from './styles';
 
-const Header = React.memo(({theme: {colors: text}}) => {
+const Header = React.memo(({theme: {colors: text} = {}}) => {
   const currentDate = moment().format('dddd DD MMM');
 
   return (

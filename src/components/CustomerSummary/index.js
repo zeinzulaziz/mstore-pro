@@ -6,7 +6,7 @@ import {withTheme, Tools, Fonts} from '@common';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const CustomerSummary = ({theme}) => {
+const CustomerSummary = ({theme = {}}) => {
   const user = useSelector(state => state.user.user);
   const name = Tools.getName(user);
 

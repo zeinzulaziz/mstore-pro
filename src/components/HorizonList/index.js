@@ -16,7 +16,7 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const HorizonList = React.memo(
   ({
-    theme: {colors: text},
+    theme: {colors: text} = {},
     showCategoriesScreen,
     onViewProductScreen,
     onShowAll,

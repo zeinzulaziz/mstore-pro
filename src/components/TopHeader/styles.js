@@ -91,7 +91,7 @@ export default StyleSheet.create({
     fontFamily: Fonts.regular,
   },
   searchButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#e39c7a',
     width: 32,
     height: 32,
     borderRadius: 16,

@@ -603,7 +603,7 @@ export default StyleSheet.create({
     width: width - 42,
     borderRadius: 6,
     height: (height * 30) / 100,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   bannerOverlay: {
     width: width - 122,
@@ -642,7 +642,7 @@ export default StyleSheet.create({
     width: width * 0.7,
     borderRadius: 6,
     height: (height * 40) / 100,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   // bannerOverlay: {
   //   width: width * 0.9,

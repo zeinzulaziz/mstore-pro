@@ -60,7 +60,7 @@ const Home = React.memo(
     }, [isConnected, countryList]);
 
     return (
-      <SafeAreaView style={[styles.container, {backgroundColor: background}]} edges={['top']}>
+      <SafeAreaView style={[styles.container, {backgroundColor: '#fff'}]} edges={['top']}>
         <TopHeader 
           onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
           onNotificationPress={() => navigation.navigate('NotificationScreen')}

@@ -1,7 +1,7 @@
 /** @format */
 
 import { StyleSheet } from 'react-native';
-import { Color, Constants, Theme } from '@common';
+import { Color, Constants, themes } from '@common';
 
 export default StyleSheet.create({
   container: {
@@ -51,7 +51,7 @@ export default StyleSheet.create({
   couponView: isDark => ({
     padding: 20,
     borderTopWidth: 10,
-    borderColor: isDark ? Theme.dark.colors.background : Color.lightGrey,
+    borderColor: isDark ? (themes.dark?.colors?.background || Color.lightGrey) : Color.lightGrey,
   }),
   couponLabel: {
     marginBottom: 15,

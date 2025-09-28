@@ -9,7 +9,7 @@ const vw = width / 100;
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
   },
   toolbarIcon: {
     width: 17,
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'rgb(255, 255, 255)',
     overflow: 'hidden',
     height: Constants.Window.headerHeight,
   },
@@ -50,7 +50,7 @@ export default StyleSheet.create({
         : Constants.Window.headerHeight + 100,
   },
   toolbar: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'red',
     marginTop: Platform.OS === 'ios' ? 12 : 28,
     height: 32,
     alignItems: 'center',

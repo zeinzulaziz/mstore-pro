@@ -14,7 +14,7 @@ import {
   RightIcon,
 } from './IconNav';
 
-export const getNavigationOptions = ({ route, navigation, theme }) => {
+export const getNavigationOptions = ({ route, navigation, theme = {} }) => {
   let navigationOptions = {};
 
   switch (route.name) {

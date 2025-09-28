@@ -243,8 +243,8 @@ class Cart extends PureComponent {
     const {currentIndex} = this.state;
     const {
       theme: {
-        colors: {background},
-      },
+        colors: {background} = {},
+      } = {},
     } = this.props;
 
     const {openModal} = this.state;

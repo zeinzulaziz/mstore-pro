@@ -41,9 +41,9 @@ class MyCart extends PureComponent {
     const {cartItems, isFetching, discountType} = this.props;
     const {
       theme: {
-        colors: {text, lineColor},
-        dark,
-      },
+        colors: {text, lineColor} = {},
+        dark = false,
+      } = {},
       currency,
     } = this.props;
 

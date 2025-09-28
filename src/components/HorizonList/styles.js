@@ -34,7 +34,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
   },
   isListing: {
     marginTop: 60,

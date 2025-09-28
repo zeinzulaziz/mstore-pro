@@ -6,7 +6,7 @@ import {withTheme, Fonts} from '@common';
 
 const {width} = Dimensions.get('window');
 
-const AnnouncementTicker = ({theme, endpoint}) => {
+const AnnouncementTicker = ({theme = {}, endpoint}) => {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const translateX = useRef(new Animated.Value(width)).current;
@@ -67,7 +67,7 @@ const AnnouncementTicker = ({theme, endpoint}) => {
 
   if (loading && !text) {
     return (
-      <View style={[styles.container, {backgroundColor: theme.colors.card}]}> 
+      <View style={[styles.container, {backgroundColor: '#fff'}]}> 
         <ActivityIndicator size="small" color="#666" />
       </View>
     );
@@ -76,7 +76,7 @@ const AnnouncementTicker = ({theme, endpoint}) => {
   if (!text) return null;
 
   return (
-    <View style={[styles.container, {backgroundColor: theme.colors.card}]}> 
+    <View style={[styles.container, {backgroundColor: '#fff'}]}> 
       <Animated.Text
         numberOfLines={1}
         style={[

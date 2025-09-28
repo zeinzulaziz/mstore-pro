@@ -16,7 +16,7 @@ class OrderDetail extends React.PureComponent {
   }
 
   render() {
-    const {order, theme, orderNotes} = this.props;
+    const {order, theme = {}, orderNotes} = this.props;
 
     return (
       <ScrollView
