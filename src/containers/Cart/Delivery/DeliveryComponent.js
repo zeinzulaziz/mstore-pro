@@ -51,7 +51,7 @@ const DeliveryComponent = React.memo(props => {
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView style={styles.form} enableOnAndroid>
-        <SelectShippingMethod />
+        
 
         <View style={css.rowEmpty}>
           <Text style={[css.label, {color: text}]}>

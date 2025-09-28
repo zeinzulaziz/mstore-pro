@@ -115,4 +115,12 @@ export default StyleSheet.create({
   descriptionView: {
     marginTop: 20,
   },
+  paymentLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+    marginTop: 8,
+    fontFamily: Fonts.regular,
+  },
 });

@@ -32,6 +32,14 @@ export default StyleSheet.create({
   brandsList: {
     paddingRight: 16,
   },
+  marqueeContainer: {
+    height: 120, // Fixed height for marquee
+    overflow: 'hidden',
+  },
+  marqueeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   brandItem: {
     width: brandItemWidth,
     alignItems: 'center',

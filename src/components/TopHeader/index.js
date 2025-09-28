@@ -83,7 +83,7 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
         </View>
 
         {/* Notification Icon */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.notificationContainer}
           onPress={() => onNotificationPress && onNotificationPress()}>
           <Icon name="notifications" size={24} color="#fff" />
@@ -94,7 +94,7 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
               </Text>
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

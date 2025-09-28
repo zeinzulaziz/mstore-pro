@@ -296,6 +296,27 @@ class PaymentOptions extends PureComponent {
 
               if (!image) return null;
 
+              // Get payment method label
+              const getPaymentLabel = (paymentId) => {
+                switch (paymentId) {
+                  case 'cod':
+                    return 'COD';
+                  case 'midtrans_gopay_qris':
+                  case 'midtrans_shopeepay_qris':
+                  case 'midtrans_qris':
+                  case 'midtrans':
+                    return 'Midtrans';
+                  case 'gopay':
+                    return 'GoPay';
+                  case 'shopeepay':
+                    return 'ShopeePay';
+                  case 'qris':
+                    return 'QRIS';
+                  default:
+                    return item.title || paymentId;
+                }
+              };
+
               return (
                 <View style={styles.optionContainer} key={index.toString()}>
                   <Button
@@ -310,6 +331,9 @@ class PaymentOptions extends PureComponent {
                     ]}
                     imageStyle={styles.imgOption}
                   />
+                  <Text style={styles.paymentLabel}>
+                    {getPaymentLabel(item.id)}
+                  </Text>
                 </View>
               );
             })}

@@ -4,7 +4,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -26,7 +26,6 @@ const BrandFeature = React.memo(props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const flatListRef = useRef(null);
 
   const {
     theme: {
@@ -38,17 +37,22 @@ const BrandFeature = React.memo(props => {
   const isFetching = useSelector(state => state.brands.isFetching);
   const brandsError = useSelector(state => state.brands.error);
 
+  // Show all brands without duplication
+  const itemWidth = (width - 32 - 24) / 4; // Same as brandItemWidth in styles
+
   useEffect(() => {
     // console.log('BrandFeature useEffect - brands:', brands?.length, 'loading:', loading, 'isFetching:', isFetching);
     
     // Force refresh brands data to get latest images
     setLoading(true);
-    console.log('🔄 Force refreshing brands data...');
+    // console.log('🔄 Force refreshing brands data...');
     BrandsRedux.actions.fetchBrands()(dispatch).finally(() => {
       setLoading(false);
     //   console.log('Brands fetch completed');
     });
   }, [dispatch]);
+
+  // Auto-scroll disabled - manual scrolling only
 
   // Autoplay disabled - no automatic scrolling
   // useEffect(() => {
@@ -63,39 +67,29 @@ const BrandFeature = React.memo(props => {
 
   const onPressBrand = brand => {
     // Navigate to brand products or brand detail
-    console.log('Brand clicked:', brand.name, 'ID:', brand.id);
-    console.log('Full brand object:', JSON.stringify(brand, null, 2));
+    // console.log('Brand clicked:', brand.name, 'ID:', brand.id);
+    // console.log('Full brand object:', JSON.stringify(brand, null, 2));
     navigation.navigate('CategoryScreen', {
       brand: brand,
       title: brand.name,
     });
   };
 
-  // Autoplay functions removed - no automatic scrolling
+  // Auto-scroll functions removed - manual scrolling only
 
-  const renderBrandItem = ({item, index}) => {
-    // console.log('Brand item:', JSON.stringify(item, null, 2));
-    
+  const renderBrandItem = (item, index) => {
     // Use item.image?.src directly as suggested
     let brandImage = item.image?.src;
     
     // Convert HTTP to HTTPS for security
     if (brandImage && brandImage.startsWith('http://')) {
       brandImage = brandImage.replace('http://', 'https://');
-    //   console.log('Converted HTTP to HTTPS:', brandImage);
     }
-    
-    // console.log('Brand image URL:', brandImage);
-    // console.log('Brand image is truthy:', !!brandImage);
-    // console.log('Brand image type:', typeof brandImage);
-    // console.log('Brand image starts with https:', brandImage?.startsWith('https://'));
-    // console.log('Brand image starts with http:', brandImage?.startsWith('http://'));
-    
-    const isLastItem = index === brands.length - 1;
 
     return (
       <TouchableOpacity
-        style={[styles.brandItem, isLastItem && styles.lastBrandItem]}
+        key={`brand_${item.id || index}`}
+        style={styles.brandItem}
         onPress={() => onPressBrand(item)}
         activeOpacity={0.8}>
         <View style={styles.brandImageContainer}>
@@ -187,27 +181,18 @@ const BrandFeature = React.memo(props => {
     );
   }
 
+  // Scroll handlers removed - no auto-scroll needed
+
   return (
     <View style={styles.container}>
       {renderHeader()}
-      <FlatList
-        ref={flatListRef}
-        data={brands} // Show all brands
-        renderItem={renderBrandItem}
-        keyExtractor={(item, index) => `brand_${item.id || index}`}
+      <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.brandsList}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        // Autoplay disabled - no scroll handlers needed
-        getItemLayout={(data, index) => ({
-          length: width * 0.8,
-          offset: width * 0.8 * index,
-          index,
-        })}
-        initialScrollIndex={0}
-      />
-      {/* Progress dots removed */}
+      >
+        {brands?.map((item, index) => renderBrandItem(item, index))}
+      </ScrollView>
     </View>
   );
 });
