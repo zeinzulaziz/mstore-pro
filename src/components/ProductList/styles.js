@@ -47,7 +47,7 @@ export default StyleSheet.create({
     borderRadius: 6,
     flex: 1,
     height: (25 * height) / 100,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   headerView: {
     ...Platform.select({

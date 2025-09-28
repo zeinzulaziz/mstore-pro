@@ -16,7 +16,7 @@ export default StyleSheet.create({
     marginLeft: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     position: 'relative',
     borderRadius: 8,
     width: width - 24,
@@ -100,7 +100,7 @@ export default StyleSheet.create({
     position: 'relative',
     width: vw * 30,
     height: vw * 30 - 20,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     borderRadius: 2,
   },
   titleList: {
@@ -190,7 +190,7 @@ export default StyleSheet.create({
   largeImage: {
     width: width - 16,
     height: width - 120,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   linearGradient: {
     height: 120,
@@ -236,7 +236,7 @@ export default StyleSheet.create({
   smImage: {
     width: width / 2,
     height: height * 0.3,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   smTitle: {
     marginTop: 12,
@@ -299,7 +299,7 @@ export default StyleSheet.create({
     position: 'relative',
     width: vw * 31,
     height: vw * 25,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     borderRadius: 2,
   },
   panelThree: {

@@ -63,7 +63,7 @@ export default StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
     borderRadius: 3,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     height,
   },
   productSizeContainer: {

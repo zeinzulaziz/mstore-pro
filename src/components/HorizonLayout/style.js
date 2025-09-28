@@ -52,7 +52,7 @@ export default StyleSheet.create({
   },
   panelTwo: {
     position: 'relative',
-    width: 180,
+    width: 200,
     alignItems: 'flex-start',
     justifyContent: 'space-around',
     marginBottom: 12,
@@ -60,13 +60,15 @@ export default StyleSheet.create({
   },
   imagePanelTwo: {
     position: 'relative',
-    backgroundColor: '#F6F6F8',
+    backgroundColor: '#ffffff',
     width: 180,
-    height: 240,
+    height: 200,
+    resizeMode: 'center',
+    borderRadius: 10,
   },
   nameTwo: {
     fontSize: 15,
-    width: 180,
+    width: 200,
     marginTop: 8,
     marginBottom: 4,
     fontFamily: Constants.fontHeader,
@@ -75,7 +77,7 @@ export default StyleSheet.create({
   },
   panelTwoHigh: {
     position: 'relative',
-    width: 180,
+    width: 200,
     alignItems: 'flex-start',
     justifyContent: 'space-around',
     marginBottom: 12,
@@ -83,13 +85,14 @@ export default StyleSheet.create({
   },
   imagePanelTwoHigh: {
     position: 'relative',
-    width: 180,
-    height: 220,
+    width: 200,
+    height: 240,
     backgroundColor: '#F6F6F8',
+    resizeMode: 'contain',
   },
   panelThree: {
     position: 'relative',
-    width: 120,
+    width: 140,
     alignItems: 'flex-start',
     justifyContent: 'space-around',
     marginBottom: 12,
@@ -99,7 +102,7 @@ export default StyleSheet.create({
   },
   panelSale: {
     position: 'relative',
-    width: 120,
+    width: 140,
     marginTop: 30,
     alignItems: 'flex-start',
     justifyContent: 'space-around',
@@ -108,15 +111,16 @@ export default StyleSheet.create({
     overflow: 'hidden',
   },
   imagePanelThree: {
-    width: 120,
-    height: 150,
+    width: 140,
+    height: 170,
     borderRadius: 3,
     alignSelf: 'flex-start',
     backgroundColor: '#F6F6F8',
+    resizeMode: 'contain',
   },
   nameThree: {
     fontSize: 14,
-    width: 120,
+    width: 140,
     marginTop: 8,
     lineHeight: Platform.OS == 'android' ? 24 : 20,
     color: '#212121',
@@ -134,7 +138,7 @@ export default StyleSheet.create({
     marginBottom: 4,
     marginLeft: 0,
     lineHeight: 16,
-    width: 118,
+    width: 138,
     textAlign: 'left',
     color: '#555555',
     fontFamily: Constants.fontfamily,
@@ -145,7 +149,7 @@ export default StyleSheet.create({
   imageMini: {
     width,
     height: (height * 60) / 100,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   panelCard: {
     width: width - 50,
@@ -311,7 +315,7 @@ export default StyleSheet.create({
     position: 'relative',
     width: vw * 30,
     height: vw * 30 - 20,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     borderRadius: 2,
   },
   titleList: {
@@ -387,7 +391,7 @@ export default StyleSheet.create({
   largeImage: {
     width: width - 16,
     height: width - 120,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   linearGradient: {
     height: 120,
@@ -430,7 +434,7 @@ export default StyleSheet.create({
   smImage: {
     width: width / 2,
     height: width / 2 - 100,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
   },
   smTitle: {
     marginTop: 12,
@@ -491,7 +495,7 @@ export default StyleSheet.create({
     position: 'relative',
     width: vw * 31,
     height: vw * 25,
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     borderRadius: 2,
   },
   fixHeart: {

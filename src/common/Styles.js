@@ -18,7 +18,7 @@ const Styles = {
   navBarHeight: Platform !== 'ios' ? height - width : 0,
   headerHeight: Platform.OS === 'ios' ? 40 : 56,
 
-  thumbnailRatio: 1.2, // Thumbnail ratio, the product display height = width * thumbnail ratio
+  thumbnailRatio: 1.0, // Thumbnail ratio, the product display height = width * thumbnail ratio (1.0 for square aspect ratio)
 
   app: {
     flexGrow: 1,

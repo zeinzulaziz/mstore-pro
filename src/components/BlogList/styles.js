@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    // resizeMode: 'cover',
+    // resizeMode: 'contain',
     position: 'relative',
     borderRadius: 3,
     width: width - 24,

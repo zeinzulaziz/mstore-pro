@@ -40,7 +40,7 @@ export default class PostLayout extends PureComponent {
       // product type
       image_width = Constants.Layout.card
         ? Styles.width
-        : Styles.width * 0.45 - 2;
+        : Styles.width * 0.5 - 2;
       imageURL =
         data.images && data.images.length
           ? getProductImage(data.images[0].src, image_width)

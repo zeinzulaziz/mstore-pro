@@ -30,7 +30,7 @@ export default StyleSheet.create({
     right: 10,
   },
   bannerImage: {
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     width: width,
     height: Constants.Window.headerHeight,
   },

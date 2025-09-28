@@ -69,7 +69,7 @@ export default StyleSheet.create({
   image: {
     width: vw * 40,
     height: 90,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     marginLeft: 8,
     marginTop: 20,
     marginBottom: 10,
@@ -248,7 +248,7 @@ export default StyleSheet.create({
   largeImage: {
     width: width,
     height: width - 120,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   largeContent: {
     width: width,
@@ -311,7 +311,7 @@ export default StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 20,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     marginTop: 12,
     marginRight: 12,
     marginBottom: 12,

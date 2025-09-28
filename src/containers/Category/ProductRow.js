@@ -46,7 +46,7 @@ class ProductRow extends PureComponent {
     const imageStyle = isListMode ? styles.image_list : styles.image_grid;
     const image_width = isListMode
       ? Styles.width * 0.9 - 2
-      : Styles.width * 0.45 - 2;
+      : Styles.width * 0.5 - 2;
 
     const productPrice = `${Tools.getPriceIncludedTaxAmount(
       product,

@@ -33,14 +33,15 @@ const styles = StyleSheet.create({
   },
   image: {
     marginBottom: 8,
+    resizeMode: 'contain',
   },
   image_list: {
     width: Styles.width * 0.9 - 2,
     height: Styles.width * 0.9 * Styles.thumbnailRatio,
   },
   image_grid: {
-    width: Styles.width * 0.45 - 2,
-    height: Styles.width * 0.45 * Styles.thumbnailRatio,
+    width: Styles.width * 0.5 - 2,
+    height: Styles.width * 0.5 * Styles.thumbnailRatio,
   },
   text_list: {
     color: Color.black,

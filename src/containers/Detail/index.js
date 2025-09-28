@@ -316,7 +316,7 @@ class Detail extends PureComponent {
                 uri: getProductImage(this.state.selectedImage, Styles.width),
               }}
               style={[styles.imageProduct, {transform: [{scale: imageScale}]}]}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           </TouchableOpacity>
         </View>
@@ -339,7 +339,7 @@ class Detail extends PureComponent {
                   styles.imageProduct,
                   {transform: [{scale: imageScale}]},
                 ]}
-                resizeMode="contain"
+                resizeMode="cover"
               />
             </TouchableOpacity>
           );

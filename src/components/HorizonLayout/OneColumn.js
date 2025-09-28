@@ -21,7 +21,7 @@ class OneColumn extends PureComponent {
 
     const imageURI =
       typeof product.images[0] !== 'undefined'
-        ? getProductImage(product.images[0].src, 180)
+        ? getProductImage(product.images[0].src, 200)
         : Images.PlaceHolderURL;
 
     return (

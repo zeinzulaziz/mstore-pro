@@ -81,7 +81,7 @@ export const toast = (msg, duration = 4000) =>
 
 export const getProductImage = (uri, containerWidth) => {
   // Enhance number if you want to fetch a better quality image (may affect performance
-  const DPI_NUMBER = 0.5; // change this to 1 for high quality image
+  const DPI_NUMBER = 1.5; // Increased for better image quality
 
   if (!Config.ProductSize.enable) {
     return uri;
