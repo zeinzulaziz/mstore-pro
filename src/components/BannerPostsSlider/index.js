@@ -1,7 +1,7 @@
 /** @format */
 
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityIndicator} from 'react-native';
+import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityIndicator, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {withTheme, Tools, Constants, Images} from '@common';
 
@@ -253,7 +253,20 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   };
 
   return (
-    <View style={[style, {position: 'relative', borderBottomLeftRadius: transparent ? 0 : 30, borderBottomRightRadius: transparent ? 0 : 30, overflow: 'hidden'}]}>
+    <View style={[
+      style, 
+      {
+        position: 'relative', 
+        borderBottomLeftRadius: transparent ? 0 : 30, 
+        borderBottomRightRadius: transparent ? 0 : 30, 
+        overflow: 'hidden',
+        // Add padding top to account for absolute positioned TopHeader
+        paddingTop: Platform.OS === 'android' ? 50 : 80,
+        // Add negative margin to eliminate remaining space
+        marginTop: Platform.OS === 'android' ? -10 : 0,
+        zIndex: 0, // Lower than TopHeader
+      }
+    ]}>
       {/* Radial Gradient Background - only show if not transparent */}
       {!transparent && (
         <View style={bannerGradientBackground}>

@@ -1,6 +1,6 @@
 /** @format */
 
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {Fonts} from '@common';
 
 const {width} = Dimensions.get('window');
@@ -11,10 +11,13 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 12,
-    position: 'relative',
-    zIndex: 0,
-    paddingTop: 10, // Reduced since SafeAreaView handles status bar
-    paddingBottom: 20,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1, // Higher z-index to ensure it's above banner
+    paddingTop: Platform.OS === 'android' ? 0 : 20, // iOS needs more padding for status bar
+    paddingBottom: Platform.OS === 'android' ? 0 : 0, // Remove bottom padding to eliminate space
   },
   gradientBackground: {
     position: 'absolute',

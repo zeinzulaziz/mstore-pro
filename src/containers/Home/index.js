@@ -83,7 +83,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
-                  style={{paddingTop: 10, marginTop: -10}}
+                  style={{paddingTop: 0, marginTop: 0}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
@@ -117,7 +117,7 @@ const Home = React.memo(
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
-                  style={{paddingTop: 10, marginTop: -10}}
+                  style={{paddingTop: 0, marginTop: 0}}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
