@@ -72,6 +72,10 @@ import CustomerSummary from './CustomerSummary';
 import AnnouncementTicker from './AnnouncementTicker';
 import BrandFeature from './BrandFeature';
 import TopHeader from './TopHeader';
+import OptimizedImage from './OptimizedImage';
+import SkeletonLoader from './SkeletonLoader';
+import BannerSkeleton from './BannerSkeleton';
+import CategorySkeleton from './CategorySkeleton';
 
 export {
   ProductList,
@@ -148,4 +152,8 @@ export {
   AnnouncementTicker,
   BrandFeature,
   TopHeader,
+  OptimizedImage,
+  SkeletonLoader,
+  BannerSkeleton,
+  CategorySkeleton,
 };

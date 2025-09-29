@@ -4,6 +4,9 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityIndicator, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {withTheme, Tools, Constants, Images} from '@common';
+import OptimizedImage from '../OptimizedImage';
+import { preloadImages } from '../../utils/ImageOptimizer';
+import BannerSkeleton from '../BannerSkeleton';
 
 const {width} = Dimensions.get('window');
 
@@ -80,7 +83,14 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
       setLoading(true);
       const resp = await fetch(postsEndpoint);
       const json = await resp.json();
-      setItems(Array.isArray(json) ? json : []);
+      const items = Array.isArray(json) ? json : [];
+      setItems(items);
+      
+      // Preload images for better performance
+      if (items.length > 0) {
+        const imageUrls = items.map(item => getFeaturedImage(item)).filter(url => url);
+        preloadImages(imageUrls, 'banner');
+      }
     } catch (e) {
       setItems([]);
     } finally {
@@ -156,26 +166,20 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
 
   const renderItem = ({item}) => {
     const imageURL = getFeaturedImage(item);
-    const keyId = item && item.id ? item.id : imageURL;
-    const isLoaded = !!imageLoaded[keyId];
     return (
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={() => onPressPost && onPressPost(item)}
         style={{width, paddingHorizontal: 15}}>
         <View style={{width: '100%', height: 200, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
-          {!isLoaded && (
-            <ActivityIndicator size="small" color="#666" />
-          )}
-          <Image
+          <OptimizedImage
             source={{uri: imageURL}}
-            onLoadStart={() => {
-              if (!imageLoaded[keyId]) {
-                setImageLoaded(prev => ({...prev, [keyId]: false}));
-              }
-            }}
-            onLoadEnd={() => setImageLoaded(prev => ({...prev, [keyId]: true}))}
-            style={{width: '100%', height: '100%', resizeMode: 'cover', position: 'absolute', top: 0, left: 0, opacity: isLoaded ? 1 : 0}}
+            usage="banner"
+            quality={90}
+            style={{width: '100%', height: '100%'}}
+            resizeMode="cover"
+            showLoadingIndicator={true}
+            showErrorIndicator={true}
           />
         </View>
       </TouchableOpacity>
@@ -183,16 +187,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   };
 
   if (loading && items.length === 0) {
-    return (
-      <View style={{width, height: 200, paddingHorizontal: 10}}>
-        <View style={{width: '100%', height: 200, borderRadius: 15, overflow: 'hidden'}}>
-          <Image
-            source={Images.PlaceHolder}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-          />
-        </View>
-      </View>
-    );
+    return <BannerSkeleton />;
   }
 
   if (!items || items.length === 0) return null;

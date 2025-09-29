@@ -6,13 +6,14 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   Dimensions,
   ActivityIndicator,
   Animated,
 } from 'react-native';
+import OptimizedImage from '../OptimizedImage';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import SkeletonLoader from '../SkeletonLoader';
 
 import {Config, Languages, withTheme} from '@common';
 import {Tools} from '@common';
@@ -94,16 +95,14 @@ const BrandFeature = React.memo(props => {
         activeOpacity={0.8}>
         <View style={styles.brandImageContainer}>
           {brandImage ? (
-            <Image
+            <OptimizedImage
               source={{uri: brandImage}}
+              usage="brand"
+              quality={80}
               style={styles.brandImage}
               resizeMode="contain"
-              onLoad={() => {
-                // console.log('Brand image loaded successfully:', item.name, brandImage);
-              }}
-              onError={(error) => {
-                // console.log('Brand image failed to load:', item.name, 'URL:', brandImage, 'Error:', error.nativeEvent);
-              }}
+              showLoadingIndicator={true}
+              showErrorIndicator={true}
             />
           ) : (
             <View style={styles.placeholderContainer}>
@@ -138,10 +137,17 @@ const BrandFeature = React.memo(props => {
 
   const renderLoading = () => (
     <View style={styles.loadingContainer}>
-      <ActivityIndicator size="small" color="#a96b4f" />
-      <Text style={[styles.loadingText, {color: text}]}>
-        {Languages.Loading || 'Loading brands...'}
-      </Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {Array.from({length: 5}).map((_, index) => (
+          <View key={index} style={styles.brandItem}>
+            <SkeletonLoader 
+              height={80} 
+              borderRadius={12}
+              style={{width: 80, marginRight: 15}}
+            />
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 

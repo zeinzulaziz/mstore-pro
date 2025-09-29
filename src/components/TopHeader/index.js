@@ -16,7 +16,7 @@ import styles from './styles';
 
 const {width} = Dimensions.get('window');
 
-const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
+const TopHeader = ({theme, onSearchPress, onNotificationPress, onRefreshPress}) => {
   const [searchText, setSearchText] = useState('');
   const notificationCount = 5; // Dummy notification count
 
@@ -81,6 +81,13 @@ const TopHeader = ({theme, onSearchPress, onNotificationPress}) => {
             <Icon name="search" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
+
+        {/* Refresh Button */}
+        <TouchableOpacity
+          style={styles.refreshButton}
+          onPress={() => onRefreshPress && onRefreshPress()}>
+          <Icon name="refresh" size={24} color="#fff" />
+        </TouchableOpacity>
 
         {/* Notification Icon */}
         {/* <TouchableOpacity

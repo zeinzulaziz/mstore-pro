@@ -1,12 +1,14 @@
 /** @format */
 
 import React, {PureComponent} from 'react';
-import {View, FlatList, Image, Text} from 'react-native';
+import {View, FlatList, Text} from 'react-native';
 import {connect} from 'react-redux';
 
 import {toast} from '@app/Omni';
 import {Languages, Images, withTheme, Config} from '@common';
-import {ImageCache, TouchableScale} from '@components';
+import {TouchableScale} from '@components';
+import OptimizedImage from '../OptimizedImage';
+import CategorySkeleton from '../CategorySkeleton';
 
 import styles from './styles';
 
@@ -79,11 +81,7 @@ class ApiCategories extends PureComponent {
     const {homeCategories, loading} = this.state;
 
     if (loading) {
-      return (
-        <View style={[styles.loadingContainer, {backgroundColor: background}]}>
-          <Text>Loading categories...</Text>
-        </View>
-      );
+      return <CategorySkeleton />;
     }
 
     if (homeCategories.length === 0) {
@@ -120,9 +118,23 @@ class ApiCategories extends PureComponent {
         style={itemStyle}
         onPress={() => this.showProductsByCategory(item)}>
         <View style={styles.imageContainer}>
-          {item.image && <ImageCache uri={item.image.src} style={styles.image} />}
-          {!item.image && (
-            <Image source={Images.categoryPlaceholder} style={styles.image} />
+          {item.image ? (
+            <OptimizedImage
+              source={{uri: item.image.src}}
+              usage="category"
+              quality={75}
+              style={styles.image}
+              resizeMode="cover"
+              showLoadingIndicator={true}
+              showErrorIndicator={true}
+            />
+          ) : (
+            <OptimizedImage
+              source={Images.categoryPlaceholder}
+              usage="category"
+              style={styles.image}
+              resizeMode="cover"
+            />
           )}
         </View>
         <View style={styles.content}>

@@ -1,12 +1,13 @@
 /** @format */
 
 import * as React from 'react';
-import {useEffect, useMemo, useCallback} from 'react';
-import {View} from 'react-native';
+import {useEffect, useMemo, useCallback, useState} from 'react';
+import {View, RefreshControl, AppState} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
+import {initializeCache} from '@utils/CacheManager';
 
 import {Constants, withTheme} from '@common';
 import {ROUTER} from '@navigation/constants';
@@ -21,6 +22,7 @@ const Home = React.memo(
   ({theme = {}, onViewProductScreen, showCategoriesScreen, onShowAll}) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [refreshing, setRefreshing] = useState(false);
     
     // Debug log to check theme
     console.log('Home theme:', theme);
@@ -39,6 +41,26 @@ const Home = React.memo(
       CountryRedux.actions.fetchAllCountries(dispatch);
     }, [dispatch]);
 
+    const onRefresh = useCallback(async () => {
+      setRefreshing(true);
+      try {
+        // Clear cache and refresh all data
+        await initializeCache();
+        
+        // Fetch fresh data
+        if (isConnected) {
+          fetchCategories();
+          fetchAllCountries();
+        }
+        
+        console.log('Home data refreshed successfully');
+      } catch (error) {
+        console.error('Error refreshing home data:', error);
+      } finally {
+        setRefreshing(false);
+      }
+    }, [isConnected, fetchCategories, fetchAllCountries]);
+
     const setSelectedCategory = useCallback((category) => {
       CategoryRedux.actions.setSelectedCategory(dispatch, category);
     }, [dispatch]);
@@ -54,6 +76,15 @@ const Home = React.memo(
     );
 
     useEffect(() => {
+      // Initialize cache management with error handling
+      initializeCache().then((cacheRefreshed) => {
+        if (cacheRefreshed) {
+          console.log('Cache refreshed on app startup');
+        }
+      }).catch((error) => {
+        console.warn('Cache initialization failed, continuing without cache management:', error);
+      });
+
       if (isConnected) {
         if (!countryList || isEmpty(countryList)) {
           fetchCategories();
@@ -63,11 +94,32 @@ const Home = React.memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, countryList]);
 
+    // Background app state listener for auto-refresh
+    useEffect(() => {
+      const handleAppStateChange = (nextAppState) => {
+        if (nextAppState === 'active') {
+          console.log('App became active, refreshing data...');
+          // Refresh data when app becomes active
+          if (isConnected) {
+            fetchCategories();
+            fetchAllCountries();
+          }
+        }
+      };
+
+      const subscription = AppState.addEventListener('change', handleAppStateChange);
+      
+      return () => {
+        subscription?.remove();
+      };
+    }, [isConnected, fetchCategories, fetchAllCountries]);
+
     return (
       <SafeAreaView style={[styles.container, {backgroundColor: theme?.colors?.background || '#fff'}]} edges={['top']}>
         <TopHeader 
           onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
           onNotificationPress={() => navigation.navigate('NotificationScreen')}
+          onRefreshPress={onRefresh}
         />
         {isHorizontal && (
           <HorizonList
@@ -76,6 +128,16 @@ const Home = React.memo(
             onShowAll={onShowAll}
             onViewProductScreen={onViewProductScreen}
             showCategoriesScreen={showCategoriesScreen}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={['#e39c7a']} // Android
+                tintColor="#e39c7a" // iOS
+                title="Pull to refresh"
+                titleColor="#666"
+              />
+            }
             listHeaderComponentExtra={() => (
               <>
                 <BannerPostsSlider
