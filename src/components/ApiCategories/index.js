@@ -1,13 +1,12 @@
 /** @format */
 
 import React, {PureComponent} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import {View, FlatList, Text, Image} from 'react-native';
 import {connect} from 'react-redux';
 
 import {toast} from '@app/Omni';
 import {Languages, Images, withTheme, Config} from '@common';
 import {TouchableScale} from '@components';
-import OptimizedImage from '../OptimizedImage';
 import CategorySkeleton from '../CategorySkeleton';
 
 import styles from './styles';
@@ -118,20 +117,15 @@ class ApiCategories extends PureComponent {
         style={itemStyle}
         onPress={() => this.showProductsByCategory(item)}>
         <View style={styles.imageContainer}>
-          {item.image ? (
-            <OptimizedImage
-              source={{uri: item.image.src}}
-              usage="category"
-              quality={75}
-              style={styles.image}
-              resizeMode="cover"
-              showLoadingIndicator={true}
-              showErrorIndicator={true}
-            />
-          ) : (
-            <OptimizedImage
+             {item.image ? (
+               <Image
+                 source={{uri: item.image.thumbnail || item.image.src}}
+                 style={styles.image}
+                 resizeMode="cover"
+               />
+             ) : (
+            <Image
               source={Images.categoryPlaceholder}
-              usage="category"
               style={styles.image}
               resizeMode="cover"
             />

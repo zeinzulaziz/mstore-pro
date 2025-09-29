@@ -10,8 +10,22 @@ const CustomerSummary = ({theme = {}}) => {
   const user = useSelector(state => state.user.user);
   const name = Tools.getName(user);
 
+  // Debug log untuk cek theme
+  console.log('CustomerSummary theme:', theme);
+  console.log('CustomerSummary background:', theme?.colors?.background);
+
+  // Tentukan background berdasarkan mode
+  const getBackgroundColor = () => {
+    // Jika theme.colors.background ada dan bukan putih, gunakan untuk dark mode
+    if (theme?.colors?.background && theme.colors.background !== '#fff' && theme.colors.background !== '#ffffff') {
+      return theme.colors.background; // Dark mode
+    }
+    // Jika tidak ada theme atau background putih, gunakan #fbf2e6 untuk light mode
+    return '#fbf2e6'; // Light mode
+  };
+
   return (
-    <View style={[styles.container, {backgroundColor: theme.colors.background || '#fff'}]}> 
+    <View style={[styles.container, {backgroundColor: getBackgroundColor()}]}> 
       <View style={styles.item}>
         <View style={styles.labelRow}>
           <View style={styles.iconContainer}>

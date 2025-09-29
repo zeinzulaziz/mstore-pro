@@ -9,8 +9,8 @@ import {
   Dimensions,
   ActivityIndicator,
   Animated,
+  Image,
 } from 'react-native';
-import OptimizedImage from '../OptimizedImage';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import SkeletonLoader from '../SkeletonLoader';
@@ -79,8 +79,8 @@ const BrandFeature = React.memo(props => {
   // Auto-scroll functions removed - manual scrolling only
 
   const renderBrandItem = (item, index) => {
-    // Use item.image?.src directly as suggested
-    let brandImage = item.image?.src;
+    // Prioritize smaller image sizes for better performance
+    let brandImage = item.image?.thumbnail || item.image?.src;
     
     // Convert HTTP to HTTPS for security
     if (brandImage && brandImage.startsWith('http://')) {
@@ -95,14 +95,10 @@ const BrandFeature = React.memo(props => {
         activeOpacity={0.8}>
         <View style={styles.brandImageContainer}>
           {brandImage ? (
-            <OptimizedImage
+            <Image
               source={{uri: brandImage}}
-              usage="brand"
-              quality={80}
               style={styles.brandImage}
               resizeMode="contain"
-              showLoadingIndicator={true}
-              showErrorIndicator={true}
             />
           ) : (
             <View style={styles.placeholderContainer}>

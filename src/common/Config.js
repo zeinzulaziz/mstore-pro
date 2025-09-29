@@ -133,7 +133,7 @@ export default {
     {
       key: 'page1',
       title: 'Welcome to Dose of Beauty',
-      text: 'Get the hottest fashion by trend and season right on your pocket.',
+      text: 'Your Daily Dose of Confidence.',
       icon: 'ios-basket',
       colors: ['#0FF0B3', '#036ED9'],
     },

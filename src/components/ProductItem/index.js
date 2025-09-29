@@ -4,7 +4,6 @@ import React, { PureComponent } from 'react';
 import { TouchableOpacity, Text, View, Dimensions, Image } from 'react-native';
 
 import ChangeQuantity from '@components/ChangeQuantity';
-import OptimizedImage from '../OptimizedImage';
 import { connect } from 'react-redux';
 import { withTheme, Tools } from '@common';
 import styles from './styles';
@@ -39,14 +38,10 @@ class ProductItem extends PureComponent {
       >
         <View style={styles.content}>
           <TouchableOpacity onPress={() => onPress({ product })}>
-            <OptimizedImage
-              source={{ uri: Tools.getImageVariation(product, variation) }}
-              usage="product"
-              quality={85}
+            <Image
+              source={{ uri: Tools.getImageVariation(product, variation, 'thumbnail') }}
               style={styles.image}
               resizeMode="cover"
-              showLoadingIndicator={true}
-              showErrorIndicator={true}
             />
           </TouchableOpacity>
 
