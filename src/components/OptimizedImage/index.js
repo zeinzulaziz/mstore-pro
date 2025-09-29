@@ -40,6 +40,7 @@ const OptimizedImage = ({
 
   // Get optimized image URL
   const optimizedUrl = getOptimizedImageUrl(source?.uri || source, usage, quality);
+  
   // Get placeholder image based on usage
   const getPlaceholderForUsage = (usage) => {
     switch (usage) {
@@ -80,13 +81,14 @@ const OptimizedImage = ({
   // Handle load error
   const handleError = useCallback((event) => {
     if (mountedRef.current) {
+      console.log('OptimizedImage error for usage:', usage, 'source:', source, 'placeholderImage:', placeholderImage);
       setLoading(false);
       setError(true);
       setImageLoaded(false);
       onError?.(event);
       onLoadEnd?.();
     }
-  }, [onError, onLoadEnd]);
+  }, [onError, onLoadEnd, usage, source, placeholderImage]);
 
   // Get image source
   const imageSource = optimizedUrl ? { uri: optimizedUrl } : placeholderImage;
