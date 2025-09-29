@@ -31,7 +31,7 @@ const SkeletonLoader = ({theme, style, height = 200, borderRadius = 15}) => {
 
   const backgroundColor = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#e39c7a', '#f5a76e'], // Gradient dari #e39c7a ke warna yang lebih terang
+    outputRange: ['#999999', '#d2d2d2'], // Gradient dari #e39c7a ke warna yang lebih terang
   });
 
   return (

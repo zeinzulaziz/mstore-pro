@@ -7,6 +7,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { getOptimizedImageUrl, getImagePriority, getImageCacheControl, getPlaceholderImage } from '@utils/ImageOptimizer';
+import { Images } from '@common';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -39,7 +40,21 @@ const OptimizedImage = ({
 
   // Get optimized image URL
   const optimizedUrl = getOptimizedImageUrl(source?.uri || source, usage, quality);
-  const placeholderImage = placeholder || getPlaceholderImage(usage);
+  // Get placeholder image based on usage
+  const getPlaceholderForUsage = (usage) => {
+    switch (usage) {
+      case 'category':
+        return Images.categoryPlaceholder;
+      case 'banner':
+        return Images.PlaceHolder;
+      case 'product':
+        return Images.PlaceHolder;
+      default:
+        return placeholder || getPlaceholderImage(usage);
+    }
+  };
+  
+  const placeholderImage = getPlaceholderForUsage(usage);
 
   // Handle load start
   const handleLoadStart = useCallback(() => {

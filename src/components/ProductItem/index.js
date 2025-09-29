@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { PureComponent } from 'react';
-import { TouchableOpacity, Text, View, Dimensions } from 'react-native';
+import { TouchableOpacity, Text, View, Dimensions, Image } from 'react-native';
 
 import ChangeQuantity from '@components/ChangeQuantity';
 import OptimizedImage from '../OptimizedImage';
