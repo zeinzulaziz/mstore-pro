@@ -22,6 +22,13 @@ const Languages = new LocalizedStrings({
 
     // Home
     products: 'products',
+    
+    // Categories
+    Makeup: 'Makeup',
+    Skincare: 'Skincare',
+    Haircare: 'Haircare',
+    flashSale: 'Flash Sale',
+    brandFeature: 'Featured Brands',
 
     // TopBar
     ShowFilter: 'Sub Categories',
@@ -354,6 +361,13 @@ const Languages = new LocalizedStrings({
 
     // Home
     products: 'produk',
+    
+    // Categories
+    Makeup: 'Makeup',
+    Skincare: 'Skincare',
+    Haircare: 'Haircare',
+    flashSale: 'Flash Sale',
+    brandFeature: 'Merek Unggulan',
 
     // TopBar
     ShowFilter: 'Sub Kategori',

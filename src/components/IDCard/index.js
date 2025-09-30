@@ -44,7 +44,7 @@ const IDCard = ({theme, onPress}) => {
       <TouchableOpacity style={styles.cardContainer} onPress={onPress} activeOpacity={0.9}>
         {/* Card Background with Gold Glitter Effect */}
         <LinearGradient
-          colors={['#FFD700', '#FFA500', '#FF8C00']}
+          colors={['#fae5a3', '#f0ce7e', '#fdfaf3']}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
           style={styles.cardGradient}>
@@ -61,7 +61,7 @@ const IDCard = ({theme, onPress}) => {
                     {
                       top: Math.random() * 200,
                       left: Math.random() * 300,
-                      opacity: 0.1 + Math.random() * 0.3,
+                      opacity: 0.5 + Math.random() * 0.3,
                     }
                   ]} 
                 />
@@ -78,7 +78,7 @@ const IDCard = ({theme, onPress}) => {
                 <Image 
                   source={Images.Logo} 
                   style={styles.logoImage}
-                  resizeMode="contain"
+                  resizeMode="cover"
                   onError={(error) => {
                     console.log('Logo loading error:', error);
                   }}
@@ -119,7 +119,7 @@ const IDCard = ({theme, onPress}) => {
                 </View>
                 {/* QR Code Border Gradient */}
                 <LinearGradient
-                  colors={['#FFD700', '#FF69B4', '#9370DB']}
+                  colors= {['#fff', '#fff', '#fff']}
                   start={{x: 0, y: 0}}
                   end={{x: 1, y: 1}}
                   style={styles.qrBorder}
@@ -206,8 +206,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFF00',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 10,
     alignSelf: 'flex-start',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   rewardsLabel: {
     fontSize: 12,
