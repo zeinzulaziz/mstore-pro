@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import SkeletonLoader from '../SkeletonLoader';
+import {BrandSkeleton} from '../SkeletonLoader';
 
 import {Config, Languages, withTheme} from '@common';
 import {Tools} from '@common';
@@ -27,6 +27,7 @@ const BrandFeature = React.memo(props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const {justCameOnline = false} = props;
 
   const {
     theme: {
@@ -52,6 +53,19 @@ const BrandFeature = React.memo(props => {
     //   console.log('Brands fetch completed');
     });
   }, [dispatch]);
+
+  // Auto-refresh when internet comes back
+  useEffect(() => {
+    if (justCameOnline) {
+      console.log('BrandFeature: Internet came back, refreshing...');
+      setLoading(true);
+      // Force refresh by clearing cache first
+      dispatch(BrandsRedux.actions.clearBrands());
+      BrandsRedux.actions.fetchBrands()(dispatch).finally(() => {
+        setLoading(false);
+      });
+    }
+  }, [justCameOnline, dispatch]);
 
   // Auto-scroll disabled - manual scrolling only
 
@@ -94,7 +108,9 @@ const BrandFeature = React.memo(props => {
         onPress={() => onPressBrand(item)}
         activeOpacity={0.8}>
         <View style={styles.brandImageContainer}>
-          {brandImage ? (
+          {loading ? (
+            <BrandSkeleton width={80} height={50} />
+          ) : brandImage ? (
             <Image
               source={{uri: brandImage}}
               style={styles.brandImage}
@@ -136,11 +152,11 @@ const BrandFeature = React.memo(props => {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {Array.from({length: 5}).map((_, index) => (
           <View key={index} style={styles.brandItem}>
-            <SkeletonLoader 
-              height={80} 
-              borderRadius={12}
-              style={{width: 80, marginRight: 15}}
-            />
+            <View style={styles.brandImageContainer}>
+              <BrandSkeleton width={80} height={50} />
+            </View>
+            <BrandSkeleton width={60} height={16} style={{marginTop: 8}} />
+            <BrandSkeleton width={40} height={12} style={{marginTop: 4}} />
           </View>
         ))}
       </ScrollView>

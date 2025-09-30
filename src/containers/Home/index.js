@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import {useEffect, useMemo, useCallback, useState} from 'react';
-import {View, RefreshControl, AppState} from 'react-native';
+import {View, RefreshControl, AppState, TouchableOpacity, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from 'lodash';
@@ -12,6 +12,9 @@ import {initializeCache} from '@utils/CacheManager';
 import {Constants, withTheme} from '@common';
 import {ROUTER} from '@navigation/constants';
 import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature, TopHeader} from '@components';
+import OfflineSkeleton from '@components/OfflineSkeleton';
+import useNetworkStatus from '../../hooks/useNetworkStatus';
+import {retryApiCall, safeApiCall, isNetworkError} from '../../utils/apiRetry';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
 import * as CategoryRedux from '@redux/CategoryRedux';
@@ -23,47 +26,104 @@ const Home = React.memo(
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState(false);
+    const {isOffline, isConnected, isInternetReachable, justCameOnline, refreshKey, networkError, setNetworkError} = useNetworkStatus();
     
     // Debug log to check theme
     console.log('Home theme:', theme);
     console.log('Home background:', theme?.colors?.background);
-
-    const isConnected = useSelector(state => state.netInfo.isConnected);
     const countryList = useSelector(state => state.countries.list);
     const layoutHome = useSelector(state => state.products.layoutHome);
     const language = useSelector(state => state.language);
 
-    const fetchCategories = useCallback(() => {
-      CategoryRedux.actions.fetchCategories(dispatch);
-    }, [dispatch]);
+    const fetchCategories = useCallback(async () => {
+      try {
+        console.log('🔄 Fetching categories...');
+        await retryApiCall(
+          () => CategoryRedux.actions.fetchCategories(dispatch),
+          3, // max retries
+          1000 // initial delay
+        );
+        console.log('✅ Categories fetched successfully');
+        setNetworkError(false);
+      } catch (error) {
+        console.log('❌ Error fetching categories:', error.message);
+        if (isNetworkError(error)) {
+          setNetworkError(true);
+        }
+      }
+    }, [dispatch, setNetworkError]);
 
-    const fetchAllCountries = useCallback(() => {
-      CountryRedux.actions.fetchAllCountries(dispatch);
-    }, [dispatch]);
+    const fetchAllCountries = useCallback(async () => {
+      try {
+        console.log('🔄 Fetching countries...');
+        await retryApiCall(
+          () => CountryRedux.actions.fetchAllCountries(dispatch),
+          3, // max retries
+          1000 // initial delay
+        );
+        console.log('✅ Countries fetched successfully');
+        setNetworkError(false);
+      } catch (error) {
+        console.log('❌ Error fetching countries:', error.message);
+        if (isNetworkError(error)) {
+          setNetworkError(true);
+        }
+      }
+    }, [dispatch, setNetworkError]);
 
     const onRefresh = useCallback(async () => {
       setRefreshing(true);
       try {
+        console.log('🔄 Manual refresh started...');
         // Clear cache and refresh all data
         await initializeCache();
         
-        // Fetch fresh data
+        // Fetch fresh data with retry
         if (isConnected) {
-          fetchCategories();
-          fetchAllCountries();
+          await Promise.all([
+            fetchCategories(),
+            fetchAllCountries()
+          ]);
         }
         
-        console.log('Home data refreshed successfully');
+        console.log('✅ Home data refreshed successfully');
+        setNetworkError(false);
       } catch (error) {
-        console.error('Error refreshing home data:', error);
+        console.log('❌ Error refreshing home data:', error.message);
+        if (isNetworkError(error)) {
+          setNetworkError(true);
+        }
       } finally {
         setRefreshing(false);
       }
-    }, [isConnected, fetchCategories, fetchAllCountries]);
+    }, [isConnected, fetchCategories, fetchAllCountries, setNetworkError]);
 
     const setSelectedCategory = useCallback((category) => {
       CategoryRedux.actions.setSelectedCategory(dispatch, category);
     }, [dispatch]);
+
+    const onForceRefresh = useCallback(async () => {
+      console.log('🔄 Force refresh triggered');
+      setRefreshing(true);
+      setNetworkError(false);
+      
+      try {
+        // Clear cache and force refresh all data
+        await initializeCache();
+        await Promise.all([
+          fetchCategories(),
+          fetchAllCountries()
+        ]);
+        console.log('✅ Force refresh completed successfully');
+      } catch (error) {
+        console.log('❌ Force refresh failed:', error.message);
+        if (isNetworkError(error)) {
+          setNetworkError(true);
+        }
+      } finally {
+        setRefreshing(false);
+      }
+    }, [fetchCategories, fetchAllCountries, setNetworkError]);
 
     const onViewCategory = useCallback((category) => {
       setSelectedCategory(category);
@@ -114,6 +174,77 @@ const Home = React.memo(
       };
     }, [isConnected, fetchCategories, fetchAllCountries]);
 
+    // Auto-refresh when internet comes back
+    useEffect(() => {
+      if (justCameOnline) {
+        console.log('🌐 Internet came back, auto-refreshing data...');
+        console.log('🔄 RefreshKey:', refreshKey);
+        setRefreshing(true);
+        
+        // Wait a bit for network to stabilize
+        const refreshTimeout = setTimeout(async () => {
+          try {
+            console.log('🔄 Starting auto-refresh...');
+            // Refresh all data with retry
+            await Promise.all([
+              fetchCategories(),
+              fetchAllCountries()
+            ]);
+            console.log('✅ Auto-refresh completed successfully');
+          } catch (error) {
+            console.log('❌ Auto-refresh failed:', error.message);
+          } finally {
+            setRefreshing(false);
+          }
+        }, 3000); // Wait 3 seconds for network to stabilize
+        
+        return () => clearTimeout(refreshTimeout);
+      }
+    }, [justCameOnline, fetchCategories, fetchAllCountries, refreshKey]);
+
+    // Show offline skeleton when no internet
+    if (isOffline) {
+      return (
+        <SafeAreaView style={[styles.container, {backgroundColor: theme?.colors?.background || '#fff'}]} edges={['top']}>
+          <TopHeader 
+            onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
+            onNotificationPress={() => navigation.navigate('NotificationScreen')}
+            onRefreshPress={onRefresh}
+          />
+          <OfflineSkeleton theme={theme} />
+          <ModalLayout />
+        </SafeAreaView>
+      );
+    }
+
+    // Show network error state
+    if (networkError && !isOffline) {
+      return (
+        <SafeAreaView style={[styles.container, {backgroundColor: theme?.colors?.background || '#fff'}]} edges={['top']}>
+          <TopHeader 
+            onSearchPress={(searchText) => navigation.navigate(ROUTER.SEARCH, {searchText})}
+            onNotificationPress={() => navigation.navigate('NotificationScreen')}
+            onRefreshPress={onRefresh}
+          />
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20}}>
+            <Text style={{fontSize: 18, marginBottom: 10, textAlign: 'center'}}>
+              Network Error
+            </Text>
+            <Text style={{fontSize: 14, marginBottom: 20, textAlign: 'center', color: '#666'}}>
+              Please check your internet connection and try again
+            </Text>
+            <TouchableOpacity 
+              onPress={onRefresh}
+              style={{backgroundColor: '#e39c7a', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 5}}
+            >
+              <Text style={{color: 'white', fontWeight: 'bold'}}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+          <ModalLayout />
+        </SafeAreaView>
+      );
+    }
+
     return (
       <SafeAreaView style={[styles.container, {backgroundColor: theme?.colors?.background || '#fff'}]} edges={['top']}>
         <TopHeader 
@@ -128,6 +259,8 @@ const Home = React.memo(
             onShowAll={onShowAll}
             onViewProductScreen={onViewProductScreen}
             showCategoriesScreen={showCategoriesScreen}
+            justCameOnline={justCameOnline}
+            refreshKey={refreshKey}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -141,19 +274,24 @@ const Home = React.memo(
             listHeaderComponentExtra={() => (
               <>
                 <BannerPostsSlider
+                  key={`banner-1-${refreshKey}`}
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
                   style={{paddingTop: 0, marginTop: 0}}
+                  justCameOnline={justCameOnline}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
                 <ApiCategories
+                  key={`categories-${refreshKey}`}
                   onShowAll={onShowAll}
                   style={{paddingBottom: 30, paddingLeft: 10, paddingRight: 10}}
+                  justCameOnline={justCameOnline}
                 />
                 <BannerPostsSlider
+                  key={`banner-2-${refreshKey}`}
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}
                   query={'?_embed&per_page=3'}
@@ -161,6 +299,7 @@ const Home = React.memo(
                     navigation.navigate('NewsDetailScreen', {post})
                   }
                   transparent={true}
+                  justCameOnline={justCameOnline}
                 />
               </>
             )}
@@ -175,19 +314,24 @@ const Home = React.memo(
             listHeaderComponentExtra={() => (
               <>
                 <BannerPostsSlider
+                  key={`banner-3-${refreshKey}`}
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   onPressPost={post =>
                     navigation.navigate('NewsDetailScreen', {post})
                   }
                   style={{paddingTop: 0, marginTop: 0}}
+                  justCameOnline={justCameOnline}
                 />
                 <CustomerSummary />
                 <AnnouncementTicker endpoint={Config.WooCommerce.url.replace(/\/$/, '')} />
                 <ApiCategories
+                  key={`categories-2-${refreshKey}`}
                   onShowAll={onShowAll}
                   style={{marginBottom: 30}}
+                  justCameOnline={justCameOnline}
                 />
                 <BannerPostsSlider
+                  key={`banner-4-${refreshKey}`}
                   endpoint={Config.WooCommerce.url.replace(/\/$/, '')}
                   path={'/wp-json/wp/v2/banner?banner-type=378'}
                   query={'?_embed&per_page=3'}
@@ -195,11 +339,14 @@ const Home = React.memo(
                     navigation.navigate('NewsDetailScreen', {post})
                   }
                   transparent={true}
+                  justCameOnline={justCameOnline}
                 />
               </>
             )}
           />
         )}
+        
+        
         <ModalLayout />
       </SafeAreaView>
     );

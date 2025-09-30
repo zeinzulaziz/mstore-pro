@@ -4,9 +4,44 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityIndicator, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {withTheme, Tools, Constants, Images} from '@common';
-import BannerSkeleton from '../BannerSkeleton';
+import {BannerSkeleton} from '../SkeletonLoader';
+import {retryApiCall, isNetworkError} from '../../utils/apiRetry';
 
 const {width} = Dimensions.get('window');
+
+// Separate component for banner item to use hooks
+const BannerItem = ({item, onPressPost, imageURL}) => {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+  
+  return (
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => onPressPost && onPressPost(item)}
+      style={{width, paddingHorizontal: 15}}>
+      <View style={{width: '100%', height: 200, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
+        {imageLoading && !imageError && (
+          <BannerSkeleton 
+            width={width - 30} 
+            height={200} 
+            style={{position: 'absolute', top: 0, left: 0}}
+          />
+        )}
+        <Image
+          source={{uri: imageURL}}
+          style={{width: '100%', height: '100%'}}
+          resizeMode="cover"
+          onLoadStart={() => setImageLoading(true)}
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            setImageLoading(false);
+            setImageError(true);
+          }}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 // Banner gradient styles - using explicit width/height like CSS background-size
 const bannerGradientBackground = {
@@ -61,7 +96,7 @@ const bannerRadialGradient3 = {
   overflow: 'hidden',
 };
 
-const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3', style, transparent = false}) => {
+const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3', style, transparent = false, justCameOnline = false}) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -79,12 +114,28 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
-      const resp = await fetch(postsEndpoint);
-      const json = await resp.json();
-      const items = Array.isArray(json) ? json : [];
-      setItems(items);
+      console.log('🔄 Fetching banner posts...');
       
-    } catch (e) {
+      const data = await retryApiCall(
+        async () => {
+          const resp = await fetch(postsEndpoint);
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+          }
+          const json = await resp.json();
+          return Array.isArray(json) ? json : [];
+        },
+        3, // max retries
+        1000 // initial delay
+      );
+      
+      setItems(data);
+      console.log('✅ Banner posts fetched successfully');
+    } catch (error) {
+      console.log('❌ Error fetching banner posts:', error.message);
+      if (isNetworkError(error)) {
+        console.log('🌐 Network error detected, will retry when connection is restored');
+      }
       setItems([]);
     } finally {
       setLoading(false);
@@ -94,6 +145,16 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  // Auto-refresh when internet comes back
+  useEffect(() => {
+    if (justCameOnline) {
+      console.log('BannerPostsSlider: Internet came back, refreshing...');
+      // Clear image cache and reset loading states
+      setImageLoaded({});
+      fetchPosts();
+    }
+  }, [justCameOnline, fetchPosts]);
 
   // autoplay and progress bar animation
   useEffect(() => {
@@ -160,23 +221,31 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
   const renderItem = ({item}) => {
     const imageURL = getFeaturedImage(item);
     return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => onPressPost && onPressPost(item)}
-        style={{width, paddingHorizontal: 15}}>
-        <View style={{width: '100%', height: 200, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
-          <Image
-            source={{uri: imageURL}}
-            style={{width: '100%', height: '100%'}}
-            resizeMode="cover"
-          />
-        </View>
-      </TouchableOpacity>
+      <BannerItem 
+        item={item} 
+        onPressPost={onPressPost} 
+        imageURL={imageURL} 
+      />
     );
   };
 
   if (loading && items.length === 0) {
-    return <BannerSkeleton />;
+    return (
+      <View style={[
+        style, 
+        {
+          position: 'relative', 
+          borderBottomLeftRadius: transparent ? 0 : 30, 
+          borderBottomRightRadius: transparent ? 0 : 30, 
+          overflow: 'hidden',
+          paddingTop: Platform.OS === 'android' ? 50 : 80,
+          marginTop: Platform.OS === 'android' ? -10 : 0,
+          zIndex: 0,
+        }
+      ]}>
+        <BannerSkeleton width={width} height={200} />
+      </View>
+    );
   }
 
   if (!items || items.length === 0) return null;

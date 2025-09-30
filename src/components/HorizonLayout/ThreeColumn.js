@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Images, withTheme } from '@common';
 import { ProductPrice, ImageCache, WishListIcon } from '@components';
 import { getProductImage } from '@app/Omni';
+import {ProductSkeleton} from '../SkeletonLoader';
 import css from './style';
 
 class ThreeColumn extends PureComponent {
@@ -17,11 +18,22 @@ class ThreeColumn extends PureComponent {
         colors: { text },
       },
       currency,
+      loading = false,
     } = this.props;
     const imageURI =
       typeof product.images[0] !== 'undefined'
         ? getProductImage(product.images[0].src, 120)
         : Images.PlaceHolderURL;
+
+    if (loading) {
+      return (
+        <View style={css.panelThree}>
+          <ProductSkeleton width={120} height={120} style={css.imagePanelThree} />
+          <ProductSkeleton width="80%" height={16} style={{marginTop: 8}} />
+          <ProductSkeleton width="60%" height={14} style={{marginTop: 4}} />
+        </View>
+      );
+    }
 
     return product ? (
       <TouchableOpacity

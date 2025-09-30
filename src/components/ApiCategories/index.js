@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {toast} from '@app/Omni';
 import {Languages, Images, withTheme, Config} from '@common';
 import {TouchableScale} from '@components';
-import CategorySkeleton from '../CategorySkeleton';
+import {CategorySkeleton} from '../SkeletonLoader';
 
 import styles from './styles';
 
@@ -34,6 +34,16 @@ class ApiCategories extends PureComponent {
 
   componentDidMount() {
     this.fetchHomeCategories();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Auto-refresh when internet comes back
+    if (this.props.justCameOnline && !prevProps.justCameOnline) {
+      console.log('ApiCategories: Internet came back, refreshing...');
+      // Force refresh by clearing state first
+      this.setState({homeCategories: [], loading: true});
+      this.fetchHomeCategories();
+    }
   }
 
   fetchHomeCategories = async () => {
@@ -104,7 +114,7 @@ class ApiCategories extends PureComponent {
   }
 
   renderItem = ({item, index}) => {
-    const {homeCategories} = this.state;
+    const {homeCategories, loading} = this.state;
     
     const isLastInRow = (index + 1) % 5 === 0;
     const isLastRow = index >= Math.floor(homeCategories.length / 5) * 5;
@@ -117,13 +127,15 @@ class ApiCategories extends PureComponent {
         style={itemStyle}
         onPress={() => this.showProductsByCategory(item)}>
         <View style={styles.imageContainer}>
-             {item.image ? (
-               <Image
-                 source={{uri: item.image.thumbnail || item.image.src}}
-                 style={styles.image}
-                 resizeMode="cover"
-               />
-             ) : (
+          {loading ? (
+            <CategorySkeleton size={60} />
+          ) : item.image ? (
+            <Image
+              source={{uri: item.image.thumbnail || item.image.src}}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ) : (
             <Image
               source={Images.categoryPlaceholder}
               style={styles.image}

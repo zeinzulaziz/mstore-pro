@@ -26,6 +26,7 @@ import {
 import styles from './styles';
 import Categories from './Categories';
 import HHeader from './HHeader';
+import {ProductSkeleton} from '../SkeletonLoader';
 
 class HorizonList extends PureComponent {
   // eslint-disable-next-line react/static-property-placement
@@ -136,6 +137,21 @@ class HorizonList extends PureComponent {
     );
   };
 
+  renderSkeletonItem = ({item, index}) => {
+    const {layout} = this.props.config;
+    return (
+      <HorizonLayout
+        product={null}
+        key={`skeleton-${index}`}
+        onViewPost={() => {}}
+        layout={layout}
+        config={this.props.config}
+        currency={null}
+        loading={true}
+      />
+    );
+  };
+
   renderHeader = () => {
     const {showCategoriesScreen, config, theme} = this.props;
     return (
@@ -158,6 +174,7 @@ class HorizonList extends PureComponent {
         ? collection.list
         : this.defaultList;
     const isPaging = !!config.paging;
+    const isLoading = collection && collection.isLoading;
     const data =
       language.lang === Constants.Languages.en
         ? Config.HomeCategories
@@ -200,7 +217,7 @@ class HorizonList extends PureComponent {
           />
         );
       case 'brandFeature':
-        return <BrandFeature />;
+        return <BrandFeature key={`brands-${this.props.refreshKey || 0}`} justCameOnline={this.props.justCameOnline} />;
     }
 
     return (
@@ -215,10 +232,10 @@ class HorizonList extends PureComponent {
         <FlatList
           overScrollMode="never"
           contentContainerStyle={styles.flatlist}
-          data={list}
+          data={isLoading ? [1, 2, 3] : list}
           keyExtractor={(item, index) => `post__${index}`}
           extraData={this.UNSAFE_componentWillReceiveProps}
-          renderItem={this.renderItem}
+          renderItem={isLoading ? this.renderSkeletonItem : this.renderItem}
           showsHorizontalScrollIndicator={false}
           horizontal
           pagingEnabled={isPaging}
@@ -238,13 +255,6 @@ class HorizonList extends PureComponent {
           />
         )}
 
-        {typeof VerticalLayout !== 'undefined' && (
-          <PostList
-            parentLayout={VerticalLayout.layout}
-            headerLabel={VerticalLayout.name}
-            onViewProductScreen={onViewProductScreen}
-          />
-        )}
       </View>
     );
   }

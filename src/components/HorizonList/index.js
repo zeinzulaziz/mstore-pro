@@ -2,14 +2,16 @@
 
 import * as React from 'react';
 import {useEffect, useCallback} from 'react';
-import {Animated, FlatList, RefreshControl} from 'react-native';
+import {Animated, FlatList, RefreshControl, View, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Config, withTheme} from '@common';
+import {Config, withTheme, AppConfig, Constants} from '@common';
 import * as LayoutRedux from '@redux/LayoutRedux';
 
 import Header from './Header';
 import ListItem from './ListItem';
+import {PostList} from '@components';
+import Categories from './Categories';
 import styles from './styles';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -62,6 +64,8 @@ const HorizonList = React.memo(
       {useNativeDriver: true},
     );
 
+    const {layoutVerticalLayout} = AppConfig;
+
     return (
       <AnimatedFlatList
         data={layout}
@@ -85,6 +89,32 @@ const HorizonList = React.memo(
             {typeof listHeaderComponentExtra === 'function'
               ? listHeaderComponentExtra()
               : listHeaderComponentExtra || null}
+          </>
+        )}
+        ListFooterComponent={() => (
+          <>
+            {typeof layoutVerticalLayout !== 'undefined' && layoutVerticalLayout.layout === 'circleCategory' && (
+              <View style={{paddingHorizontal: 15, paddingVertical: 20}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 15, color: '#333'}}>
+                  Categories
+                </Text>
+                <Categories
+                  items={language.lang === Constants.Languages.en ? Config.HomeCategories : Config.HomeCategories_AR}
+                  onPress={(category) => {
+                    // Handle category press
+                    console.log('Category pressed:', category);
+                  }}
+                  config={{column: 1}}
+                />
+              </View>
+            )}
+            {typeof layoutVerticalLayout !== 'undefined' && layoutVerticalLayout.layout !== 'circleCategory' && (
+              <PostList
+                parentLayout={layoutVerticalLayout.layout}
+                headerLabel="Categories"
+                onViewProductScreen={onViewProductScreen}
+              />
+            )}
           </>
         )}
         scrollEventThrottle={1}

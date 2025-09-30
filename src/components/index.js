@@ -73,9 +73,15 @@ import AnnouncementTicker from './AnnouncementTicker';
 import BrandFeature from './BrandFeature';
 import TopHeader from './TopHeader';
 import OptimizedImage from './OptimizedImage';
-import SkeletonLoader from './SkeletonLoader';
-import BannerSkeleton from './BannerSkeleton';
-import CategorySkeleton from './CategorySkeleton';
+import SkeletonLoader, {
+  BannerSkeleton,
+  CategorySkeleton,
+  BrandSkeleton,
+  ProductSkeleton,
+  TextSkeleton,
+  CardSkeleton
+} from './SkeletonLoader';
+import OfflineSkeleton from './OfflineSkeleton';
 
 export {
   ProductList,
@@ -156,4 +162,9 @@ export {
   SkeletonLoader,
   BannerSkeleton,
   CategorySkeleton,
+  BrandSkeleton,
+  ProductSkeleton,
+  TextSkeleton,
+  CardSkeleton,
+  OfflineSkeleton,
 };
