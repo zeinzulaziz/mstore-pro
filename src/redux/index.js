@@ -23,6 +23,7 @@ import {reducer as TagRedux} from './TagRedux';
 import {reducer as AddressRedux} from './AddressRedux';
 import {reducer as BrandsRedux} from './BrandsRedux';
 import {reducer as FilterRedux} from './FilterRedux';
+import {reducer as CustomerPointsRedux} from './CustomerPointsRedux';
 
 const config = {
   key: 'root',
@@ -58,4 +59,5 @@ export default persistCombineReducers(config, {
   addresses: AddressRedux,
   brands: BrandsRedux,
   filters: FilterRedux,
+  customerPoints: CustomerPointsRedux,
 });

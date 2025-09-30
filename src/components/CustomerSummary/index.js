@@ -5,10 +5,15 @@ import {View, Text, StyleSheet} from 'react-native';
 import {withTheme, Tools, Fonts} from '@common';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as CustomerPointsRedux from '@redux/CustomerPointsRedux';
 
 const CustomerSummary = ({theme = {}}) => {
   const user = useSelector(state => state.user.user);
+  const customerPoints = useSelector(state => state.customerPoints);
   const name = Tools.getName(user);
+  
+  // Use points from API if available, otherwise fallback to 327
+  const userPoints = customerPoints.points || 0;
 
   // Debug log untuk cek theme
   console.log('CustomerSummary theme:', theme);
@@ -43,7 +48,7 @@ const CustomerSummary = ({theme = {}}) => {
           </View>
           <Text style={[styles.title, {color: theme.colors.text}]}>DoB Rewards</Text>
         </View>
-        <Text style={[styles.value, {color: theme.colors.text}]}>327 points</Text>
+        <Text style={[styles.value, {color: theme.colors.text}]}>{userPoints} points</Text>
       </View>
       <View style={[styles.separator, {backgroundColor: theme.colors.border || 'rgba(0,0,0,0.1)'}]} />
       <View style={styles.item}>

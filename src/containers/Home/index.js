@@ -18,6 +18,7 @@ import {retryApiCall, safeApiCall, isNetworkError} from '../../utils/apiRetry';
 import {Config} from '@common';
 import * as CountryRedux from '@redux/CountryRedux';
 import * as CategoryRedux from '@redux/CategoryRedux';
+import * as CustomerPointsRedux from '@redux/CustomerPointsRedux';
 
 import styles from './styles';
 
@@ -31,9 +32,10 @@ const Home = React.memo(
     // Debug log to check theme
     console.log('Home theme:', theme);
     console.log('Home background:', theme?.colors?.background);
-    const countryList = useSelector(state => state.countries.list);
-    const layoutHome = useSelector(state => state.products.layoutHome);
-    const language = useSelector(state => state.language);
+  const countryList = useSelector(state => state.countries.list);
+  const layoutHome = useSelector(state => state.products.layoutHome);
+  const language = useSelector(state => state.language);
+  const user = useSelector(state => state.user.user);
 
     const fetchCategories = useCallback(async () => {
       try {
@@ -53,23 +55,46 @@ const Home = React.memo(
       }
     }, [dispatch, setNetworkError]);
 
-    const fetchAllCountries = useCallback(async () => {
-      try {
-        console.log('🔄 Fetching countries...');
-        await retryApiCall(
-          () => CountryRedux.actions.fetchAllCountries(dispatch),
-          3, // max retries
-          1000 // initial delay
-        );
-        console.log('✅ Countries fetched successfully');
-        setNetworkError(false);
-      } catch (error) {
-        console.log('❌ Error fetching countries:', error.message);
-        if (isNetworkError(error)) {
-          setNetworkError(true);
-        }
+  const fetchAllCountries = useCallback(async () => {
+    try {
+      console.log('🔄 Fetching countries...');
+      await retryApiCall(
+        () => CountryRedux.actions.fetchAllCountries(dispatch),
+        3, // max retries
+        1000 // initial delay
+      );
+      console.log('✅ Countries fetched successfully');
+      setNetworkError(false);
+    } catch (error) {
+      console.log('❌ Error fetching countries:', error.message);
+      if (isNetworkError(error)) {
+        setNetworkError(true);
       }
-    }, [dispatch, setNetworkError]);
+    }
+  }, [dispatch, setNetworkError]);
+
+  const fetchCustomerPoints = useCallback(async () => {
+    if (!user || !user.id) {
+      console.log('⚠️ No user ID available for fetching customer points');
+      return;
+    }
+
+    try {
+      console.log('🔄 Fetching customer points for user:', user.id);
+      await retryApiCall(
+        () => CustomerPointsRedux.actions.fetchCustomerPoints(user.id)(dispatch),
+        3, // max retries
+        1000 // initial delay
+      );
+      console.log('✅ Customer points fetched successfully');
+      setNetworkError(false);
+    } catch (error) {
+      console.log('❌ Error fetching customer points:', error.message);
+      if (isNetworkError(error)) {
+        setNetworkError(true);
+      }
+    }
+  }, [dispatch, setNetworkError, user]);
 
     const onRefresh = useCallback(async () => {
       setRefreshing(true);
@@ -82,7 +107,8 @@ const Home = React.memo(
         if (isConnected) {
           await Promise.all([
             fetchCategories(),
-            fetchAllCountries()
+            fetchAllCountries(),
+            fetchCustomerPoints()
           ]);
         }
         
@@ -93,10 +119,10 @@ const Home = React.memo(
         if (isNetworkError(error)) {
           setNetworkError(true);
         }
-      } finally {
-        setRefreshing(false);
-      }
-    }, [isConnected, fetchCategories, fetchAllCountries, setNetworkError]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [isConnected, fetchCategories, fetchAllCountries, fetchCustomerPoints, setNetworkError]);
 
     const setSelectedCategory = useCallback((category) => {
       CategoryRedux.actions.setSelectedCategory(dispatch, category);
@@ -150,6 +176,7 @@ const Home = React.memo(
           fetchCategories();
           fetchAllCountries();
         }
+        fetchCustomerPoints();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, countryList]);

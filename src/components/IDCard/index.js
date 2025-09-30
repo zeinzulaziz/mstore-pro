@@ -13,12 +13,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 // import QRCode from 'react-native-qrcode-svg';
 import {withTheme, Images, Tools} from '@common';
+import * as CustomerPointsRedux from '@redux/CustomerPointsRedux';
 
 const {width} = Dimensions.get('window');
 
 const IDCard = ({theme, onPress}) => {
   // Get user data from Redux store
   const user = useSelector(state => state.user);
+  const customerPoints = useSelector(state => state.customerPoints);
   const userData = user?.user || {
     first_name: '',
     last_name: '',
@@ -32,6 +34,9 @@ const IDCard = ({theme, onPress}) => {
   // Get user name using Tools.getName (same as other components)
   const userName = Tools.getName(userData);
   const userId = userData.id || userData.user_id || '000000';
+  
+  // Use points from API if available, otherwise fallback to userData.points
+  const userPoints = customerPoints.points || userData.points || 0;
   
   // Debug log (optional)
   // console.log('IDCard - User data:', userData);
@@ -95,7 +100,7 @@ const IDCard = ({theme, onPress}) => {
               <View style={styles.rewardsContainer}>
                 <View style={styles.rewardsBadge}>
                   <Text style={styles.rewardsLabel}>DoB Rewards</Text>
-                  <Text style={styles.rewardsPoints}>{userData.points || 0} points</Text>
+                  <Text style={styles.rewardsPoints}>{userPoints} points</Text>
                 </View>
               </View>
             </View>

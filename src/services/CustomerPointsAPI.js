@@ -9,6 +9,7 @@ export const CustomerPointsAPI = {
    * Get customer points by user ID
    * @param {string|number} userId - The user ID
    * @returns {Promise<Object>} Customer points data
+   * API Response: {"user_id": 32, "points": 380}
    */
   getCustomerPoints: async (userId) => {
     try {
@@ -48,7 +49,6 @@ export const CustomerPointsAPI = {
         error: error.message,
         data: {
           points: 0,
-          total_points: 0,
           user_id: userId,
         },
       };
@@ -100,7 +100,6 @@ export const CustomerPointsAPI = {
       error: lastError,
       data: {
         points: 0,
-        total_points: 0,
         user_id: userId,
       },
     };
