@@ -82,6 +82,7 @@ import SkeletonLoader, {
   CardSkeleton
 } from './SkeletonLoader';
 import OfflineSkeleton from './OfflineSkeleton';
+import IDCard from './IDCard';
 
 export {
   ProductList,
@@ -167,4 +168,5 @@ export {
   TextSkeleton,
   CardSkeleton,
   OfflineSkeleton,
+  IDCard,
 };

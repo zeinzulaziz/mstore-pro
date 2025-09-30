@@ -10,7 +10,7 @@ import * as LayoutRedux from '@redux/LayoutRedux';
 
 import Header from './Header';
 import ListItem from './ListItem';
-import {PostList} from '@components';
+import {PostList, IDCard} from '@components';
 import Categories from './Categories';
 import styles from './styles';
 
@@ -115,6 +115,14 @@ const HorizonList = React.memo(
                 onViewProductScreen={onViewProductScreen}
               />
             )}
+            
+            {/* ID Card Section */}
+            <IDCard 
+              onPress={() => {
+                console.log('ID Card pressed');
+                // Navigate to profile or member details
+              }}
+            />
           </>
         )}
         scrollEventThrottle={1}
