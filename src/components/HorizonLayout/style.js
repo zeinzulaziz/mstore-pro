@@ -117,7 +117,7 @@ export default StyleSheet.create({
     height: 170,
     borderRadius: 3,
     alignSelf: 'flex-start',
-    backgroundColor: '#F6F6F8',
+    backgroundColor: '#fff',
     resizeMode: 'contain',
   },
   nameThree: {
