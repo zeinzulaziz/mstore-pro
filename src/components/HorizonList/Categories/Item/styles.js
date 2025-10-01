@@ -7,7 +7,6 @@ export default StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 6,
     width: 90,
-    marginTop: 20,
   },
   button: {
     width: 60,
