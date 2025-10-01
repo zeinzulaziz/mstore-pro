@@ -12,7 +12,7 @@ export default {
   },
   container: {
     flexGrow: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#000000',
   },
   header: {
     position: 'absolute',

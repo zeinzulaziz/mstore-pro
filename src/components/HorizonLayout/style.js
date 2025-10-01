@@ -52,11 +52,12 @@ export default StyleSheet.create({
   },
   panelTwo: {
     position: 'relative',
-    width: 200,
+    width: '50%',
     alignItems: 'flex-start',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: 12,
-    marginLeft: 15,
+    marginLeft: 0,
+    paddingHorizontal: 10,
   },
   imagePanelTwo: {
     position: 'relative',
@@ -67,13 +68,14 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
   nameTwo: {
-    fontSize: 15,
-    width: 200,
-    marginTop: 8,
+    fontSize: 13,
+    width: '100%',
+    marginTop: 0,
     marginBottom: 4,
     fontFamily: Constants.fontHeader,
     textAlign: I18nManager.isRTL ? 'right' : 'left',
     color: Color.Text,
+    fontWeight: '600',
   },
   panelTwoHigh: {
     position: 'relative',

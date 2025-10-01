@@ -29,7 +29,7 @@ class TwoColumn extends PureComponent {
         style={css.panelTwo}
         onPress={viewPost}>
         <ImageCache uri={imageURI} style={css.imagePanelTwo} />
-        <Text numberOfLines={2} style={[css.nameTwo, {color: text}]}>
+        <Text numberOfLines={3} style={[css.nameTwo, {color: text}]}>
           {title}
         </Text>
         <ProductPrice currency={currency} product={product} hideDisCount />
