@@ -12,7 +12,7 @@ const CustomerSummary = ({theme = {}}) => {
   const customerPoints = useSelector(state => state.customerPoints);
   const name = Tools.getName(user);
   
-  // Use points from API if available, otherwise fallback to 327
+  // Use points from API if available, otherwise fallback to 0
   const userPoints = customerPoints.points || 0;
 
   // Debug log untuk cek theme

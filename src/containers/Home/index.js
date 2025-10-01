@@ -181,6 +181,17 @@ const Home = React.memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, countryList]);
 
+    // Watch for user changes and fetch customer points when user logs in
+    useEffect(() => {
+      if (user && user.id && isConnected) {
+        console.log('👤 User detected, fetching customer points for user:', user.id);
+        fetchCustomerPoints();
+      } else if (!user) {
+        console.log('👤 No user detected, clearing customer points');
+        dispatch(CustomerPointsRedux.actions.clearCustomerPoints());
+      }
+    }, [user, isConnected, fetchCustomerPoints, dispatch]);
+
     // Background app state listener for auto-refresh
     useEffect(() => {
       const handleAppStateChange = (nextAppState) => {
@@ -314,7 +325,7 @@ const Home = React.memo(
                 <ApiCategories
                   key={`categories-${refreshKey}`}
                   onShowAll={onShowAll}
-                  style={{paddingBottom: 30, paddingLeft: 10, paddingRight: 10}}
+                  style={{paddingBottom: 10, paddingLeft: 10, paddingRight: 10}}
                   justCameOnline={justCameOnline}
                 />
                 <BannerPostsSlider

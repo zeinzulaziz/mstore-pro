@@ -27,7 +27,7 @@ export default StyleSheet.create({
     fontWeight: '500',
   },
   list: {
-    paddingBottom: 10,
+    paddingBottom: 5,
     paddingHorizontal: horizontalPadding,
   },
 });

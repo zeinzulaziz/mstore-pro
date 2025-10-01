@@ -321,7 +321,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
         // Add padding top to account for absolute positioned TopHeader
         paddingTop: Platform.OS === 'android' ? 50 : 80,
         // Add negative margin to eliminate remaining space
-        marginTop: Platform.OS === 'android' ? -10 : 0,
+        marginTop: Platform.OS === 'android' ? -15 : -5,
         zIndex: 0, // Lower than TopHeader
       }
     ]}>
