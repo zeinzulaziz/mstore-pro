@@ -88,14 +88,15 @@ export default StyleSheet.create({
   // RenderHedearListView
   header: {
     flexDirection: 'row',
-    marginBottom: 12,
-    marginTop: 18,
+    marginBottom: 15,
+    marginTop: 20,
+    paddingHorizontal: 15,
   },
   headerLeft: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginLeft: 15,
+    marginLeft: 0,
   },
   headerRight: {
     flex: 1 / 3,
@@ -118,10 +119,10 @@ export default StyleSheet.create({
   },
 
   tagHeader: {
-    fontSize: 18,
-    color: '#666',
-    letterSpacing: 2,
+    fontSize: 20,
+    color: '#2c3e50',
     fontFamily: Fonts.bold,
+    fontWeight: '600',
   },
 
   headerLogo: {
