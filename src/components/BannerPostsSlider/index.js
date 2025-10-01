@@ -10,20 +10,24 @@ import {retryApiCall, isNetworkError} from '../../utils/apiRetry';
 const {width} = Dimensions.get('window');
 
 // Separate component for banner item to use hooks
-const BannerItem = ({item, onPressPost, imageURL}) => {
+const BannerItem = ({item, onPressPost, imageURL, showPartialNext = false}) => {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  
+  const itemWidth = showPartialNext ? width * 0.75 : width;
+  const skeletonWidth = showPartialNext ? width * 0.75 - 30 : width - 30;
+  const itemHeight = (itemWidth - 30) * (2 / 3); // Aspect ratio 6:19
   
   return (
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() => onPressPost && onPressPost(item)}
-      style={{width, paddingHorizontal: 15}}>
-      <View style={{width: '100%', height: 200, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
+      style={{width: itemWidth, paddingHorizontal: 15}}>
+      <View style={{width: '100%', height: itemHeight, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
         {imageLoading && !imageError && (
           <BannerSkeleton 
-            width={width - 30} 
-            height={200} 
+            width={skeletonWidth} 
+            height={itemHeight} 
             style={{position: 'absolute', top: 0, left: 0}}
           />
         )}
@@ -96,7 +100,7 @@ const bannerRadialGradient3 = {
   overflow: 'hidden',
 };
 
-const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3', style, transparent = false, justCameOnline = false}) => {
+const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2/banner?banner-type=377', query = '?_embed&per_page=3', style, transparent = false, justCameOnline = false, showPartialNext = false}) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -224,7 +228,8 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
       <BannerItem 
         item={item} 
         onPressPost={onPressPost} 
-        imageURL={imageURL} 
+        imageURL={imageURL}
+        showPartialNext={showPartialNext}
       />
     );
   };
@@ -354,10 +359,17 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
         keyExtractor={(it, idx) => `${it.id || idx}`}
         renderItem={renderItem}
         horizontal
-        pagingEnabled
+        pagingEnabled={!showPartialNext}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onScrollEnd}
-        getItemLayout={(data, index) => ({length: width, offset: width * index, index})}
+        snapToInterval={showPartialNext ? width * 0.75 : width}
+        decelerationRate={showPartialNext ? "fast" : "normal"}
+        snapToAlignment="start"
+        contentContainerStyle={showPartialNext ? {paddingRight: width * 0.25} : {}}
+        getItemLayout={(data, index) => {
+          const itemLength = showPartialNext ? width * 0.75 : width;
+          return {length: itemLength, offset: itemLength * index, index};
+        }}
       />
       {renderDots()}
     </View>

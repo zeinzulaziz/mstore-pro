@@ -327,6 +327,7 @@ const Home = React.memo(
                   }
                   transparent={true}
                   justCameOnline={justCameOnline}
+                  showPartialNext={true}
                 />
               </>
             )}
@@ -367,6 +368,7 @@ const Home = React.memo(
                   }
                   transparent={true}
                   justCameOnline={justCameOnline}
+                  showPartialNext={true}
                 />
               </>
             )}
