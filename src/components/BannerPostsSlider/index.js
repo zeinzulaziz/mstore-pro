@@ -15,14 +15,14 @@ const BannerItem = ({item, onPressPost, imageURL, showPartialNext = false}) => {
   const [imageError, setImageError] = useState(false);
   
   const itemWidth = showPartialNext ? width * 0.75 : width;
-  const skeletonWidth = showPartialNext ? width * 0.75 - 30 : width - 30;
-  const itemHeight = (itemWidth - 30) * (2 / 3); // Aspect ratio 6:19
+  const skeletonWidth = showPartialNext ? width * 0.75 - 10 : width - 10;
+  const itemHeight = (itemWidth - 10) * (2 / 3); // Aspect ratio 6:19
   
   return (
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() => onPressPost && onPressPost(item)}
-      style={{width: itemWidth, paddingHorizontal: 15}}>
+      style={{width: itemWidth, paddingHorizontal: 5}}>
       <View style={{width: '100%', height: itemHeight, justifyContent: 'center', alignItems: 'center', borderRadius: 15, overflow: 'hidden'}}>
         {imageLoading && !imageError && (
           <BannerSkeleton 
@@ -365,7 +365,7 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
         snapToInterval={showPartialNext ? width * 0.75 : width}
         decelerationRate={showPartialNext ? "fast" : "normal"}
         snapToAlignment="start"
-        contentContainerStyle={showPartialNext ? {paddingRight: width * 0.25} : {}}
+        contentContainerStyle={showPartialNext ? {paddingRight: width * 0.2} : {}}
         getItemLayout={(data, index) => {
           const itemLength = showPartialNext ? width * 0.75 : width;
           return {length: itemLength, offset: itemLength * index, index};
