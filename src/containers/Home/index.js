@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 import {initializeCache} from '@utils/CacheManager';
-
 import {Constants, withTheme} from '@common';
 import {ROUTER} from '@navigation/constants';
 import {HorizonList, ModalLayout, PostList, BannerPostsSlider, CustomerSummary, AnnouncementTicker, ApiCategories, BrandFeature, TopHeader} from '@components';
