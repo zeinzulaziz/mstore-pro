@@ -1,18 +1,66 @@
-import React from 'react';
-import {View} from 'react-native';
+import React, { useState } from 'react';
+import {View, TouchableOpacity, Text, Alert} from 'react-native';
 import {Controller} from 'react-hook-form';
 
-import {TextInput, SelectCountry} from '@components';
-import {Languages, withTheme} from '@common';
+import {TextInput, SelectCountry, Button, MapPicker} from '@components';
+import {Languages, withTheme, Color, Fonts} from '@common';
+import GeolocationService from '@services/GeolocationService';
 
 import styles from './styles';
 
 const AddressForm = React.memo(({errors, control, ...rest}) => {
   const {
     theme: {
-      colors: {placeholder},
+      colors: {placeholder, text},
     },
   } = rest;
+
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationStatus, setLocationStatus] = useState('');
+  const [showMapPicker, setShowMapPicker] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const getCurrentLocation = async () => {
+    setIsGettingLocation(true);
+    setLocationStatus('Getting location...');
+    
+    try {
+      const position = await GeolocationService.getLocationWithFallback();
+      
+      // Update form values
+      control._formValues.latitude = position.latitude.toString();
+      control._formValues.longitude = position.longitude.toString();
+      
+      setLocationStatus(`Location found: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`);
+      
+      Alert.alert(
+        'Location Updated',
+        `Coordinates: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Location error:', error);
+      setLocationStatus('Failed to get location');
+      Alert.alert(
+        'Location Error',
+        'Unable to get current location. Using default coordinates.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsGettingLocation(false);
+    }
+  };
+
+  const onLocationSelect = (location) => {
+    setSelectedLocation(location);
+    control._formValues.latitude = location.latitude.toString();
+    control._formValues.longitude = location.longitude.toString();
+    setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+  };
+
+  const openMapPicker = () => {
+    setShowMapPicker(true);
+  };
 
   return (
     <View style={styles.formContainer}>
@@ -106,6 +154,63 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
         )}
         name="postcode"
       />
+      
+      {/* Location Buttons */}
+      <View style={styles.locationContainer}>
+        <View style={styles.locationButtonsRow}>
+          <Button
+            text={isGettingLocation ? "Getting Location..." : "📍 Get Current Location"}
+            onPress={getCurrentLocation}
+            isLoading={isGettingLocation}
+            style={[styles.locationButton, styles.halfButton]}
+            textStyle={styles.locationButtonText}
+          />
+          <Button
+            text="🗺️ Pick on Map"
+            onPress={openMapPicker}
+            style={[styles.locationButton, styles.halfButton, styles.mapButton]}
+            textStyle={styles.locationButtonText}
+          />
+        </View>
+        {locationStatus ? (
+          <Text style={[styles.locationStatus, { color: text }]}>
+            {locationStatus}
+          </Text>
+        ) : null}
+      </View>
+
+      <Controller
+        control={control}
+        render={({field: {onChange, value}}) => (
+          <TextInput
+            label="Latitude"
+            onChangeText={onChange}
+            value={value}
+            placeholder="e.g., -6.2088"
+            underlineColorAndroid={'transparent'}
+            placeholderTextColor={placeholder}
+            error={errors.latitude?.message}
+            keyboardType="numeric"
+          />
+        )}
+        name="latitude"
+      />
+      <Controller
+        control={control}
+        render={({field: {onChange, value}}) => (
+          <TextInput
+            label="Longitude"
+            onChangeText={onChange}
+            value={value}
+            placeholder="e.g., 106.8456"
+            underlineColorAndroid={'transparent'}
+            placeholderTextColor={placeholder}
+            error={errors.longitude?.message}
+            keyboardType="numeric"
+          />
+        )}
+        name="longitude"
+      />
       <Controller
         control={control}
         render={({field: {onChange, value}}) => (
@@ -161,6 +266,14 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
           />
         )}
         name="note"
+      />
+
+      {/* Map Picker Modal */}
+      <MapPicker
+        visible={showMapPicker}
+        onClose={() => setShowMapPicker(false)}
+        onLocationSelect={onLocationSelect}
+        initialLocation={selectedLocation}
       />
     </View>
   );

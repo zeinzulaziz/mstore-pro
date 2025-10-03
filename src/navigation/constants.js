@@ -24,6 +24,8 @@ export const ROUTER = {
 
   // Cart
   CART: 'CartScreen',
+  ORDER_SUMMARY: 'OrderSummaryScreen',
+  PAYMENT_METHODS: 'PaymentMethodsScreen',
 
   // User Profile
   USER_PROFILE: 'UserProfile',

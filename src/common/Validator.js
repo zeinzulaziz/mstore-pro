@@ -122,6 +122,8 @@ export const addAddressSchema = Yup.object().shape({
   city: Yup.string().required('Required'),
   state: Yup.string().required('Required'),
   postcode: Yup.string().required('Required'),
+  latitude: Yup.string().optional(),
+  longitude: Yup.string().optional(),
   country: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
   phone: Yup.string().min(8).max(13).required('Required'),

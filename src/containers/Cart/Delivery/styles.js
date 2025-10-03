@@ -1,6 +1,7 @@
 /** @format */
 
 import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { Color, Fonts } from '@common';
 
 const { width, height } = Dimensions.get('window');
 
@@ -94,5 +95,40 @@ export default StyleSheet.create({
   formContainer: {
     padding: 10,
     paddingBottom: 50,
+  },
+  locationContainer: {
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+  locationButtonsRow: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  locationButton: {
+    backgroundColor: Color.primary,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  halfButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  mapButton: {
+    backgroundColor: '#4CAF50',
+  },
+  locationButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: Fonts.regular,
+    fontWeight: '600',
+  },
+  locationStatus: {
+    fontSize: 12,
+    fontFamily: Fonts.regular,
+    textAlign: 'center',
+    marginTop: 5,
   },
 });

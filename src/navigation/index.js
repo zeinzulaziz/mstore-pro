@@ -25,6 +25,8 @@ import UserProfileScreen from './UserProfileScreen';
 import FiltersScreen from './FiltersScreen';
 import AddressScreen from './AddressScreen';
 import AddAddressScreen from './AddAddressScreen';
+import OrderSummaryScreen from '../containers/OrderSummaryScreen';
+import PaymentMethodsScreen from '../containers/PaymentMethodsScreen';
 
 // import TransitionConfig from "./TransitionConfig";
 import {getNavigationOptions} from './utils';
@@ -404,6 +406,20 @@ const AppNavigator = parentProps => {
       <AppStack.Screen
         name={ROUTER.SEARCH}
         component={SearchScreen}
+        options={props => {
+          return getNavigationOptions({...props, theme});
+        }}
+      />
+      <AppStack.Screen
+        name={ROUTER.ORDER_SUMMARY}
+        component={OrderSummaryScreen}
+        options={props => {
+          return getNavigationOptions({...props, theme});
+        }}
+      />
+      <AppStack.Screen
+        name={ROUTER.PAYMENT_METHODS}
+        component={PaymentMethodsScreen}
         options={props => {
           return getNavigationOptions({...props, theme});
         }}

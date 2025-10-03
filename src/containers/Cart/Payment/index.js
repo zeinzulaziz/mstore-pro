@@ -34,11 +34,13 @@ class PaymentOptions extends PureComponent {
     isLoading: PropTypes.bool,
     cartItems: PropTypes.any,
     onShowCheckOut: PropTypes.func,
+    onShowNativeOnePageCheckOut: PropTypes.func,
     emptyCart: PropTypes.func,
     couponCode: PropTypes.any,
     couponId: PropTypes.any,
     couponAmount: PropTypes.any,
     shippingMethod: PropTypes.any,
+    navigation: PropTypes.object,
   };
 
   constructor(props) {
@@ -194,14 +196,15 @@ class PaymentOptions extends PureComponent {
           this.setState({loading: false});
         },
       );
-    } else if (Config.NativeOnePageCheckout) {
-      // other kind of payment
-      Reactotron.log('payload', payload);
-      this.props.onShowNativeOnePageCheckOut(payload);
     } else {
-      // other kind of payment
+      // Navigate to native order summary screen for all payment methods
       Reactotron.log('payload', payload);
-      this.props.onShowCheckOut(payload);
+      if (this.props.onShowNativeOnePageCheckOut) {
+        this.props.onShowNativeOnePageCheckOut(payload);
+      } else {
+        // Fallback to webview if navigation not available
+        this.props.onShowCheckOut(payload);
+      }
     }
   };
 

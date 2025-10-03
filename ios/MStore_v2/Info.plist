@@ -66,7 +66,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This app needs access to location to calculate accurate shipping rates and show your location on the map.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location to calculate accurate shipping rates and show your location on the map.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location to calculate accurate shipping rates and show your location on the map.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

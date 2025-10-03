@@ -40,3 +40,4 @@ class ReviewModal extends PureComponent {
 }
 
 export default ReviewModal;
+export { ReviewModal as ModalReview };

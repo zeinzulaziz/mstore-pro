@@ -124,41 +124,8 @@ class Cart extends PureComponent {
   };
 
   renderCheckOut = () => {
-    const userAgentAndroid =
-      'Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30';
-    return (
-      <Modal
-        ref={modal => (this.checkoutModal = modal)}
-        coverScreen
-        position="top"
-        keyboardTopOffset={0}
-        backdropPressToClose={false}
-        backButtonClose
-        transparent={false}
-        backdropColor="black"
-        swipeToClose={false}
-        onClosed={this._onClosedModal}
-        style={styles.modal}>
-        <WebView
-          startInLoadingState
-          style={styles.webView}
-          source={{uri: this.state.checkOutUrl}}
-          userAgent={userAgentAndroid}
-          onNavigationStateChange={status =>
-            this._onNavigationStateChange(status)
-          }
-          scalesPageToFit
-        />
-        <TouchableOpacity
-          style={styles.iconZoom}
-          onPress={() => {
-            this.checkoutModal.close();
-            this.setState({openModal: false});
-          }}>
-          <Text style={styles.textClose}>{Languages.close}</Text>
-        </TouchableOpacity>
-      </Modal>
-    );
+    // WebView modal is no longer needed since we use native screens
+    return null;
   };
 
   _onClosedModal = () => {
@@ -194,21 +161,18 @@ class Cart extends PureComponent {
   };
 
   onShowNativeOnePageCheckOut = async order => {
-    const params = base64.encode(encodeURIComponent(JSON.stringify(order)));
-    CustomAPI.getCheckoutUrl({order: params}, checkOutUrl => {
-      this.setState({checkOutUrl, openModal: true}, () => {
-        this.checkoutModal.open();
-      });
+    // Navigate to native order summary screen instead of webview
+    this.props.navigation.navigate('OrderSummaryScreen', {
+      orderData: order,
     });
   };
 
   onShowCheckOut = async order => {
+    // Navigate to native order summary screen instead of webview
     Reactotron.log('order', order);
-    const params = base64.encode(encodeURIComponent(JSON.stringify(order)));
-    const checkOutUrl = `${Config.WooCommerce.url}/${Constants.WordPress.checkout}/?order=${params}`;
-
-    await this.setState({order, openModal: true, checkOutUrl});
-    this.checkoutModal.open();
+    this.props.navigation.navigate('OrderSummaryScreen', {
+      orderData: order,
+    });
   };
 
   onPrevious = () => {
@@ -260,7 +224,8 @@ class Cart extends PureComponent {
     ];
     return (
       <View style={[styles.fill, {backgroundColor: background}]}>
-        {this.renderCheckOut()}
+        {/* WebView modal is no longer needed since we use native screens */}
+        {/* {this.renderCheckOut()} */}
         <View style={styles.indicator}>
           <StepIndicator
             steps={steps}
