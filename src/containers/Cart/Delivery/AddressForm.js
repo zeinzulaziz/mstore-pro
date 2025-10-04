@@ -5,6 +5,7 @@ import {Controller} from 'react-hook-form';
 import {TextInput, SelectCountry, Button, MapPicker} from '@components';
 import {Languages, withTheme, Color, Fonts} from '@common';
 import GeolocationService from '@services/GeolocationService';
+import ReverseGeocodingService from '@services/ReverseGeocodingService';
 
 import styles from './styles';
 
@@ -19,6 +20,7 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
   const [locationStatus, setLocationStatus] = useState('');
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [addressDetails, setAddressDetails] = useState(null);
 
   const getCurrentLocation = async () => {
     setIsGettingLocation(true);
@@ -31,11 +33,34 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
       control._formValues.latitude = position.latitude.toString();
       control._formValues.longitude = position.longitude.toString();
       
-      setLocationStatus(`Location found: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`);
+      // Get address from coordinates
+      setLocationStatus('Converting to address...');
+      const addressData = await ReverseGeocodingService.getAddressWithFallback(
+        position.latitude, 
+        position.longitude
+      );
+      
+      setAddressDetails(addressData);
+      
+      // Update form with address data
+      if (addressData.city !== 'Unknown') {
+        control._formValues.city = addressData.city;
+      }
+      if (addressData.district !== 'Unknown') {
+        control._formValues.district = addressData.district;
+      }
+      if (addressData.province !== 'Unknown') {
+        control._formValues.province = addressData.province;
+      }
+      if (addressData.postcode !== 'Unknown') {
+        control._formValues.postcode = addressData.postcode;
+      }
+      
+      setLocationStatus(`Location selected: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`);
       
       Alert.alert(
         'Location Updated',
-        `Coordinates: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`,
+        `Coordinates: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}\nAddress: ${addressData.formattedAddress}`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -43,7 +68,7 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
       setLocationStatus('Failed to get location');
       Alert.alert(
         'Location Error',
-        'Unable to get current location. Using default coordinates.',
+        'Unable to get current location. Please try again.',
         [{ text: 'OK' }]
       );
     } finally {
@@ -51,11 +76,40 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
     }
   };
 
-  const onLocationSelect = (location) => {
+  const onLocationSelect = async (location) => {
     setSelectedLocation(location);
     control._formValues.latitude = location.latitude.toString();
     control._formValues.longitude = location.longitude.toString();
-    setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+    
+    // Get address from coordinates
+    setLocationStatus('Converting to address...');
+    try {
+      const addressData = await ReverseGeocodingService.getAddressWithFallback(
+        location.latitude, 
+        location.longitude
+      );
+      
+      setAddressDetails(addressData);
+      
+      // Update form with address data
+      if (addressData.city !== 'Unknown') {
+        control._formValues.city = addressData.city;
+      }
+      if (addressData.district !== 'Unknown') {
+        control._formValues.district = addressData.district;
+      }
+      if (addressData.province !== 'Unknown') {
+        control._formValues.province = addressData.province;
+      }
+      if (addressData.postcode !== 'Unknown') {
+        control._formValues.postcode = addressData.postcode;
+      }
+      
+      setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+    } catch (error) {
+      console.error('Reverse geocoding error:', error);
+      setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+    }
   };
 
   const openMapPicker = () => {
@@ -177,40 +231,30 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
             {locationStatus}
           </Text>
         ) : null}
+        
+        {/* Address Details Display */}
+        {addressDetails && (
+          <View style={styles.addressDetailsContainer}>
+            <Text style={[styles.addressDetailsTitle, { color: text }]}>
+              Detail Alamat:
+            </Text>
+            <View style={styles.addressComponents}>
+              <Text style={[styles.addressComponent, { color: text }]}>
+                Kota: {addressDetails.city}
+              </Text>
+              <Text style={[styles.addressComponent, { color: text }]}>
+                Kecamatan: {addressDetails.district}
+              </Text>
+              <Text style={[styles.addressComponent, { color: text }]}>
+                Provinsi: {addressDetails.province}
+              </Text>
+              <Text style={[styles.addressComponent, { color: text }]}>
+                Kode Pos: {addressDetails.postcode}
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
-
-      <Controller
-        control={control}
-        render={({field: {onChange, value}}) => (
-          <TextInput
-            label="Latitude"
-            onChangeText={onChange}
-            value={value}
-            placeholder="e.g., -6.2088"
-            underlineColorAndroid={'transparent'}
-            placeholderTextColor={placeholder}
-            error={errors.latitude?.message}
-            keyboardType="numeric"
-          />
-        )}
-        name="latitude"
-      />
-      <Controller
-        control={control}
-        render={({field: {onChange, value}}) => (
-          <TextInput
-            label="Longitude"
-            onChangeText={onChange}
-            value={value}
-            placeholder="e.g., 106.8456"
-            underlineColorAndroid={'transparent'}
-            placeholderTextColor={placeholder}
-            error={errors.longitude?.message}
-            keyboardType="numeric"
-          />
-        )}
-        name="longitude"
-      />
       <Controller
         control={control}
         render={({field: {onChange, value}}) => (

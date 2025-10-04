@@ -8,6 +8,8 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  TextInput,
+  FlatList,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,6 +26,10 @@ const MapPicker = ({
 }) => {
   const [selectedLocation, setSelectedLocation] = useState(initialLocation);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const webViewRef = useRef(null);
 
   useEffect(() => {
@@ -98,6 +104,68 @@ const MapPicker = ({
       }
     } catch (error) {
       console.error('Error parsing map message:', error);
+    }
+  };
+
+  const searchLocation = async (query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1&accept-language=id`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const results = await response.json();
+      setSearchResults(results);
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error('Search error:', error);
+      Alert.alert('Search Error', 'Gagal mencari lokasi. Silakan coba lagi.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const selectSearchResult = (result) => {
+    const location = {
+      latitude: parseFloat(result.lat),
+      longitude: parseFloat(result.lon)
+    };
+    
+    setSelectedLocation(location);
+    setSearchQuery(result.display_name);
+    setShowSearchResults(false);
+    
+    // Update map to selected location
+    if (webViewRef.current) {
+      const script = `
+        if (window.map && window.marker) {
+          const newLatLng = L.latLng(${location.latitude}, ${location.longitude});
+          window.map.setCenter(newLatLng);
+          window.map.setZoom(16);
+          window.marker.setLatLng(newLatLng);
+        }
+      `;
+      webViewRef.current.injectJavaScript(script);
+    }
+  };
+
+  const handleSearchChange = (text) => {
+    setSearchQuery(text);
+    if (text.length > 2) {
+      searchLocation(text);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
     }
   };
 
@@ -317,6 +385,52 @@ const MapPicker = ({
           </Text>
         </View>
 
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputContainer}>
+            <Icon name="search" size={20} color={Color.grey} style={styles.searchIcon} />
+            <TextInput
+              style={[styles.searchInput, { color: text }]}
+              placeholder="Cari alamat, tempat, atau landmark..."
+              placeholderTextColor={Color.grey}
+              value={searchQuery}
+              onChangeText={handleSearchChange}
+              returnKeyType="search"
+            />
+            {isSearching && (
+              <ActivityIndicator size="small" color={Color.primary} style={styles.searchLoading} />
+            )}
+          </View>
+          
+          {/* Search Results */}
+          {showSearchResults && searchResults.length > 0 && (
+            <View style={styles.searchResultsContainer}>
+              <FlatList
+                data={searchResults}
+                keyExtractor={(item, index) => `${item.place_id || index}`}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.searchResultItem}
+                    onPress={() => selectSearchResult(item)}
+                  >
+                    <Icon name="place" size={16} color={Color.primary} />
+                    <View style={styles.searchResultText}>
+                      <Text style={[styles.searchResultTitle, { color: text }]} numberOfLines={1}>
+                        {item.display_name.split(',')[0]}
+                      </Text>
+                      <Text style={[styles.searchResultSubtitle, { color: Color.grey }]} numberOfLines={2}>
+                        {item.display_name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                style={styles.searchResultsList}
+                keyboardShouldPersistTaps="handled"
+              />
+            </View>
+          )}
+        </View>
+
         {/* Map */}
         <View style={styles.mapContainer}>
           <WebView
@@ -411,16 +525,87 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     textAlign: 'center',
   },
+  searchContainer: {
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+    zIndex: 1000,
+    elevation: 5,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: Fonts.regular,
+    paddingVertical: 4,
+  },
+  searchLoading: {
+    marginLeft: 8,
+  },
+  searchResultsContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 15,
+    right: 15,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    maxHeight: 200,
+    zIndex: 9999,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  searchResultsList: {
+    maxHeight: 200,
+  },
+  searchResultItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  searchResultText: {
+    flex: 1,
+    marginLeft: 8,
+  },
+  searchResultTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.medium,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  searchResultSubtitle: {
+    fontSize: 12,
+    fontFamily: Fonts.regular,
+    lineHeight: 16,
+  },
   mapContainer: {
     flex: 1,
     margin: 16,
     borderRadius: 12,
     overflow: 'hidden',
-    elevation: 4,
+    elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+    zIndex: 1,
   },
   map: {
     flex: 1,
