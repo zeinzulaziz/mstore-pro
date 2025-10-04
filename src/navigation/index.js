@@ -27,6 +27,7 @@ import AddressScreen from './AddressScreen';
 import AddAddressScreen from './AddAddressScreen';
 import OrderSummaryScreen from '../containers/OrderSummaryScreen';
 import PaymentMethodsScreen from '../containers/PaymentMethodsScreen';
+import MidtransPaymentScreen from '../containers/MidtransPaymentScreen';
 
 // import TransitionConfig from "./TransitionConfig";
 import {getNavigationOptions} from './utils';
@@ -420,6 +421,13 @@ const AppNavigator = parentProps => {
       <AppStack.Screen
         name={ROUTER.PAYMENT_METHODS}
         component={PaymentMethodsScreen}
+        options={props => {
+          return getNavigationOptions({...props, theme});
+        }}
+      />
+      <AppStack.Screen
+        name={ROUTER.MIDTRANS_PAYMENT}
+        component={MidtransPaymentScreen}
         options={props => {
           return getNavigationOptions({...props, theme});
         }}

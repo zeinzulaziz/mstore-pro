@@ -15,7 +15,7 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   shippingMethodsList: {
-    maxHeight: 300,
+    // Removed maxHeight to prevent VirtualizedList error
   },
   shippingMethodItem: {
     padding: 12,

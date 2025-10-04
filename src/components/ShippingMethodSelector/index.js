@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { withTheme, Tools, Languages, Color, Fonts } from '@common';
 import styles from './styles';
@@ -141,13 +141,13 @@ class ShippingMethodSelector extends PureComponent {
         <Text style={[styles.sectionTitle, { color: text }]}>
           {Languages.ShippingMethods || 'Shipping Methods'}
         </Text>
-        <FlatList
-          data={shippingRates}
-          renderItem={this.renderShippingMethod}
-          keyExtractor={(item, index) => `${item.courier_code}-${item.service_code}-${index}`}
-          showsVerticalScrollIndicator={false}
-          style={styles.shippingMethodsList}
-        />
+        <View style={styles.shippingMethodsList}>
+          {shippingRates.map((item, index) => (
+            <View key={`${item.courier_code}-${item.service_code}-${index}`}>
+              {this.renderShippingMethod({ item })}
+            </View>
+          ))}
+        </View>
       </View>
     );
   }

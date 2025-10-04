@@ -1,9 +1,9 @@
 /** @format */
 
 import React, { PureComponent } from 'react';
-import { View, SafeAreaView, StatusBar } from 'react-native';
+import { View, SafeAreaView, StatusBar, Text } from 'react-native';
 import { withTheme, Languages } from '@common';
-import { Header, MidtransPaymentMethods } from '@components';
+import { Header } from '@components';
 import { connect } from 'react-redux';
 import styles from './styles';
 
@@ -11,50 +11,7 @@ class PaymentMethodsScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethods: [
-        {
-          id: 'credit_card',
-          name: 'Credit Card',
-          description: 'Visa, Mastercard, JCB',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'bank_transfer',
-          name: 'Bank Transfer',
-          description: 'BCA, BNI, BRI, Mandiri',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'gopay',
-          name: 'GoPay',
-          description: 'Pay with GoPay wallet',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'shopeepay',
-          name: 'ShopeePay',
-          description: 'Pay with ShopeePay wallet',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'qris',
-          name: 'QRIS',
-          description: 'Scan QR code to pay',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'alfamart',
-          name: 'Alfamart',
-          description: 'Pay at Alfamart store',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-        {
-          id: 'indomaret',
-          name: 'Indomaret',
-          description: 'Pay at Indomaret store',
-          icon: 'https://via.placeholder.com/40x40',
-        },
-      ],
+      selectedPaymentMethod: null,
     };
   }
 
@@ -62,7 +19,11 @@ class PaymentMethodsScreen extends PureComponent {
     this.props.navigation.goBack();
   };
 
-  onProceedPayment = (selectedMethod) => {
+  onSelectPaymentMethod = (selectedMethod) => {
+    this.setState({ selectedPaymentMethod: selectedMethod });
+  };
+
+  onProceedToPayment = (selectedMethod) => {
     const { navigation, route } = this.props;
     const { orderData, onPaymentSuccess, onPaymentError } = route.params;
 
@@ -95,7 +56,7 @@ class PaymentMethodsScreen extends PureComponent {
   render() {
     const { theme, route, currency } = this.props;
     const { orderData } = route.params;
-    const { paymentMethods } = this.state;
+    const { selectedPaymentMethod } = this.state;
 
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -110,13 +71,14 @@ class PaymentMethodsScreen extends PureComponent {
           style={styles.header}
         />
 
-        <MidtransPaymentMethods
-          paymentMethods={paymentMethods}
-          orderData={orderData}
-          currency={this.props.currency}
-          onBack={this.onBack}
-          onProceedPayment={this.onProceedPayment}
-        />
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: text }]}>
+            {Languages.PaymentMethods || 'Payment Methods'}
+          </Text>
+          <Text style={[styles.description, { color: text }]}>
+            Payment methods are now handled in the Midtrans Snap UI. Please proceed to payment to select your preferred payment method.
+          </Text>
+        </View>
       </SafeAreaView>
     );
   }

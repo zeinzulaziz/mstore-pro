@@ -271,6 +271,7 @@ class OrderSummary extends PureComponent {
     });
   };
 
+
   applyCoupon = () => {
     const { couponCode } = this.state;
     if (!couponCode.trim()) return;
@@ -482,6 +483,7 @@ class OrderSummary extends PureComponent {
             currency={this.props.currency}
           />
 
+
           {/* Billing Address */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: text }]}>
@@ -603,9 +605,37 @@ class OrderSummary extends PureComponent {
         <View style={styles.buttonContainer}>
           <Button
             text={Languages.ProceedToPayment || 'Proceed to Payment'}
-            onPress={onProceedToPayment}
+            onPress={() => {
+              const { selectedShippingMethod } = this.state;
+              
+              // Check if shipping method is selected
+              if (!selectedShippingMethod) {
+                alert('Please select a shipping method first.');
+                return;
+              }
+              
+              // Pass the order data with selected shipping method to the payment screen
+              const orderDataWithMethods = {
+                ...orderData,
+                selectedShippingMethod,
+                shippingPrice: selectedShippingMethod.price,
+                totalPrice: this.state.calculatedTotalPrice
+              };
+              
+              onProceedToPayment(orderDataWithMethods);
+            }}
             isLoading={isLoading}
-            style={styles.proceedButton}
+            style={[
+              styles.proceedButton,
+              {
+                backgroundColor: this.state.selectedShippingMethod 
+                  ? Color.primary 
+                  : Color.grey,
+                opacity: this.state.selectedShippingMethod 
+                  ? 1 
+                  : 0.5
+              }
+            ]}
             textStyle={styles.proceedButtonText}
           />
         </View>

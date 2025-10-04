@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import { View, SafeAreaView, StatusBar } from 'react-native';
 import { withTheme, Languages, Color, Tools } from '@common';
-import { Header, OrderSummary } from '@components';
+import { OrderSummary } from '@components';
 import { connect } from 'react-redux';
 import styles from './styles';
 
@@ -20,15 +20,14 @@ class OrderSummaryScreen extends PureComponent {
     this.props.navigation.goBack();
   };
 
-  onProceedToPayment = () => {
-    const { navigation, route } = this.props;
-    const { orderData } = route.params;
+  onProceedToPayment = (orderDataWithMethods) => {
+    const { navigation } = this.props;
     
     this.setState({ isLoading: true });
     
-    // Navigate to payment methods screen
-    navigation.navigate('PaymentMethodsScreen', {
-      orderData,
+    // Navigate directly to Midtrans payment screen
+    navigation.navigate('MidtransPaymentScreen', {
+      orderData: orderDataWithMethods,
       onPaymentSuccess: this.onPaymentSuccess,
       onPaymentError: this.onPaymentError,
     });
@@ -91,11 +90,6 @@ class OrderSummaryScreen extends PureComponent {
           backgroundColor={theme.colors.background}
         />
         
-        <Header
-          title={Languages.OrderSummary || 'Order Summary'}
-          onBack={() => this.props.navigation.goBack()}
-          style={styles.header}
-        />
 
         <OrderSummary
           orderData={transformedOrderData}

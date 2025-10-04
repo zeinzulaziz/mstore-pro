@@ -61,7 +61,6 @@ import TextHighlight from './TextHighlight';
 import ColumnCategories from './ColumnCategories';
 import ApiCategories from './ApiCategories';
 import OrderSummary from './OrderSummary';
-import MidtransPaymentMethods from './MidtransPaymentMethods';
 import MapPicker from './MapPicker';
 import SubCategories from './SubCategories';
 import ActionSheets from './ActionSheets';
@@ -153,7 +152,6 @@ export {
   ColumnCategories,
   ApiCategories,
   OrderSummary,
-  MidtransPaymentMethods,
   MapPicker,
   SubCategories,
   DisCount,

@@ -26,6 +26,7 @@ export const ROUTER = {
   CART: 'CartScreen',
   ORDER_SUMMARY: 'OrderSummaryScreen',
   PAYMENT_METHODS: 'PaymentMethodsScreen',
+  MIDTRANS_PAYMENT: 'MidtransPaymentScreen',
 
   // User Profile
   USER_PROFILE: 'UserProfile',
