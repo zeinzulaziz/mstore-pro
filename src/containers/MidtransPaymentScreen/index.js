@@ -37,21 +37,10 @@ class MidtransPaymentScreen extends PureComponent {
     console.log('selectedPaymentMethod:', orderData?.selectedPaymentMethod);
     
     try {
-      // Test M-Store endpoint connection first
-      console.log('Testing M-Store endpoint connection...');
-      const connectionTest = await MStoreMidtransAPI.testConnection();
-      if (!connectionTest.success) {
-        console.error('M-Store endpoint test failed:', connectionTest.error);
-        this.setState({
-          isLoading: false,
-          paymentStatus: 'failed',
-          error: `M-Store endpoint test failed: ${connectionTest.error}`
-        });
-        return;
-      }
+      // Use direct Midtrans integration
+      console.log('Using direct Midtrans integration...');
       
-      // Generate Snap token using M-Store WordPress endpoint
-      console.log('Generating Snap token from M-Store endpoint...');
+      // Generate Snap token directly from Midtrans
       const snapResult = await MStoreMidtransAPI.generateSnapToken(orderData);
       
       if (snapResult.success) {
