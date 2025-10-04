@@ -110,64 +110,175 @@ const MapPicker = ({
       <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+              crossorigin=""/>
         <style>
-          body { margin: 0; padding: 0; }
+          body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
           #map { width: 100%; height: 100vh; }
+          #error { 
+            display: none; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: #f44336; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center;
+            z-index: 1000;
+            max-width: 80%;
+          }
+          #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+          }
+          .leaflet-control-zoom {
+            margin-top: 10px !important;
+            margin-right: 10px !important;
+          }
+          .leaflet-control-layers {
+            margin-top: 10px !important;
+            margin-right: 10px !important;
+          }
         </style>
       </head>
       <body>
+        <div id="loading">Loading OpenStreetMap...</div>
+        <div id="error"></div>
         <div id="map"></div>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+                crossorigin=""></script>
         <script>
           let map;
           let marker;
+          let mapLoaded = false;
+          
+          function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').innerHTML = message;
+          }
+          
+          function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+          }
+          
+          function sendLocationToRN(lat, lng) {
+            if (window.ReactNativeWebView) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'location_selected',
+                latitude: lat,
+                longitude: lng
+              }));
+            }
+          }
           
           function initMap() {
-            const center = { lat: ${lat}, lng: ${lng} };
-            
-            map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 15,
-              center: center,
-              mapTypeId: 'roadmap'
-            });
-            
-            marker = new google.maps.Marker({
-              position: center,
-              map: map,
-              draggable: true,
-              title: 'Lokasi Rumah'
-            });
-            
-            // Add click listener to map
-            map.addListener('click', function(event) {
-              const lat = event.latLng.lat();
-              const lng = event.latLng.lng();
+            try {
+              // Initialize the map
+              map = L.map('map').setView([${lat}, ${lng}], 15);
               
-              marker.setPosition(event.latLng);
+              // Add OpenStreetMap tiles
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+              }).addTo(map);
               
-              // Send location to React Native
-              window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'location_selected',
-                latitude: lat,
-                longitude: lng
-              }));
-            });
-            
-            // Add drag listener to marker
-            marker.addListener('dragend', function(event) {
-              const lat = event.latLng.lat();
-              const lng = event.latLng.lng();
+              // Add additional tile layers for variety
+              const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri',
+                maxZoom: 19
+              });
               
-              // Send location to React Native
-              window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'location_selected',
-                latitude: lat,
-                longitude: lng
-              }));
-            });
+              const terrainLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a> contributors',
+                maxZoom: 17
+              });
+              
+              // Add layer control
+              const baseMaps = {
+                "Street Map": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  attribution: '© OpenStreetMap contributors',
+                  maxZoom: 19
+                }),
+                "Satellite": satelliteLayer,
+                "Terrain": terrainLayer
+              };
+              
+              L.control.layers(baseMaps).addTo(map);
+              
+              // Create custom marker icon
+              const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '<div style="background-color: #e74c3c; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+              });
+              
+              // Add marker
+              marker = L.marker([${lat}, ${lng}], { 
+                icon: customIcon,
+                draggable: true 
+              }).addTo(map);
+              
+              // Add click listener to map
+              map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                marker.setLatLng([lat, lng]);
+                sendLocationToRN(lat, lng);
+              });
+              
+              // Add drag listener to marker
+              marker.on('dragend', function(e) {
+                const lat = e.target.getLatLng().lat;
+                const lng = e.target.getLatLng().lng;
+                sendLocationToRN(lat, lng);
+              });
+              
+              // Add scale control
+              L.control.scale({
+                position: 'bottomleft',
+                metric: true,
+                imperial: false
+              }).addTo(map);
+              
+              mapLoaded = true;
+              hideLoading();
+              
+            } catch (error) {
+              console.error('Map initialization error:', error);
+              showError('Error loading map: ' + error.message);
+            }
           }
-        </script>
-        <script async defer
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dgsWcQYf0XzF0w&callback=initMap">
+          
+          function handleMapError() {
+            showError('Failed to load OpenStreetMap. Please check your internet connection and try again.');
+          }
+          
+          // Initialize map when page loads
+          document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+          });
+          
+          // Set timeout for map loading
+          setTimeout(function() {
+            if (!mapLoaded) {
+              handleMapError();
+            }
+          }, 10000);
         </script>
       </body>
       </html>

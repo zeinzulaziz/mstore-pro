@@ -19,6 +19,7 @@
   
   // Firebase
   [FIRApp configure];
+  
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
