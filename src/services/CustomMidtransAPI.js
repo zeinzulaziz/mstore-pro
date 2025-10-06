@@ -231,16 +231,37 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
     // Transform request data to WooCommerce format
     const wooOrderData = {
       customer_id: 0, // Guest order
-      line_items: requestData.item_details?.map(item => ({
-        product_id: item.id === 'shipping' ? 0 : parseInt(item.id) || 0,
-        quantity: item.quantity || 1,
-        price: item.price || 0,
-        name: item.name || 'Product'
-      })) || [{
-        product_id: 0,
+      line_items: requestData.item_details?.map(item => {
+        // For shipping items, use special handling
+        if (item.id === 'shipping') {
+          return {
+            name: item.name || 'Shipping Cost',
+            quantity: item.quantity || 1,
+            total: (item.price || 0).toString(),
+            // Don't set product_id for shipping
+          };
+        }
+        
+        // For regular products, try to use valid product_id or create custom line item
+        const productId = parseInt(item.id);
+        if (productId && productId > 0) {
+          return {
+            product_id: productId,
+            quantity: item.quantity || 1,
+          };
+        } else {
+          // Create custom line item for invalid product IDs
+          return {
+            name: item.name || 'Custom Product',
+            quantity: item.quantity || 1,
+            total: (item.price || 0).toString(),
+            // Don't set product_id for custom items
+          };
+        }
+      }) || [{
+        name: 'Mobile App Order',
         quantity: 1,
-        price: requestData.amount || 100000,
-        name: 'Mobile App Order'
+        total: (requestData.amount || 100000).toString(),
       }],
       customer_details: {
         first_name: requestData.customer_details?.first_name || 'Customer',
