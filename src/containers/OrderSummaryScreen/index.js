@@ -66,8 +66,12 @@ class OrderSummaryScreen extends PureComponent {
           ? cartItem.variation 
           : cartItem.product;
         
+        // Validate product_id before using it
+        const productId = cartItem.product?.id;
+        const isValidProductId = productId && !isNaN(parseInt(productId)) && parseInt(productId) > 0;
+        
         const lineItem = {
-          product_id: cartItem.product.id,
+          product_id: isValidProductId ? parseInt(productId) : null, // Set to null if invalid
           quantity: cartItem.quantity,
           name: cartItem.product.name,
           price: Tools.getMultiCurrenciesPrice(product, currency),

@@ -265,7 +265,7 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
           total: (item.price || 0).toString(),
           // Don't set product_id for custom items
         };
-        console.log('⚠️ Custom line item created:', JSON.stringify(customItem, null, 2));
+        console.log('⚠️ Custom line item created (invalid product_id):', JSON.stringify(customItem, null, 2));
         return customItem;
       }
     }) || [{
