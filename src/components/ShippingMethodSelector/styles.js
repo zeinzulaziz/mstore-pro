@@ -15,122 +15,13 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   shippingMethodsList: {
-    // Removed maxHeight to prevent VirtualizedList error
-  },
-  // Dropdown Styles
-  dropdownTrigger: {
-    borderWidth: 1,
-    borderColor: Color.border,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-  },
-  dropdownContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  dropdownLeft: {
-    flex: 1,
-    marginRight: 8,
-  },
-  dropdownTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.medium,
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  dropdownSubtitle: {
-    fontSize: 12,
-    fontFamily: Fonts.regular,
-  },
-  dropdownRight: {
-    alignItems: 'flex-end',
-  },
-  dropdownPrice: {
-    fontSize: 14,
-    fontFamily: Fonts.bold,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  dropdownArrow: {
-    fontSize: 12,
-    fontFamily: Fonts.regular,
-  },
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-    maxHeight: '70%',
-    minHeight: 200,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.border,
-    marginBottom: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.bold,
-    fontWeight: '600',
-  },
-  closeButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: Color.lightGrey,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.medium,
-  },
-  modalContent: {
-    paddingHorizontal: 20,
-    flex: 1,
-  },
-  emptyModalContainer: {
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyModalText: {
-    fontSize: 14,
-    fontFamily: Fonts.regular,
-    textAlign: 'center',
+    // maxHeight will be set dynamically via props
+    paddingRight: 4, // Add padding for scroll indicator
   },
   shippingMethodItem: {
     padding: 12,
     marginBottom: 8,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Color.border,
-  },
-  shippingMethodItemCompact: {
-    padding: 10,
-    marginBottom: 6,
-    borderRadius: 6,
     borderWidth: 1,
     borderColor: Color.border,
   },
@@ -246,5 +137,11 @@ export default StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.regular,
     textAlign: 'center',
+  },
+  // Scroll indicator styling
+  scrollIndicator: {
+    backgroundColor: Color.primary,
+    borderRadius: 2,
+    width: 4,
   },
 });
