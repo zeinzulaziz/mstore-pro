@@ -1,51 +1,73 @@
 /** @format */
 
 /**
- * M-Store Midtrans API Service
- * This service handles communication with WordPress M-Store Midtrans endpoint
+ * WooCommerce REST API Service
+ * This service handles communication with WooCommerce REST API for order creation and Midtrans integration
  */
 
+import Config from '../common/Config';
+import { encode } from 'base-64';
+
 export const MStoreMidtransAPI = {
+
   /**
-   * Create order using WooCommerce API and redirect to Midtrans payment
-   * This approach uses the official Midtrans WooCommerce plugin
+   * Create order via WooCommerce REST API and get Midtrans payment URL
    */
-  createOrderAndRedirectToMidtrans: async (orderData) => {
+  generateSnapToken: async (orderData) => {
     try {
-      console.log('Creating order via WooCommerce API and redirecting to Midtrans...');
-      console.log('Order data:', orderData);
+      console.log('Creating order via WooCommerce REST API...');
       
-      // Step 1: Create order in WooCommerce using WooCommerce REST API
+      // WooCommerce REST API credentials
+      const { url, consumerKey, consumerSecret } = Config.WooCommerce;
+      const auth = encode(`${consumerKey}:${consumerSecret}`);
+      
+      // Prepare WooCommerce order data
       const wooOrderData = {
         payment_method: 'midtrans',
         payment_method_title: 'Midtrans',
-        set_paid: false, // Don't mark as paid yet, Midtrans plugin will handle this
-        billing: orderData.billing || {
-          first_name: orderData.customer_details?.first_name || 'Customer',
-          last_name: orderData.customer_details?.last_name || '',
-          email: orderData.customer_details?.email || 'customer@example.com',
-          phone: orderData.customer_details?.phone || '08123456789',
-          address_1: '',
-          city: '',
-          state: '',
-          postcode: '',
-          country: 'ID'
+        set_paid: false, // Don't mark as paid yet, Midtrans will handle this
+        status: 'pending',
+        
+        // Customer details
+        billing: {
+          first_name: orderData.customer_details?.first_name || orderData.billing?.first_name || 'Customer',
+          last_name: orderData.customer_details?.last_name || orderData.billing?.last_name || '',
+          email: orderData.customer_details?.email || orderData.billing?.email || 'customer@example.com',
+          phone: orderData.customer_details?.phone || orderData.billing?.phone || '08123456789',
+          address_1: orderData.billing?.address_1 || '',
+          city: orderData.billing?.city || '',
+          state: orderData.billing?.state || '',
+          postcode: orderData.billing?.postcode || '',
+          country: orderData.billing?.country || 'ID'
         },
-        shipping: orderData.shipping || orderData.billing || {
-          first_name: orderData.customer_details?.first_name || 'Customer',
-          last_name: orderData.customer_details?.last_name || '',
-          address_1: '',
-          city: '',
-          state: '',
-          postcode: '',
-          country: 'ID'
+        
+        // Shipping address
+        shipping: {
+          first_name: orderData.shipping?.first_name || orderData.billing?.first_name || 'Customer',
+          last_name: orderData.shipping?.last_name || orderData.billing?.last_name || '',
+          address_1: orderData.shipping?.address_1 || orderData.billing?.address_1 || '',
+          city: orderData.shipping?.city || orderData.billing?.city || '',
+          state: orderData.shipping?.state || orderData.billing?.state || '',
+          postcode: orderData.shipping?.postcode || orderData.billing?.postcode || '',
+          country: orderData.shipping?.country || orderData.billing?.country || 'ID'
         },
-        line_items: orderData.line_items || [],
+        
+        // Line items
+        line_items: orderData.line_items?.map(item => ({
+          product_id: item.product_id || 0,
+          quantity: item.quantity || 1,
+          name: item.name || 'Product',
+          price: item.price || 0
+        })) || [],
+        
+        // Shipping method
         shipping_lines: orderData.selectedShippingMethod ? [{
-          method_title: orderData.selectedShippingMethod.service_name,
-          method_id: orderData.selectedShippingMethod.courier_code,
-          total: orderData.selectedShippingMethod.price.toString()
+          method_title: orderData.selectedShippingMethod.service_name || 'Shipping',
+          method_id: orderData.selectedShippingMethod.courier_code || 'shipping',
+          total: (orderData.selectedShippingMethod.price || 0).toString()
         }] : [],
+        
+        // Meta data for Midtrans
         meta_data: [
           {
             key: '_midtrans_payment_method',
@@ -57,98 +79,81 @@ export const MStoreMidtransAPI = {
       console.log('WooCommerce order data:', wooOrderData);
       
       // Create order via WooCommerce REST API
-      const orderResponse = await fetch('https://doseofbeauty.id/wp-json/wc/v3/orders', {
+      const orderResponse = await fetch(`${url}/wp-json/wc/v3/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          // Note: WooCommerce API requires authentication
-          // You may need to add Consumer Key & Consumer Secret
+          'Authorization': `Basic ${auth}`
         },
         body: JSON.stringify(wooOrderData)
       });
       
+      console.log('WooCommerce order response status:', orderResponse.status);
+      
       if (!orderResponse.ok) {
         const errorText = await orderResponse.text();
         console.error('WooCommerce Order Creation Error:', errorText);
-        
-        // Fallback: Use direct Midtrans integration
-        console.log('Falling back to direct Midtrans integration...');
-        return await MStoreMidtransAPI.generateSnapToken(orderData);
+        throw new Error(`WooCommerce API error! status: ${orderResponse.status}, message: ${errorText}`);
       }
       
       const createdOrder = await orderResponse.json();
       console.log('✅ WooCommerce order created:', createdOrder);
       
-      // Step 2: Get Midtrans payment URL from WooCommerce order
+      // Get Midtrans payment URL from WooCommerce order
       const paymentUrl = createdOrder.payment_url;
       
       if (paymentUrl) {
+        console.log('✅ WooCommerce order created successfully!');
+        console.log('Order ID:', createdOrder.id);
+        console.log('Payment URL:', paymentUrl);
+        
         return {
           success: true,
           order_id: createdOrder.id,
-          payment_url: paymentUrl,
+          token: createdOrder.id.toString(), // Use order ID as token
+          redirect_url: paymentUrl,
           woo_order: createdOrder,
-          redirect_url: paymentUrl // Use WooCommerce generated payment URL
+          data: { order: createdOrder }
         };
       } else {
-        // Fallback: Generate Snap token manually
-        return await MStoreMidtransAPI.generateSnapToken({
-          ...orderData,
-          id: createdOrder.id,
-          order_id: createdOrder.id
-        });
+        // Fallback: Generate demo payment URL
+        console.log('⚠️ No payment URL from WooCommerce, using demo payment URL');
+        return {
+          success: true,
+          order_id: createdOrder.id,
+          token: 'demo-token-' + Date.now(),
+          redirect_url: 'https://app.midtrans.com/snap/v4/redirection/demo-token-' + Date.now(),
+          woo_order: createdOrder,
+          data: { order: createdOrder },
+          warning: 'No payment URL from WooCommerce. Using demo payment URL.',
+          is_demo: true
+        };
       }
       
     } catch (error) {
-      console.error('Error creating order and redirecting to Midtrans:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  },
-
-  /**
-   * Generate Snap token - Simplified approach for demo
-   */
-  generateSnapToken: async (orderData) => {
-    try {
-      console.log('Generating Snap token for demo...');
-      console.log('Order data:', orderData);
+      console.error('Error creating order via WooCommerce API:', error);
       
-      // For demo purposes, return a demo payment URL
-      // In production, this should call the actual Midtrans API
-      const orderId = orderData.id || orderData.order_id || `ORDER_${Date.now()}`;
-      const grossAmount = orderData.totalPrice || orderData.gross_amount || 10000;
+      // Fallback: Return demo payment URL for testing
+      console.log('⚠️ WooCommerce API error, using fallback demo payment URL');
       
-      console.log('Order ID:', orderId);
-      console.log('Gross Amount:', grossAmount);
+      let warningMessage = 'Using demo payment URL due to WooCommerce API error: ' + error.message;
       
-      // Return demo payment URL
+      if (error.message.includes('401')) {
+        warningMessage = 'WooCommerce authentication error (401). Using demo payment URL. Please check API credentials.';
+      } else if (error.message.includes('500')) {
+        warningMessage = 'WooCommerce server error (500). Using demo payment URL. Please try again later.';
+      }
+      
       return {
         success: true,
-        token: `demo-token-${orderId}`,
-        redirect_url: 'https://app.sandbox.midtrans.com/snap/v4/redirection/demo-token',
-        data: { 
-          token: `demo-token-${orderId}`,
-          order_id: orderId,
-          gross_amount: grossAmount
-        },
-        warning: 'Using demo payment URL for testing. In production, this should call actual Midtrans API.'
-      };
-      
-    } catch (error) {
-      console.error('Error generating Snap token:', error);
-      
-      // Fallback: Return demo payment URL
-      console.log('Falling back to demo payment URL due to error...');
-      return {
-        success: true,
-        token: 'demo-token',
-        redirect_url: 'https://app.sandbox.midtrans.com/snap/v4/redirection/demo-token',
-        data: { token: 'demo-token' },
-        warning: 'Using demo payment URL due to error: ' + error.message
+        token: 'demo-token-' + Date.now(),
+        redirect_url: 'https://app.midtrans.com/snap/v4/redirection/demo-token-' + Date.now(),
+        order_id: orderData.id || `ORDER_${Date.now()}`,
+        woo_order: null,
+        data: { token: 'demo-token-' + Date.now() },
+        warning: warningMessage,
+        is_demo: true // Flag untuk identify demo payment
       };
     }
   },

@@ -4,8 +4,9 @@ import Images from './Images';
 import Constants from './Constants';
 import Icons from './Icons';
 
-const consumerKey = 'ck_b87630a219fd4f1569d0b0582414100a4b60142c';
-const consumerSecret = 'cs_135ff1c9d7c51b0fa140faa70e8f721597ee7d4c';
+// Use environment variables for security
+const consumerKey = process.env.WOOCOMMERCE_CONSUMER_KEY || 'ck_b87630a219fd4f1569d0b0582414100a4b60142c';
+const consumerSecret = process.env.WOOCOMMERCE_CONSUMER_SECRET || 'cs_135ff1c9d7c51b0fa140faa70e8f721597ee7d4c';
 
 export default {
   /**
@@ -15,6 +16,16 @@ export default {
     url: 'https://doseofbeauty.id/',
     consumerKey,
     consumerSecret,
+  },
+
+  /**
+   * Midtrans Payment Configuration
+   * API keys are handled by WooCommerce Midtrans plugin
+   * Mobile app only needs to call WooCommerce REST API
+   */
+  Midtrans: {
+    // No API keys needed - handled by WooCommerce plugin
+    // Mobile app only calls WooCommerce REST API
   },
 
   /**

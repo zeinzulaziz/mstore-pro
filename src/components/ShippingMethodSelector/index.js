@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { withTheme, Tools, Languages, Color, Fonts } from '@common';
 import styles from './styles';
 
@@ -26,16 +25,59 @@ class ShippingMethodSelector extends PureComponent {
     }
   }
 
-  selectShippingMethod = (method) => {
+  selectShippingMethod = (method, index) => {
+    // Create the same identifier logic as in renderShippingMethod
+    const serviceCode = method.service_code || 
+                       method.courier_service_code || 
+                       method.service_name || 
+                       `service_${index}`;
+    const itemId = `${method.courier_code}_${serviceCode}`;
+    
+    console.log('Selecting shipping method:', {
+      courier: method.courier_name,
+      service: method.service_name,
+      courier_code: method.courier_code,
+      service_code: method.service_code,
+      courier_service_code: method.courier_service_code,
+      serviceCode,
+      itemId,
+      price: method.price
+    });
     this.setState({ selectedMethod: method });
     this.props.onSelectShippingMethod(method);
   };
 
-  renderShippingMethod = ({ item }) => {
+  renderShippingMethod = ({ item, index }) => {
     const { theme } = this.props;
     const { colors: { text, background } } = theme;
     const { selectedMethod } = this.state;
-    const isSelected = selectedMethod && selectedMethod.courier_code === item.courier_code && selectedMethod.service_code === item.service_code;
+    
+    // Create unique identifier for each shipping method
+    // Use multiple fallbacks to ensure uniqueness
+    const serviceCode = item.service_code || 
+                       item.courier_service_code || 
+                       item.service_name || 
+                       `service_${index}`;
+    const itemId = `${item.courier_code}_${serviceCode}`;
+    const selectedId = selectedMethod ? 
+      `${selectedMethod.courier_code}_${selectedMethod.service_code || 
+        selectedMethod.courier_service_code || 
+        selectedMethod.service_name || 
+        'unknown'}` : null;
+    const isSelected = selectedId === itemId;
+    
+    // Debug logging for all items
+    console.log('Shipping method item:', {
+      index,
+      courier: item.courier_name,
+      service: item.service_name,
+      service_code: item.service_code,
+      courier_service_code: item.courier_service_code,
+      serviceCode,
+      itemId,
+      selectedId,
+      isSelected
+    });
 
     return (
       <TouchableOpacity
@@ -47,28 +89,96 @@ class ShippingMethodSelector extends PureComponent {
             borderWidth: isSelected ? 2 : 1,
           }
         ]}
-        onPress={() => this.selectShippingMethod(item)}
+        onPress={() => this.selectShippingMethod(item, index)}
         activeOpacity={0.7}
       >
         <View style={styles.shippingMethodContent}>
-          {/* Radio Button di Kiri */}
-          <View style={styles.radioContainer}>
-            <Icon 
-              name={isSelected ? "radio-button-checked" : "radio-button-unchecked"} 
-              size={20} 
-              color={isSelected ? Color.primary : Color.grey} 
-            />
-          </View>
-          
-          {/* Info Courier di Tengah */}
+          {/* Info Courier - Full Width */}
           <View style={styles.courierInfo}>
-            <Text style={[styles.courierName, { color: text }]}>
-              {item.courier_name || item.courier_code?.toUpperCase()}
-            </Text>
+            <View style={styles.courierNameContainer}>
+              <Text style={[styles.courierName, { color: text }]}>
+                {item.courier_name || item.courier_code?.toUpperCase()}
+              </Text>
+              {isSelected && (
+                <View style={styles.selectedIndicator}>
+                  <Text style={styles.selectedText}>✓</Text>
+                </View>
+              )}
+            </View>
             <Text style={[styles.serviceName, { color: Color.grey }]}>
-              {item.service_name || item.service_code}
-              {item.etd && ` • ${item.etd} hari`}
+              {item.courier_service_name || item.service_name || item.service_code}
             </Text>
+            
+            {/* Durasi Pengiriman */}
+            {(item.duration || item.etd) && (
+              <Text style={[styles.additionalInfo, { color: Color.grey }]}>
+                ⏱️ {item.duration || `${item.etd} hari`}
+              </Text>
+            )}
+            
+            {/* Deskripsi Detail */}
+            {item.description && (
+              <Text style={[styles.description, { color: Color.grey }]}>
+                📝 {item.description}
+              </Text>
+            )}
+            
+            {/* Tipe Layanan */}
+            {item.service_type && (
+              <Text style={[styles.additionalInfo, { color: Color.grey }]}>
+                🚚 {item.service_type === 'standard' ? 'Layanan Standar' : 
+                     item.service_type === 'express' ? 'Layanan Express' : 
+                     item.service_type === 'overnight' ? 'Layanan Overnight' : 
+                     item.service_type}
+              </Text>
+            )}
+            
+            {/* Tipe Pengiriman */}
+            {item.shipping_type && (
+              <Text style={[styles.additionalInfo, { color: Color.grey }]}>
+                📦 {item.shipping_type === 'parcel' ? 'Paket' : 
+                     item.shipping_type === 'document' ? 'Dokumen' : 
+                     item.shipping_type}
+              </Text>
+            )}
+            
+            {/* Features Container */}
+            <View style={styles.featuresContainer}>
+              {/* Cash on Delivery */}
+              {item.available_for_cash_on_delivery && (
+                <View style={styles.featureTag}>
+                  <Text style={styles.featureText}>💳 COD</Text>
+                </View>
+              )}
+              
+              {/* Proof of Delivery */}
+              {item.available_for_proof_of_delivery && (
+                <View style={styles.featureTag}>
+                  <Text style={styles.featureText}>📋 POD</Text>
+                </View>
+              )}
+              
+              {/* Instant Waybill */}
+              {item.available_for_instant_waybill_id && (
+                <View style={styles.featureTag}>
+                  <Text style={styles.featureText}>⚡ Instant</Text>
+                </View>
+              )}
+              
+              {/* Insurance */}
+              {item.available_for_insurance && (
+                <View style={styles.featureTag}>
+                  <Text style={styles.featureText}>🛡️ Insurance</Text>
+                </View>
+              )}
+              
+              {/* Free Shipping */}
+              {item.tier === 'free' && (
+                <View style={styles.featureTag}>
+                  <Text style={styles.featureText}>🆓 Gratis</Text>
+                </View>
+              )}
+            </View>
           </View>
           
           {/* Price di Kanan */}
@@ -143,8 +253,8 @@ class ShippingMethodSelector extends PureComponent {
         </Text>
         <View style={styles.shippingMethodsList}>
           {shippingRates.map((item, index) => (
-            <View key={`${item.courier_code}-${item.service_code}-${index}`}>
-              {this.renderShippingMethod({ item })}
+            <View key={`${item.courier_code}-${item.service_code || item.courier_service_code || index}-${index}`}>
+              {this.renderShippingMethod({ item, index })}
             </View>
           ))}
         </View>

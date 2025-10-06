@@ -13,10 +13,20 @@ import styles from './styles';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class MyOrders extends PureComponent {
-  state = {scrollY: new Animated.Value(0)};
+  state = {
+    scrollY: new Animated.Value(0),
+    isRefreshing: false
+  };
 
   componentDidMount() {
+    console.log('📱 MyOrders component mounted - auto refreshing...');
+    this.setState({ isRefreshing: true });
     this.fetchProductsData();
+    
+    // Auto refresh once when component mounts
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1500);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -27,9 +37,27 @@ class MyOrders extends PureComponent {
 
   fetchProductsData = () => {
     const {user} = this.props.user;
-    if (typeof user === 'undefined' || user === null) return;
+    console.log('🔄 MyOrders fetchProductsData called');
+    console.log('👤 User from props:', user);
+    
+    if (typeof user === 'undefined' || user === null) {
+      console.log('❌ User is undefined or null, cannot fetch orders');
+      return;
+    }
 
+    console.log('✅ Calling fetchMyOrder with user:', user);
     this.props.fetchMyOrder(user);
+  };
+
+  onRefresh = () => {
+    console.log('🔄 Pull-to-refresh triggered!');
+    this.setState({ isRefreshing: true });
+    this.fetchProductsData();
+    
+    // Reset refreshing state after a short delay
+    setTimeout(() => {
+      this.setState({ isRefreshing: false });
+    }, 1000);
   };
 
   renderError(error) {
@@ -61,7 +89,14 @@ class MyOrders extends PureComponent {
       },
     } = this.props;
 
+    console.log('📱 MyOrders render called');
+    console.log('📋 Orders data:', data);
+    console.log('📊 Data type:', typeof data);
+    console.log('📊 Data length:', data?.length);
+    console.log('🔄 Is fetching:', this.props.carts.isFetching);
+
     if (typeof data === 'undefined' || data.length == 0) {
+      console.log('❌ No orders found, showing empty state');
       return (
         <OrderEmpty
           text={Languages.NoOrder}
@@ -91,8 +126,12 @@ class MyOrders extends PureComponent {
           renderItem={this.renderRow}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.carts.isFetching}
-              onRefresh={this.fetchProductsData}
+              refreshing={this.state.isRefreshing}
+              onRefresh={this.onRefresh}
+              colors={['#FF6B35']} // Android
+              tintColor="#FF6B35" // iOS
+              title="Pull to refresh"
+              titleColor="#666"
             />
           }
         />

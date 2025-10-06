@@ -8,6 +8,7 @@ import ShippingAddress from './ShippingAddress';
 import LineItemsAndPrice from './LineItemsAndPrice';
 import OrderStatus from './OrderStatus';
 import OrderNotes from './OrderNotes';
+import PaymentDetails from './PaymentDetails';
 import styles from './styles';
 
 class OrderDetail extends React.PureComponent {
@@ -24,6 +25,7 @@ class OrderDetail extends React.PureComponent {
         contentContainerStyle={styles.contentContainer}>
         <LineItemsAndPrice order={order} theme={theme} />
         <OrderStatus order={order} theme={theme} />
+        <PaymentDetails order={order} theme={theme} />
         <ShippingAddress shipping={order.shipping} theme={theme} />
         <OrderNotes orderNotes={orderNotes} theme={theme} />
         {order.status !== 'cancelled' && order.status !== 'refunded' && (

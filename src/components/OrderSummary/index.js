@@ -184,32 +184,92 @@ class OrderSummary extends PureComponent {
           {
             courier_code: 'jne',
             courier_name: 'JNE',
+            courier_service_name: 'JNE Reguler',
             service_code: 'reg',
             service_name: 'Reguler',
-            description: 'Regular service',
+            description: 'Layanan pengiriman reguler dengan jangkauan luas ke seluruh Indonesia',
             price: 15000,
             etd: '2-3',
-            tier: 'free'
+            duration: '2-3 days',
+            service_type: 'standard',
+            shipping_type: 'parcel',
+            tier: 'free',
+            available_for_cash_on_delivery: true,
+            available_for_proof_of_delivery: true,
+            available_for_instant_waybill_id: false,
+            available_for_insurance: true
+          },
+          {
+            courier_code: 'jne',
+            courier_name: 'JNE',
+            courier_service_name: 'JNE YES',
+            service_code: 'yes',
+            service_name: 'YES',
+            description: 'Layanan pengiriman cepat JNE dengan jaminan keesokan hari',
+            price: 25000,
+            etd: '1',
+            duration: '1 day',
+            service_type: 'express',
+            shipping_type: 'parcel',
+            tier: 'free',
+            available_for_cash_on_delivery: true,
+            available_for_proof_of_delivery: true,
+            available_for_instant_waybill_id: true,
+            available_for_insurance: true
+          },
+          {
+            courier_code: 'jne',
+            courier_name: 'JNE',
+            courier_service_name: 'JNE Tracking',
+            service_code: 'tracking',
+            service_name: 'Tracking',
+            description: 'Layanan pengiriman JNE dengan tracking real-time',
+            price: 20000,
+            etd: '2',
+            duration: '2 days',
+            service_type: 'standard',
+            shipping_type: 'parcel',
+            tier: 'free',
+            available_for_cash_on_delivery: false,
+            available_for_proof_of_delivery: true,
+            available_for_instant_waybill_id: true,
+            available_for_insurance: true
           },
           {
             courier_code: 'tiki',
             courier_name: 'TIKI',
+            courier_service_name: 'TIKI Reguler',
             service_code: 'reg',
             service_name: 'Reguler',
-            description: 'Regular service',
+            description: 'Layanan pengiriman reguler dengan tracking yang akurat',
             price: 18000,
             etd: '2-3',
-            tier: 'free'
+            duration: '2-3 days',
+            service_type: 'standard',
+            shipping_type: 'parcel',
+            tier: 'free',
+            available_for_cash_on_delivery: false,
+            available_for_proof_of_delivery: true,
+            available_for_instant_waybill_id: true,
+            available_for_insurance: true
           },
           {
             courier_code: 'jnt',
             courier_name: 'J&T',
+            courier_service_name: 'J&T EZ',
             service_code: 'ez',
             service_name: 'EZ',
-            description: 'Regular service',
+            description: 'Layanan pengiriman cepat dengan harga terjangkau',
             price: 12000,
-            etd: '2-3',
-            tier: 'free'
+            etd: '1-2',
+            duration: '1-2 days',
+            service_type: 'express',
+            shipping_type: 'parcel',
+            tier: 'free',
+            available_for_cash_on_delivery: true,
+            available_for_proof_of_delivery: true,
+            available_for_instant_waybill_id: true,
+            available_for_insurance: false
           }
         ];
         
@@ -227,32 +287,74 @@ class OrderSummary extends PureComponent {
         {
           courier_code: 'jne',
           courier_name: 'JNE',
+          courier_service_name: 'JNE Reguler',
           service_code: 'reg',
           service_name: 'Reguler',
-          description: 'Regular service',
+          description: 'Layanan pengiriman reguler dengan jangkauan luas ke seluruh Indonesia',
           price: 15000,
           etd: '2-3',
-          tier: 'free'
+          duration: '2-3 days',
+          service_type: 'standard',
+          shipping_type: 'parcel',
+          tier: 'free',
+          available_for_cash_on_delivery: true,
+          available_for_proof_of_delivery: true,
+          available_for_instant_waybill_id: false,
+          available_for_insurance: true
+        },
+        {
+          courier_code: 'jne',
+          courier_name: 'JNE',
+          courier_service_name: 'JNE YES',
+          service_code: 'yes',
+          service_name: 'YES',
+          description: 'Layanan pengiriman cepat JNE dengan jaminan keesokan hari',
+          price: 25000,
+          etd: '1',
+          duration: '1 day',
+          service_type: 'express',
+          shipping_type: 'parcel',
+          tier: 'free',
+          available_for_cash_on_delivery: true,
+          available_for_proof_of_delivery: true,
+          available_for_instant_waybill_id: true,
+          available_for_insurance: true
         },
         {
           courier_code: 'tiki',
           courier_name: 'TIKI',
+          courier_service_name: 'TIKI Reguler',
           service_code: 'reg',
           service_name: 'Reguler',
-          description: 'Regular service',
+          description: 'Layanan pengiriman reguler dengan tracking yang akurat',
           price: 18000,
           etd: '2-3',
-          tier: 'free'
+          duration: '2-3 days',
+          service_type: 'standard',
+          shipping_type: 'parcel',
+          tier: 'free',
+          available_for_cash_on_delivery: false,
+          available_for_proof_of_delivery: true,
+          available_for_instant_waybill_id: true,
+          available_for_insurance: true
         },
         {
           courier_code: 'jnt',
           courier_name: 'J&T',
+          courier_service_name: 'J&T EZ',
           service_code: 'ez',
           service_name: 'EZ',
-          description: 'Regular service',
+          description: 'Layanan pengiriman cepat dengan harga terjangkau',
           price: 12000,
-          etd: '2-3',
-          tier: 'free'
+          etd: '1-2',
+          duration: '1-2 days',
+          service_type: 'express',
+          shipping_type: 'parcel',
+          tier: 'free',
+          available_for_cash_on_delivery: true,
+          available_for_proof_of_delivery: true,
+          available_for_instant_waybill_id: true,
+          available_for_insurance: false
         }
       ];
       
@@ -343,33 +445,31 @@ class OrderSummary extends PureComponent {
             {item.name}
           </Text>
           
-          {/* Bottom row for variant, price, quantity, and total */}
+          {/* Variant and Price - Aligned with title */}
+          <View style={styles.productInfoLeft}>
+            <Text style={[styles.productVariant, { color: text }]}>
+              {item.variation && item.variation.attributes && Object.keys(item.variation.attributes).length > 0 
+                ? Object.entries(item.variation.attributes)
+                    .map(([key, value]) => `${value}`)
+                    .join(', ')
+                : 'Standard'
+              }
+            </Text>
+            <Text style={[styles.productPrice, { color: text }]}>
+              {Tools.getCurrencyFormatted(item.price, this.props.currency)}
+            </Text>
+          </View>
+          
+          {/* Bottom row for quantity and total */}
           <View style={styles.productInfoBottomRow}>
-            <View style={styles.productInfoLeft}>
-              <Text style={[styles.productVariant, { color: text }]}>
-                {item.variation && item.variation.attributes && Object.keys(item.variation.attributes).length > 0 
-                  ? Object.entries(item.variation.attributes)
-                      .map(([key, value]) => `${value}`)
-                      .join(', ')
-                  : 'Standard'
-                }
-              </Text>
-              <Text style={[styles.productPrice, { color: text }]}>
-                {Tools.getCurrencyFormatted(item.price, this.props.currency)}
-              </Text>
-            </View>
-            
             <View style={styles.productInfoRight}>
-              {/* Quantity Selector */}
-              <View style={styles.quantityContainer}>
-                <Text style={[styles.quantityLabel, { color: text }]}>Quantity:</Text>
+              {/* Quantity Selector and Item Total */}
+              <View style={styles.totalAndQuantityContainer}>
                 {this.renderQuantitySelector(item, index)}
+                <Text style={[styles.itemTotal, { color: text }]}>
+                  {Tools.getCurrencyFormatted(item.price * currentQuantity, this.props.currency)}
+                </Text>
               </View>
-              
-              {/* Item Total */}
-              <Text style={[styles.itemTotal, { color: text }]}>
-                {Tools.getCurrencyFormatted(item.price * currentQuantity, this.props.currency)}
-              </Text>
             </View>
           </View>
         </View>

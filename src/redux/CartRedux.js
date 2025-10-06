@@ -35,16 +35,23 @@ export const actions = {
   },
 
   fetchMyOrder: (dispatch, user) => {
+    console.log('🔄 Fetching MyOrder for user:', user);
+    console.log('👤 User ID:', user.id);
+    
     dispatch({ type: types.FETCH_CART_PENDING });
 
     WooWorker.ordersByCustomerId(user.id, 40, 1)
       .then(data => {
+        console.log('📋 MyOrder data received:', data);
+        console.log('📊 Number of orders:', data?.length || 0);
         dispatch({
           type: types.FETCH_MY_ORDER,
           data,
         });
       })
-      .catch(err => {});
+      .catch(err => {
+        console.error('❌ Error fetching MyOrder:', err);
+      });
   },
 
   removeCartItem: (dispatch, product, variation) => {

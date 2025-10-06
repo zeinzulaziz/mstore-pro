@@ -26,22 +26,37 @@ export default StyleSheet.create({
   },
   shippingMethodContent: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioContainer: {
-    marginRight: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   courierInfo: {
     flex: 1,
     marginRight: 8,
   },
+  courierNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 2,
+  },
   courierName: {
     fontSize: 13,
     fontFamily: Fonts.bold,
     fontWeight: '600',
-    marginBottom: 2,
+    flex: 1,
+  },
+  selectedIndicator: {
+    backgroundColor: Color.primary,
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
+  },
+  selectedText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   serviceName: {
     fontSize: 11,
@@ -64,6 +79,36 @@ export default StyleSheet.create({
     fontSize: 11,
     fontFamily: Fonts.regular,
     lineHeight: 14,
+    marginTop: 2,
+  },
+  tierInfo: {
+    fontSize: 10,
+    fontFamily: Fonts.bold,
+    marginTop: 2,
+  },
+  additionalInfo: {
+    fontSize: 10,
+    fontFamily: Fonts.regular,
+    color: Color.grey,
+    marginTop: 1,
+  },
+  featuresContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 4,
+  },
+  featureTag: {
+    backgroundColor: Color.lightBlue,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: 4,
+    marginBottom: 2,
+  },
+  featureText: {
+    fontSize: 9,
+    fontFamily: Fonts.regular,
+    color: Color.text,
   },
   loadingContainer: {
     alignItems: 'center',
