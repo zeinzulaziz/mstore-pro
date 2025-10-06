@@ -52,6 +52,11 @@ class ShippingMethodSelector extends PureComponent {
   };
 
   toggleDropdown = () => {
+    const { shippingRates } = this.props;
+    console.log('🔄 Toggle dropdown clicked');
+    console.log('📦 Shipping rates available:', shippingRates?.length || 0);
+    console.log('📦 Current showDropdown state:', this.state.showDropdown);
+    
     this.setState({ showDropdown: !this.state.showDropdown });
   };
 
@@ -303,11 +308,19 @@ class ShippingMethodSelector extends PureComponent {
           animationType="slide"
           onRequestClose={() => this.setState({ showDropdown: false })}
         >
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContainer, { 
-              backgroundColor: background,
-              maxHeight: screenHeight * 0.7 
-            }]}>
+          <TouchableOpacity 
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => this.setState({ showDropdown: false })}
+          >
+            <TouchableOpacity 
+              style={[styles.modalContainer, { 
+                backgroundColor: background,
+                maxHeight: screenHeight * 0.7 
+              }]}
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+            >
               {/* Modal Header */}
               <View style={styles.modalHeader}>
                 <Text style={[styles.modalTitle, { color: text }]}>
@@ -327,14 +340,30 @@ class ShippingMethodSelector extends PureComponent {
                 showsVerticalScrollIndicator={true}
                 bounces={false}
               >
-                {shippingRates.map((item, index) => (
-                  <View key={`${item.courier_code}-${item.service_code || item.courier_service_code || index}-${index}`}>
-                    {this.renderShippingMethod({ item, index, isCompact: true })}
+                {shippingRates && shippingRates.length > 0 ? (
+                  shippingRates.map((item, index) => {
+                    console.log('📦 Rendering shipping method in modal:', {
+                      index,
+                      courier: item.courier_name,
+                      service: item.service_name,
+                      price: item.price
+                    });
+                    return (
+                      <View key={`${item.courier_code}-${item.service_code || item.courier_service_code || index}-${index}`}>
+                        {this.renderShippingMethod({ item, index, isCompact: true })}
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={styles.emptyModalContainer}>
+                    <Text style={[styles.emptyModalText, { color: text }]}>
+                      Tidak ada metode pengiriman tersedia
+                    </Text>
                   </View>
-                ))}
+                )}
               </ScrollView>
-            </View>
-          </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </Modal>
       </View>
     );

@@ -69,6 +69,15 @@ export default StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     maxHeight: '70%',
+    minHeight: 200,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -100,6 +109,16 @@ export default StyleSheet.create({
   modalContent: {
     paddingHorizontal: 20,
     flex: 1,
+  },
+  emptyModalContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyModalText: {
+    fontSize: 14,
+    fontFamily: Fonts.regular,
+    textAlign: 'center',
   },
   shippingMethodItem: {
     padding: 12,
