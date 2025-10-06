@@ -1,50 +1,50 @@
 /** @format */
 
 import React, { PureComponent } from 'react';
-import { View, SafeAreaView, StatusBar, Alert, ActivityIndicator, Text, Linking } from 'react-native';
+import { View, SafeAreaView, StatusBar, Alert, ActivityIndicator, Text, Linking, TouchableOpacity } from 'react-native';
 import { withTheme, Languages, Tools, Color, Fonts } from '@common';
 import { Header } from '@components';
 import { connect } from 'react-redux';
 import { WebView } from 'react-native-webview';
-import { getMidtransConfig, getAuthHeader, getSnapUrl } from '../../config/MidtransConfig';
 import MStoreMidtransAPI from '../../services/MStoreMidtransAPI';
+import DirectPaymentMethods from '../../components/DirectPaymentMethods';
+import MidtransSnapAPI from '../../services/MidtransSnapAPI';
 import styles from './styles';
 
 class MidtransPaymentScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
-      paymentStatus: 'processing', // processing, success, failed, webview
+      isLoading: false,
+      paymentStatus: 'select_method', // select_method, processing, success, failed, webview
       snapToken: null,
       snapUrl: null,
       error: null,
+      isDemo: false, // Flag untuk demo payment
+      warning: null, // Warning message untuk demo payment
+      selectedPaymentMethod: null,
+      paymentResult: null,
     };
   }
 
   componentDidMount() {
     console.log('MidtransPaymentScreen mounted');
-    // Simulate Midtrans payment processing
-    this.processPayment();
+    // Use Snap API for WebView payment
+    this.processSnapPayment();
   }
 
-  processPayment = async () => {
-    console.log('processPayment called');
+  processSnapPayment = async () => {
+    console.log('🚀 Processing Snap payment...');
     const { route } = this.props;
     const { orderData, onPaymentSuccess, onPaymentError } = route.params;
     
-    console.log('orderData:', orderData);
-    console.log('selectedPaymentMethod:', orderData?.selectedPaymentMethod);
+    this.setState({ isLoading: true });
     
     try {
-      // Use direct Midtrans integration
-      console.log('Using direct Midtrans integration...');
-      
-      // Generate Snap token directly from Midtrans
-      const snapResult = await MStoreMidtransAPI.generateSnapToken(orderData);
+      const snapResult = await MidtransSnapAPI.createSnapTransaction(orderData);
       
       if (snapResult.success) {
-        console.log('✅ Snap token generated successfully!');
+        console.log('✅ Snap transaction created successfully!');
         console.log('Token:', snapResult.token);
         console.log('Redirect URL:', snapResult.redirect_url);
         
@@ -52,24 +52,69 @@ class MidtransPaymentScreen extends PureComponent {
           isLoading: false,
           paymentStatus: 'webview',
           snapToken: snapResult.token,
-          snapUrl: snapResult.redirect_url
+          snapUrl: snapResult.redirect_url,
+          isDemo: snapResult.is_demo || false,
+          warning: snapResult.warning || null
         });
       } else {
-        console.error('❌ Failed to generate Snap token:', snapResult.error);
+        console.error('❌ Failed to create Snap transaction:', snapResult.error);
         this.setState({
           isLoading: false,
           paymentStatus: 'failed',
-          error: `Failed to generate Snap token: ${snapResult.error}`
+          error: `Failed to create Snap transaction: ${snapResult.error}`
         });
       }
-
     } catch (error) {
-      console.error('Error processing payment:', error);
+      console.error('Error processing Snap payment:', error);
       this.setState({
         isLoading: false,
         paymentStatus: 'failed',
         error: error.message
       });
+    }
+  };
+
+  onPaymentMethodSelected = (paymentMethod) => {
+    console.log('Payment method selected:', paymentMethod);
+    this.setState({
+      selectedPaymentMethod: paymentMethod,
+      paymentStatus: 'processing'
+    });
+  };
+
+  onPaymentSuccess = (paymentResult) => {
+    console.log('Payment successful:', paymentResult);
+    this.setState({
+      paymentStatus: 'success',
+      paymentResult: paymentResult
+    });
+
+    // Refresh MyOrder list after successful payment
+    if (this.props.fetchMyOrder && this.props.user?.user) {
+      console.log('🔄 Refreshing MyOrder list...');
+      this.props.fetchMyOrder(this.props.user.user);
+    }
+
+    const { route } = this.props;
+    const { onPaymentSuccess } = route.params;
+    
+    if (onPaymentSuccess) {
+      onPaymentSuccess(paymentResult);
+    }
+  };
+
+  onPaymentError = (error) => {
+    console.error('Payment failed:', error);
+    this.setState({
+      paymentStatus: 'failed',
+      error: error
+    });
+
+    const { route } = this.props;
+    const { onPaymentError } = route.params;
+    
+    if (onPaymentError) {
+      onPaymentError(error);
     }
   };
 
@@ -208,11 +253,22 @@ class MidtransPaymentScreen extends PureComponent {
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={theme.colors.primary} />
               <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-                Processing payment with {selectedPaymentMethod?.name}...
+                Creating payment session...
               </Text>
             </View>
           ) : paymentStatus === 'webview' ? (
-            <WebView
+            <View style={styles.webviewContainer}>
+              {this.state.isDemo && (
+                <View style={styles.demoWarningContainer}>
+                  <Text style={[styles.demoWarningTitle, { color: '#FF6B35' }]}>
+                    ⚠️ Demo Payment Mode
+                  </Text>
+                  <Text style={[styles.demoWarningText, { color: theme.colors.text }]}>
+                    {this.state.warning || 'This is a demo payment. No real transaction will be processed.'}
+                  </Text>
+                </View>
+              )}
+              <WebView
               source={{ uri: snapUrl }}
               style={styles.webview}
               onMessage={this.onWebViewMessage}
@@ -294,14 +350,65 @@ class MidtransPaymentScreen extends PureComponent {
               thirdPartyCookiesEnabled={true}
               allowsBackForwardNavigationGestures={true}
             />
+            </View>
           ) : paymentStatus === 'success' ? (
             <View style={styles.successContainer}>
+              {this.state.paymentResult?.is_demo && (
+                <View style={styles.demoWarningContainer}>
+                  <Text style={[styles.demoWarningTitle, { color: '#FF6B35' }]}>
+                    ⚠️ Demo Payment Mode
+                  </Text>
+                  <Text style={[styles.demoWarningText, { color: theme.colors.text }]}>
+                    {this.state.paymentResult.warning || 'Payment channels not yet activated. This is a demo payment.'}
+                  </Text>
+                </View>
+              )}
+              
               <Text style={[styles.successText, { color: theme.colors.text }]}>
-                Payment processed successfully!
+                ✅ Payment {this.state.paymentResult?.is_demo ? 'Demo' : 'Successful'}!
               </Text>
               <Text style={[styles.methodText, { color: theme.colors.text }]}>
-                Method: {selectedPaymentMethod?.name}
+                Method: {this.state.selectedPaymentMethod?.name}
               </Text>
+              {this.state.paymentResult && (
+                <View style={styles.paymentDetails}>
+                  <Text style={[styles.paymentDetailsTitle, { color: theme.colors.text }]}>
+                    Payment Details:
+                  </Text>
+                  <Text style={[styles.paymentDetailsText, { color: theme.colors.text }]}>
+                    Order ID: {this.state.paymentResult.order_id}
+                  </Text>
+                  <Text style={[styles.paymentDetailsText, { color: theme.colors.text }]}>
+                    Status: {this.state.paymentResult.status}
+                  </Text>
+                  {this.state.paymentResult.va_number && (
+                    <Text style={[styles.paymentDetailsText, { color: theme.colors.text }]}>
+                      Virtual Account: {this.state.paymentResult.va_number}
+                    </Text>
+                  )}
+                </View>
+              )}
+              <TouchableOpacity style={styles.continueButton} onPress={this.onBack}>
+                <Text style={styles.continueButtonText}>Continue Shopping</Text>
+              </TouchableOpacity>
+            </View>
+          ) : paymentStatus === 'failed' ? (
+            <View style={styles.errorContainer}>
+              <Text style={[styles.errorText, { color: theme.colors.text }]}>
+                ❌ Payment Failed
+              </Text>
+              <Text style={[styles.errorMessage, { color: theme.colors.text }]}>
+                {this.state.error || 'An error occurred while processing your payment.'}
+              </Text>
+              <TouchableOpacity 
+                style={styles.retryButton} 
+                onPress={this.processSnapPayment}
+              >
+                <Text style={styles.retryButtonText}>Try Again</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.backButton} onPress={this.onBack}>
+                <Text style={styles.backButtonText}>Go Back</Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.errorContainer}>
@@ -318,6 +425,14 @@ class MidtransPaymentScreen extends PureComponent {
 
 const mapStateToProps = (state) => ({
   currency: state.currency.currency,
+  user: state.user, // Add user state for customer_id
 });
 
-export default connect(mapStateToProps)(withTheme(MidtransPaymentScreen));
+const mapDispatchToProps = (dispatch) => {
+  const { actions } = require('@redux/CartRedux');
+  return {
+    fetchMyOrder: (user) => actions.fetchMyOrder(dispatch, user),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MidtransPaymentScreen));

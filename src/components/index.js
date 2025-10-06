@@ -87,6 +87,7 @@ import OfflineSkeleton from './OfflineSkeleton';
 import IDCard from './IDCard';
 import Header from './Header';
 import ShippingMethodSelector from './ShippingMethodSelector';
+import DirectPaymentMethods from './DirectPaymentMethods';
 
 export {
   ProductList,
@@ -177,4 +178,5 @@ export {
   IDCard,
   Header,
   ShippingMethodSelector,
+  DirectPaymentMethods,
 };

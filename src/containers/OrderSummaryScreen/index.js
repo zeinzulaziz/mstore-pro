@@ -56,6 +56,7 @@ class OrderSummaryScreen extends PureComponent {
     // Transform cartItems to match OrderSummary expected format
     const transformedOrderData = {
       ...orderData,
+      customer_id: this.props.user?.user?.id || 0, // Add customer_id from user state
       line_items: cartItems.map((cartItem, index) => {
         const product = cartItem.variation && cartItem.variation.price !== '' 
           ? cartItem.variation 
@@ -138,6 +139,7 @@ class OrderSummaryScreen extends PureComponent {
 const mapStateToProps = (state) => ({
   currency: state.currency,
   cartItems: state.carts.cartItems,
+  user: state.user, // Add user state to access customer_id
 });
 
 export default connect(mapStateToProps)(withTheme(OrderSummaryScreen));
