@@ -229,40 +229,56 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
     console.log('🛒 Creating WooCommerce order from mobile app...');
     
     // Transform request data to WooCommerce format
+    console.log('🔍 Original item_details:', JSON.stringify(requestData.item_details, null, 2));
+    
+    const lineItems = requestData.item_details?.map((item, index) => {
+      console.log(`🔍 Processing item ${index}:`, JSON.stringify(item, null, 2));
+      
+      // For shipping items, use special handling
+      if (item.id === 'shipping') {
+        const shippingItem = {
+          name: item.name || 'Shipping Cost',
+          quantity: item.quantity || 1,
+          total: (item.price || 0).toString(),
+          // Don't set product_id for shipping
+        };
+        console.log('📦 Shipping item created:', JSON.stringify(shippingItem, null, 2));
+        return shippingItem;
+      }
+      
+      // For regular products, try to use valid product_id or create custom line item
+      const productId = parseInt(item.id);
+      console.log(`🔍 Product ID for item ${index}:`, productId, 'Original ID:', item.id);
+      
+      if (productId && productId > 0) {
+        const productItem = {
+          product_id: productId,
+          quantity: item.quantity || 1,
+        };
+        console.log('✅ Valid product item created:', JSON.stringify(productItem, null, 2));
+        return productItem;
+      } else {
+        // Create custom line item for invalid product IDs
+        const customItem = {
+          name: item.name || 'Custom Product',
+          quantity: item.quantity || 1,
+          total: (item.price || 0).toString(),
+          // Don't set product_id for custom items
+        };
+        console.log('⚠️ Custom line item created:', JSON.stringify(customItem, null, 2));
+        return customItem;
+      }
+    }) || [{
+      name: 'Mobile App Order',
+      quantity: 1,
+      total: (requestData.amount || 100000).toString(),
+    }];
+    
+    console.log('🔍 Final line_items:', JSON.stringify(lineItems, null, 2));
+    
     const wooOrderData = {
       customer_id: 0, // Guest order
-      line_items: requestData.item_details?.map(item => {
-        // For shipping items, use special handling
-        if (item.id === 'shipping') {
-          return {
-            name: item.name || 'Shipping Cost',
-            quantity: item.quantity || 1,
-            total: (item.price || 0).toString(),
-            // Don't set product_id for shipping
-          };
-        }
-        
-        // For regular products, try to use valid product_id or create custom line item
-        const productId = parseInt(item.id);
-        if (productId && productId > 0) {
-          return {
-            product_id: productId,
-            quantity: item.quantity || 1,
-          };
-        } else {
-          // Create custom line item for invalid product IDs
-          return {
-            name: item.name || 'Custom Product',
-            quantity: item.quantity || 1,
-            total: (item.price || 0).toString(),
-            // Don't set product_id for custom items
-          };
-        }
-      }) || [{
-        name: 'Mobile App Order',
-        quantity: 1,
-        total: (requestData.amount || 100000).toString(),
-      }],
+      line_items: lineItems,
       customer_details: {
         first_name: requestData.customer_details?.first_name || 'Customer',
         last_name: requestData.customer_details?.last_name || '',

@@ -54,15 +54,19 @@ class OrderSummaryScreen extends PureComponent {
     const { isLoading } = this.state;
 
     // Transform cartItems to match OrderSummary expected format
+    console.log('🔍 Original cartItems:', JSON.stringify(cartItems, null, 2));
+    
     const transformedOrderData = {
       ...orderData,
       customer_id: this.props.user?.user?.id || 0, // Add customer_id from user state
       line_items: cartItems.map((cartItem, index) => {
+        console.log(`🔍 Processing cartItem ${index}:`, JSON.stringify(cartItem, null, 2));
+        
         const product = cartItem.variation && cartItem.variation.price !== '' 
           ? cartItem.variation 
           : cartItem.product;
         
-        return {
+        const lineItem = {
           product_id: cartItem.product.id,
           quantity: cartItem.quantity,
           name: cartItem.product.name,
@@ -75,6 +79,11 @@ class OrderSummaryScreen extends PureComponent {
             weight: cartItem.variation.weight // Include variation weight
           } : null
         };
+        
+        console.log(`🔍 Line item ${index} created:`, JSON.stringify(lineItem, null, 2));
+        console.log(`🔍 Product ID for line item ${index}:`, cartItem.product.id, 'Type:', typeof cartItem.product.id);
+        
+        return lineItem;
       }),
       // Calculate totals from cartItems
       subTotal: this.calculateSubTotal(),
