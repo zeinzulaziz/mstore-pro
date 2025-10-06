@@ -16,8 +16,8 @@ class OrderSummaryScreen extends PureComponent {
   }
 
   onEditOrder = () => {
-    // Navigate back to cart or shipping info
-    this.props.navigation.goBack();
+    // Navigate to Cart screen
+    this.props.navigation.navigate('CartScreen');
   };
 
   onProceedToPayment = (orderDataWithMethods) => {
@@ -98,6 +98,7 @@ class OrderSummaryScreen extends PureComponent {
           onEditOrder={this.onEditOrder}
           onProceedToPayment={this.onProceedToPayment}
           isLoading={isLoading}
+          navigation={this.props.navigation}
         />
       </SafeAreaView>
     );

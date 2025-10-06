@@ -533,7 +533,8 @@ class OrderSummary extends PureComponent {
       theme: { colors: { text, background } },
       onEditOrder,
       onProceedToPayment,
-      isLoading = false
+      isLoading = false,
+      navigation
     } = this.props;
 
     const {
@@ -557,7 +558,16 @@ class OrderSummary extends PureComponent {
             <Text style={[styles.headerTitle, { color: text }]}>
               {Languages.OrderSummary || 'Order Summary'}
             </Text>
-            <TouchableOpacity onPress={onEditOrder} style={styles.editButton}>
+            <TouchableOpacity 
+              onPress={() => {
+                if (navigation) {
+                  navigation.navigate('CartScreen');
+                } else if (onEditOrder) {
+                  onEditOrder();
+                }
+              }} 
+              style={styles.editButton}
+            >
               <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           </View>
