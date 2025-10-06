@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Modal, ScrollView, Dimensions } from 'react-native';
 import { withTheme, Tools, Languages, Color, Fonts } from '@common';
 import styles from './styles';
 
@@ -8,6 +8,7 @@ class ShippingMethodSelector extends PureComponent {
     super(props);
     this.state = {
       selectedMethod: null,
+      showDropdown: false,
     };
   }
 
@@ -43,11 +44,18 @@ class ShippingMethodSelector extends PureComponent {
       itemId,
       price: method.price
     });
-    this.setState({ selectedMethod: method });
+    this.setState({ 
+      selectedMethod: method,
+      showDropdown: false 
+    });
     this.props.onSelectShippingMethod(method);
   };
 
-  renderShippingMethod = ({ item, index }) => {
+  toggleDropdown = () => {
+    this.setState({ showDropdown: !this.state.showDropdown });
+  };
+
+  renderShippingMethod = ({ item, index, isCompact = false }) => {
     const { theme } = this.props;
     const { colors: { text, background } } = theme;
     const { selectedMethod } = this.state;
@@ -82,7 +90,7 @@ class ShippingMethodSelector extends PureComponent {
     return (
       <TouchableOpacity
         style={[
-          styles.shippingMethodItem,
+          isCompact ? styles.shippingMethodItemCompact : styles.shippingMethodItem,
           { 
             backgroundColor: isSelected ? '#f8f9ff' : background,
             borderColor: isSelected ? Color.primary : Color.border,
@@ -116,15 +124,15 @@ class ShippingMethodSelector extends PureComponent {
               </Text>
             )}
             
-            {/* Deskripsi Detail */}
-            {item.description && (
+            {/* Deskripsi Detail - Hide in compact mode */}
+            {!isCompact && item.description && (
               <Text style={[styles.description, { color: Color.grey }]}>
                 📝 {item.description}
               </Text>
             )}
             
-            {/* Tipe Layanan */}
-            {item.service_type && (
+            {/* Tipe Layanan - Hide in compact mode */}
+            {!isCompact && item.service_type && (
               <Text style={[styles.additionalInfo, { color: Color.grey }]}>
                 🚚 {item.service_type === 'standard' ? 'Layanan Standar' : 
                      item.service_type === 'express' ? 'Layanan Express' : 
@@ -133,8 +141,8 @@ class ShippingMethodSelector extends PureComponent {
               </Text>
             )}
             
-            {/* Tipe Pengiriman */}
-            {item.shipping_type && (
+            {/* Tipe Pengiriman - Hide in compact mode */}
+            {!isCompact && item.shipping_type && (
               <Text style={[styles.additionalInfo, { color: Color.grey }]}>
                 📦 {item.shipping_type === 'parcel' ? 'Paket' : 
                      item.shipping_type === 'document' ? 'Dokumen' : 
@@ -142,43 +150,45 @@ class ShippingMethodSelector extends PureComponent {
               </Text>
             )}
             
-            {/* Features Container */}
-            <View style={styles.featuresContainer}>
-              {/* Cash on Delivery */}
-              {item.available_for_cash_on_delivery && (
-                <View style={styles.featureTag}>
-                  <Text style={styles.featureText}>💳 COD</Text>
-                </View>
-              )}
-              
-              {/* Proof of Delivery */}
-              {item.available_for_proof_of_delivery && (
-                <View style={styles.featureTag}>
-                  <Text style={styles.featureText}>📋 POD</Text>
-                </View>
-              )}
-              
-              {/* Instant Waybill */}
-              {item.available_for_instant_waybill_id && (
-                <View style={styles.featureTag}>
-                  <Text style={styles.featureText}>⚡ Instant</Text>
-                </View>
-              )}
-              
-              {/* Insurance */}
-              {item.available_for_insurance && (
-                <View style={styles.featureTag}>
-                  <Text style={styles.featureText}>🛡️ Insurance</Text>
-                </View>
-              )}
-              
-              {/* Free Shipping */}
-              {item.tier === 'free' && (
-                <View style={styles.featureTag}>
-                  <Text style={styles.featureText}>🆓 Gratis</Text>
-                </View>
-              )}
-            </View>
+            {/* Features Container - Show only in compact mode */}
+            {isCompact && (
+              <View style={styles.featuresContainer}>
+                {/* Cash on Delivery */}
+                {item.available_for_cash_on_delivery && (
+                  <View style={styles.featureTag}>
+                    <Text style={styles.featureText}>💳 COD</Text>
+                  </View>
+                )}
+                
+                {/* Proof of Delivery */}
+                {item.available_for_proof_of_delivery && (
+                  <View style={styles.featureTag}>
+                    <Text style={styles.featureText}>📋 POD</Text>
+                  </View>
+                )}
+                
+                {/* Instant Waybill */}
+                {item.available_for_instant_waybill_id && (
+                  <View style={styles.featureTag}>
+                    <Text style={styles.featureText}>⚡ Instant</Text>
+                  </View>
+                )}
+                
+                {/* Insurance */}
+                {item.available_for_insurance && (
+                  <View style={styles.featureTag}>
+                    <Text style={styles.featureText}>🛡️ Insurance</Text>
+                  </View>
+                )}
+                
+                {/* Free Shipping */}
+                {item.tier === 'free' && (
+                  <View style={styles.featureTag}>
+                    <Text style={styles.featureText}>🆓 Gratis</Text>
+                  </View>
+                )}
+              </View>
+            )}
           </View>
           
           {/* Price di Kanan */}
@@ -246,18 +256,86 @@ class ShippingMethodSelector extends PureComponent {
       );
     }
 
+    const { selectedMethod, showDropdown } = this.state;
+    const screenHeight = Dimensions.get('window').height;
+
     return (
       <View style={[styles.container, { backgroundColor: background }]}>
         <Text style={[styles.sectionTitle, { color: text }]}>
           {Languages.ShippingMethods || 'Shipping Methods'}
         </Text>
-        <View style={styles.shippingMethodsList}>
-          {shippingRates.map((item, index) => (
-            <View key={`${item.courier_code}-${item.service_code || item.courier_service_code || index}-${index}`}>
-              {this.renderShippingMethod({ item, index })}
+        
+        {/* Dropdown Trigger */}
+        <TouchableOpacity 
+          style={[styles.dropdownTrigger, { backgroundColor: background }]}
+          onPress={this.toggleDropdown}
+          activeOpacity={0.7}
+        >
+          <View style={styles.dropdownContent}>
+            <View style={styles.dropdownLeft}>
+              <Text style={[styles.dropdownTitle, { color: text }]}>
+                {selectedMethod ? 
+                  `${selectedMethod.courier_name || selectedMethod.courier_code?.toUpperCase()} - ${selectedMethod.courier_service_name || selectedMethod.service_name}` :
+                  'Pilih Metode Pengiriman'
+                }
+              </Text>
+              {selectedMethod && (
+                <Text style={[styles.dropdownSubtitle, { color: Color.grey }]}>
+                  {selectedMethod.duration || selectedMethod.etd ? `⏱️ ${selectedMethod.duration || `${selectedMethod.etd} hari`}` : ''}
+                </Text>
+              )}
             </View>
-          ))}
-        </View>
+            <View style={styles.dropdownRight}>
+              <Text style={[styles.dropdownPrice, { color: Color.primary }]}>
+                {selectedMethod ? Tools.getCurrenciesFormatted(selectedMethod.price) : ''}
+              </Text>
+              <Text style={[styles.dropdownArrow, { color: text }]}>
+                {showDropdown ? '▲' : '▼'}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Dropdown Modal */}
+        <Modal
+          visible={showDropdown}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => this.setState({ showDropdown: false })}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContainer, { 
+              backgroundColor: background,
+              maxHeight: screenHeight * 0.7 
+            }]}>
+              {/* Modal Header */}
+              <View style={styles.modalHeader}>
+                <Text style={[styles.modalTitle, { color: text }]}>
+                  Pilih Metode Pengiriman
+                </Text>
+                <TouchableOpacity 
+                  style={styles.closeButton}
+                  onPress={() => this.setState({ showDropdown: false })}
+                >
+                  <Text style={[styles.closeButtonText, { color: text }]}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Scrollable Content */}
+              <ScrollView 
+                style={styles.modalContent}
+                showsVerticalScrollIndicator={true}
+                bounces={false}
+              >
+                {shippingRates.map((item, index) => (
+                  <View key={`${item.courier_code}-${item.service_code || item.courier_service_code || index}-${index}`}>
+                    {this.renderShippingMethod({ item, index, isCompact: true })}
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
