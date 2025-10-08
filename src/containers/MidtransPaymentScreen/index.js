@@ -151,15 +151,15 @@ class MidtransPaymentScreen extends PureComponent {
     console.log('Navigation state changed:', navState.url);
     
     // Check if URL indicates payment completion
-    if (navState.url.includes('finish')) {
+    if (navState.url.includes('finish') || navState.url.includes('gopay-finish')) {
       this.handlePaymentSuccess({
-        payment_method: this.props.route.params.orderData.selectedPaymentMethod?.id,
+        payment_method: this.props.route.params.orderData.selectedPaymentMethod?.id || 'gopay',
         transaction_id: 'TXN_' + Date.now(),
         url: navState.url
       });
     } else if (navState.url.includes('pending')) {
       this.handlePaymentPending({
-        payment_method: this.props.route.params.orderData.selectedPaymentMethod?.id,
+        payment_method: this.props.route.params.orderData.selectedPaymentMethod?.id || 'gopay',
         transaction_id: 'TXN_' + Date.now(),
         url: navState.url
       });
@@ -168,6 +168,16 @@ class MidtransPaymentScreen extends PureComponent {
         error_message: 'Payment failed',
         url: navState.url
       });
+    } else if (navState.url.includes('gopay.co.id') || navState.url.includes('gojek://')) {
+      // Handle GoPay redirect in simulator
+      console.log('GoPay payment initiated, simulating success for simulator');
+      setTimeout(() => {
+        this.handlePaymentSuccess({
+          payment_method: 'gopay',
+          transaction_id: 'TXN_' + Date.now(),
+          url: navState.url
+        });
+      }, 2000); // Simulate 2 second delay
     }
   };
 
