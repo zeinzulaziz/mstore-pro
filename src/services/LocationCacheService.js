@@ -3,8 +3,9 @@
  * Handles caching of location data (coordinates + address details)
  */
 
-// Import types directly to avoid import issues
-const CACHE_LOCATION_DATA = 'CACHE_LOCATION_DATA';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CACHE_KEY = 'cached_location_data';
 
 class LocationCacheService {
   
@@ -21,7 +22,7 @@ class LocationCacheService {
    * @param {string} locationData.address.formattedAddress - Full formatted address
    * @param {number} locationData.timestamp - Cache timestamp
    */
-  static cacheLocationData(dispatch, locationData) {
+  static async cacheLocationData(dispatch, locationData) {
     try {
       const cacheData = {
         ...locationData,
@@ -31,11 +32,10 @@ class LocationCacheService {
       
       console.log('🗄️ Caching location data:', JSON.stringify(cacheData, null, 2));
       
-      // Dispatch directly to avoid import issues
-      dispatch({ 
-        type: CACHE_LOCATION_DATA, 
-        locationData: cacheData 
-      });
+      // Store directly in AsyncStorage
+      await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+      
+      console.log('✅ Location data cached successfully in AsyncStorage');
       
       return {
         success: true,
@@ -51,18 +51,19 @@ class LocationCacheService {
   }
   
   /**
-   * Get cached location data
-   * @param {Object} state - Redux state
+   * Get cached location data from AsyncStorage
    * @returns {Object|null} Cached location data or null
    */
-  static getCachedLocation(state) {
+  static async getCachedLocation() {
     try {
-      const cachedLocation = state.addresses?.cachedLocation;
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY);
       
-      if (!cachedLocation) {
-        console.log('📭 No cached location found');
+      if (!cachedData) {
+        console.log('📭 No cached location found in AsyncStorage');
         return null;
       }
+      
+      const cachedLocation = JSON.parse(cachedData);
       
       // Check if cache is still valid (24 hours)
       const cacheAge = Date.now() - cachedLocation.timestamp;
@@ -70,10 +71,12 @@ class LocationCacheService {
       
       if (cacheAge > maxAge) {
         console.log('⏰ Cached location expired, age:', Math.round(cacheAge / (60 * 60 * 1000)), 'hours');
+        // Clear expired cache
+        await AsyncStorage.removeItem(CACHE_KEY);
         return null;
       }
       
-      console.log('✅ Using cached location data:', JSON.stringify(cachedLocation, null, 2));
+      console.log('✅ Using cached location data from AsyncStorage:', JSON.stringify(cachedLocation, null, 2));
       return cachedLocation;
     } catch (error) {
       console.error('❌ Error getting cached location:', error);
@@ -83,16 +86,11 @@ class LocationCacheService {
   
   /**
    * Clear cached location data
-   * @param {Function} dispatch - Redux dispatch function
    */
-  static clearCachedLocation(dispatch) {
+  static async clearCachedLocation() {
     try {
-      console.log('🗑️ Clearing cached location data');
-      // Dispatch directly to avoid import issues
-      dispatch({ 
-        type: CACHE_LOCATION_DATA, 
-        locationData: null 
-      });
+      console.log('🗑️ Clearing cached location data from AsyncStorage');
+      await AsyncStorage.removeItem(CACHE_KEY);
       
       return {
         success: true,
@@ -109,44 +107,52 @@ class LocationCacheService {
   
   /**
    * Check if location data is cached and valid
-   * @param {Object} state - Redux state
    * @returns {boolean} True if valid cached location exists
    */
-  static hasValidCachedLocation(state) {
-    const cachedLocation = this.getCachedLocation(state);
+  static async hasValidCachedLocation() {
+    const cachedLocation = await this.getCachedLocation();
     return cachedLocation !== null;
   }
   
   /**
    * Get cache info (age, validity, etc.)
-   * @param {Object} state - Redux state
    * @returns {Object} Cache information
    */
-  static getCacheInfo(state) {
-    const cachedLocation = state.addresses?.cachedLocation;
-    
-    if (!cachedLocation) {
+  static async getCacheInfo() {
+    try {
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+      
+      if (!cachedData) {
+        return {
+          exists: false,
+          age: null,
+          valid: false
+        };
+      }
+      
+      const cachedLocation = JSON.parse(cachedData);
+      const age = Date.now() - cachedLocation.timestamp;
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+      const valid = age <= maxAge;
+      
+      return {
+        exists: true,
+        age: Math.round(age / (60 * 60 * 1000)), // Age in hours
+        valid: valid,
+        coordinates: {
+          latitude: cachedLocation.latitude,
+          longitude: cachedLocation.longitude
+        },
+        address: cachedLocation.address
+      };
+    } catch (error) {
+      console.error('❌ Error getting cache info:', error);
       return {
         exists: false,
         age: null,
         valid: false
       };
     }
-    
-    const age = Date.now() - cachedLocation.timestamp;
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-    const valid = age <= maxAge;
-    
-    return {
-      exists: true,
-      age: Math.round(age / (60 * 60 * 1000)), // Age in hours
-      valid: valid,
-      coordinates: {
-        latitude: cachedLocation.latitude,
-        longitude: cachedLocation.longitude
-      },
-      address: cachedLocation.address
-    };
   }
 }
 

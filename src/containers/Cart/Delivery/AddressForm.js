@@ -29,12 +29,12 @@ const AddressForm = React.memo(({errors, control, dispatch, addresses, ...rest})
     loadCachedLocation();
   }, []);
 
-  const loadCachedLocation = () => {
+  const loadCachedLocation = async () => {
     try {
-      const cachedLocation = LocationCacheService.getCachedLocation({ addresses });
+      const cachedLocation = await LocationCacheService.getCachedLocation();
       
       if (cachedLocation) {
-        console.log('🔄 Loading cached location data...');
+        console.log('🔄 Loading cached location data from AsyncStorage...');
         
         // Set cached location
         setSelectedLocation({
@@ -67,9 +67,9 @@ const AddressForm = React.memo(({errors, control, dispatch, addresses, ...rest})
         
         setLocationStatus(`Cached location: ${cachedLocation.latitude.toFixed(6)}, ${cachedLocation.longitude.toFixed(6)}`);
         
-        console.log('✅ Cached location loaded successfully');
+        console.log('✅ Cached location loaded successfully from AsyncStorage');
       } else {
-        console.log('📭 No cached location found');
+        console.log('📭 No cached location found in AsyncStorage');
       }
     } catch (error) {
       console.error('❌ Error loading cached location:', error);
@@ -119,7 +119,7 @@ const AddressForm = React.memo(({errors, control, dispatch, addresses, ...rest})
         address: addressData
       };
       
-      LocationCacheService.cacheLocationData(dispatch, locationData);
+      await LocationCacheService.cacheLocationData(dispatch, locationData);
       
       Alert.alert(
         'Location Updated',
@@ -177,7 +177,7 @@ const AddressForm = React.memo(({errors, control, dispatch, addresses, ...rest})
         address: addressData
       };
       
-      LocationCacheService.cacheLocationData(dispatch, locationData);
+      await LocationCacheService.cacheLocationData(dispatch, locationData);
     } catch (error) {
       console.error('Reverse geocoding error:', error);
       setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
