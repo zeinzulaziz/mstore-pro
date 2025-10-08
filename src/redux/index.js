@@ -38,6 +38,12 @@ const config = {
     'sideMenu',
     'filters',
   ],
+  whitelist: [
+    'addresses', // Cache address data including location
+    'shipping',  // Cache shipping preferences
+    'user',      // Cache user data
+    'carts',     // Cache cart data
+  ],
 };
 
 export default persistCombineReducers(config, {

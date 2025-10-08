@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {View, TouchableOpacity, Text, Alert} from 'react-native';
 import {Controller} from 'react-hook-form';
+import {connect} from 'react-redux';
 
 import {TextInput, SelectCountry, Button, MapPicker} from '@components';
 import {Languages, withTheme, Color, Fonts} from '@common';
 import GeolocationService from '@services/GeolocationService';
 import ReverseGeocodingService from '@services/ReverseGeocodingService';
+import LocationCacheService from '@services/LocationCacheService';
 
 import styles from './styles';
 
-const AddressForm = React.memo(({errors, control, ...rest}) => {
+const AddressForm = React.memo(({errors, control, dispatch, addresses, ...rest}) => {
   const {
     theme: {
       colors: {placeholder, text},
@@ -21,6 +23,58 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [addressDetails, setAddressDetails] = useState(null);
+
+  // Load cached location data on component mount
+  useEffect(() => {
+    loadCachedLocation();
+  }, []);
+
+  const loadCachedLocation = () => {
+    try {
+      const cachedLocation = LocationCacheService.getCachedLocation({ addresses });
+      
+      if (cachedLocation) {
+        console.log('🔄 Loading cached location data...');
+        
+        // Set cached location
+        setSelectedLocation({
+          latitude: cachedLocation.latitude,
+          longitude: cachedLocation.longitude
+        });
+        
+        // Set cached address details
+        setAddressDetails(cachedLocation.address);
+        
+        // Update form values with cached data
+        if (cachedLocation.address) {
+          if (cachedLocation.address.city !== 'Unknown') {
+            control._formValues.city = cachedLocation.address.city;
+          }
+          if (cachedLocation.address.district !== 'Unknown') {
+            control._formValues.district = cachedLocation.address.district;
+          }
+          if (cachedLocation.address.province !== 'Unknown') {
+            control._formValues.province = cachedLocation.address.province;
+          }
+          if (cachedLocation.address.postcode !== 'Unknown') {
+            control._formValues.postcode = cachedLocation.address.postcode;
+          }
+        }
+        
+        // Set coordinates in form
+        control._formValues.latitude = cachedLocation.latitude.toString();
+        control._formValues.longitude = cachedLocation.longitude.toString();
+        
+        setLocationStatus(`Cached location: ${cachedLocation.latitude.toFixed(6)}, ${cachedLocation.longitude.toFixed(6)}`);
+        
+        console.log('✅ Cached location loaded successfully');
+      } else {
+        console.log('📭 No cached location found');
+      }
+    } catch (error) {
+      console.error('❌ Error loading cached location:', error);
+    }
+  };
 
   const getCurrentLocation = async () => {
     setIsGettingLocation(true);
@@ -57,6 +111,15 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
       }
       
       setLocationStatus(`Location selected: ${position.latitude.toFixed(6)}, ${position.longitude.toFixed(6)}`);
+      
+      // Cache the location data
+      const locationData = {
+        latitude: position.latitude,
+        longitude: position.longitude,
+        address: addressData
+      };
+      
+      LocationCacheService.cacheLocationData(dispatch, locationData);
       
       Alert.alert(
         'Location Updated',
@@ -106,6 +169,15 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
       }
       
       setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+      
+      // Cache the location data
+      const locationData = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        address: addressData
+      };
+      
+      LocationCacheService.cacheLocationData(dispatch, locationData);
     } catch (error) {
       console.error('Reverse geocoding error:', error);
       setLocationStatus(`Location selected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
@@ -323,4 +395,8 @@ const AddressForm = React.memo(({errors, control, ...rest}) => {
   );
 });
 
-export default withTheme(AddressForm);
+const mapStateToProps = (state) => ({
+  addresses: state.addresses,
+});
+
+export default connect(mapStateToProps)(withTheme(AddressForm));

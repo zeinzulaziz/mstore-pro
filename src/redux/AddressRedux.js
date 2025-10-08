@@ -11,6 +11,8 @@ const types = {
   SELECTED_ADDRESS: 'SELECTED_ADDRESS',
   INIT_ADDRESSES: 'INIT_ADDRESSES',
   UPDATE_SELECTED_ADDRESS: 'UPDATE_SELECTED_ADDRESS',
+  CACHE_LOCATION_DATA: 'CACHE_LOCATION_DATA',
+  GET_CACHED_LOCATION: 'GET_CACHED_LOCATION',
 };
 
 export const actions = {
@@ -43,11 +45,22 @@ export const actions = {
   updateSelectedAddress: (dispatch, address) => {
     dispatch({ type: types.UPDATE_SELECTED_ADDRESS, address });
   },
+  
+  // Cache location data (coordinates + address details)
+  cacheLocationData: (dispatch, locationData) => {
+    dispatch({ type: types.CACHE_LOCATION_DATA, locationData });
+  },
+  
+  // Get cached location data
+  getCachedLocation: (dispatch) => {
+    dispatch({ type: types.GET_CACHED_LOCATION });
+  },
 };
 
 const initialState = {
   list: [],
   reload: false,
+  cachedLocation: null, // Store cached location data
 };
 
 export const reducer = (state = initialState, action) => {
@@ -100,6 +113,19 @@ export const reducer = (state = initialState, action) => {
         reload: !state.reload,
         list,
         selectedAddress: action.address,
+      };
+    }
+    case types.CACHE_LOCATION_DATA: {
+      return {
+        ...state,
+        cachedLocation: action.locationData,
+        reload: !state.reload,
+      };
+    }
+    case types.GET_CACHED_LOCATION: {
+      return {
+        ...state,
+        reload: !state.reload,
       };
     }
     default: {
