@@ -48,8 +48,11 @@ export const WooCommerceOrderService = {
           postcode: orderData.shipping?.postcode || '',
           country: orderData.shipping?.country || 'ID'
         },
-            line_items: orderData.line_items?.map((item, index) => {
-              console.log(`🔍 WooCommerceOrderService - Processing item ${index}:`, JSON.stringify(item, null, 2));
+            line_items: orderData.line_items?.filter(item => {
+              // Filter out shipping items from line_items
+              return item.id !== 'shipping' && item.product_id !== 'shipping';
+            }).map((item, index) => {
+              console.log(`🔍 WooCommerceOrderService - Processing product item ${index}:`, JSON.stringify(item, null, 2));
               
               // Only include product_id if it's a valid positive number
               const productId = parseInt(item.product_id);
@@ -73,11 +76,31 @@ export const WooCommerceOrderService = {
                 return customItem;
               }
             }) || [],
-        shipping_lines: orderData.selectedShippingMethod ? [{
-          method_title: orderData.selectedShippingMethod.service_name || 'Shipping',
-          method_id: orderData.selectedShippingMethod.courier_code || 'shipping',
-          total: orderData.selectedShippingMethod.price?.toString() || '0'
-        }] : [],
+        shipping_lines: (() => {
+          // Check if there's a shipping item in line_items
+          const shippingItem = orderData.line_items?.find(item => 
+            item.id === 'shipping' || item.product_id === 'shipping' || item.name === 'Shipping Cost'
+          );
+          
+          if (shippingItem) {
+            console.log('📦 Found shipping item in line_items, moving to shipping_lines:', JSON.stringify(shippingItem, null, 2));
+            return [{
+              method_id: 'custom_shipping',
+              method_title: shippingItem.name || 'Shipping Cost',
+              total: (shippingItem.price || shippingItem.total || 0).toString()
+            }];
+          } else if (orderData.selectedShippingMethod) {
+            console.log('📦 Using selectedShippingMethod for shipping_lines');
+            return [{
+              method_title: orderData.selectedShippingMethod.service_name || 'Shipping',
+              method_id: orderData.selectedShippingMethod.courier_code || 'custom_shipping',
+              total: orderData.selectedShippingMethod.price?.toString() || '0'
+            }];
+          } else {
+            console.log('📦 No shipping method found');
+            return [];
+          }
+        })(),
         meta_data: [
           { key: '_midtrans_mobile_order', value: 'true' },
           { key: '_midtrans_order_source', value: 'mobile_app' }

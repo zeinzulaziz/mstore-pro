@@ -231,48 +231,43 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
     // Transform request data to WooCommerce format
     console.log('🔍 Original item_details:', JSON.stringify(requestData.item_details, null, 2));
     
-    const lineItems = requestData.item_details?.map((item, index) => {
-      console.log(`🔍 Processing item ${index}:`, JSON.stringify(item, null, 2));
-      
-          // For shipping items, use special handling
-          if (item.id === 'shipping') {
-            const shippingItem = {
-              name: item.name || 'Shipping Cost',
+        // Separate shipping items from product items
+        const shippingItem = requestData.item_details?.find(item => 
+          item.id === 'shipping' || item.name === 'Shipping Cost'
+        );
+        
+        const lineItems = requestData.item_details?.filter(item => 
+          item.id !== 'shipping' && item.name !== 'Shipping Cost'
+        ).map((item, index) => {
+          console.log(`🔍 Processing product item ${index}:`, JSON.stringify(item, null, 2));
+          
+          // For regular products, try to use valid product_id or create custom line item
+          const productId = parseInt(item.id);
+          console.log(`🔍 Product ID for item ${index}:`, productId, 'Original ID:', item.id);
+          
+          if (productId && productId > 0) {
+            const productItem = {
+              product_id: productId,
               quantity: item.quantity || 1,
-              total: (item.price || item.total || 0).toString(),
-              // Don't set product_id for shipping
             };
-            console.log('📦 Shipping item created:', JSON.stringify(shippingItem, null, 2));
-            return shippingItem;
+            console.log('✅ Valid product item created:', JSON.stringify(productItem, null, 2));
+            return productItem;
+          } else {
+            // Create custom line item for invalid product IDs
+            const customItem = {
+              name: item.name || 'Custom Product',
+              quantity: item.quantity || 1,
+              total: (item.price || 0).toString(),
+              // Don't set product_id for custom items
+            };
+            console.log('⚠️ Custom line item created (invalid product_id):', JSON.stringify(customItem, null, 2));
+            return customItem;
           }
-      
-      // For regular products, try to use valid product_id or create custom line item
-      const productId = parseInt(item.id);
-      console.log(`🔍 Product ID for item ${index}:`, productId, 'Original ID:', item.id);
-      
-      if (productId && productId > 0) {
-        const productItem = {
-          product_id: productId,
-          quantity: item.quantity || 1,
-        };
-        console.log('✅ Valid product item created:', JSON.stringify(productItem, null, 2));
-        return productItem;
-      } else {
-        // Create custom line item for invalid product IDs
-        const customItem = {
-          name: item.name || 'Custom Product',
-          quantity: item.quantity || 1,
-          total: (item.price || 0).toString(),
-          // Don't set product_id for custom items
-        };
-        console.log('⚠️ Custom line item created (invalid product_id):', JSON.stringify(customItem, null, 2));
-        return customItem;
-      }
-    }) || [{
-      name: 'Mobile App Order',
-      quantity: 1,
-      total: (requestData.amount || 100000).toString(),
-    }];
+        }) || [{
+          name: 'Mobile App Order',
+          quantity: 1,
+          total: (requestData.amount || 100000).toString(),
+        }];
     
     console.log('🔍 Final line_items:', JSON.stringify(lineItems, null, 2));
     
@@ -305,6 +300,11 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
         postcode: requestData.shipping_address.postal_code || '',
         country: requestData.shipping_address.country_code || 'ID'
       } : undefined,
+      shipping_lines: shippingItem ? [{
+        method_id: 'custom_shipping',
+        method_title: shippingItem.name || 'Shipping Cost',
+        total: (shippingItem.price || shippingItem.total || 0).toString()
+      }] : [],
       payment_method: 'midtrans',
       payment_method_title: 'Midtrans',
       status: 'pending',
