@@ -168,7 +168,21 @@ export const CustomMidtransAPI = {
           const midtransResponse = JSON.parse(result.message.split('Midtrans API error: ')[1]);
           console.log('📦 Parsed Midtrans response:', midtransResponse);
           
-          // Since server doesn't create WooCommerce order, create it from mobile app
+          // Check if custom endpoint already created WooCommerce order
+          if (result.woo_order_id) {
+            console.log('✅ Custom endpoint already created WooCommerce order:', result.woo_order_id);
+            return {
+              success: true,
+              token: midtransResponse.token,
+              redirect_url: midtransResponse.redirect_url,
+              order_id: requestData.order_id,
+              woo_order_id: result.woo_order_id,
+              warning: null,
+              is_demo: false
+            };
+          }
+          
+          // Only create fallback if custom endpoint didn't create order
           const wooOrderResult = await createWooCommerceOrderFromMobile(requestData, midtransResponse);
           
           return {
@@ -188,17 +202,32 @@ export const CustomMidtransAPI = {
 
       // Normal response structure
       // Since server doesn't create WooCommerce order, create it from mobile app
-      const wooOrderResult = await createWooCommerceOrderFromMobile(requestData, result);
-      
-      return {
-        success: true,
-        token: result.token,
-        redirect_url: result.redirect_url,
-        order_id: requestData.order_id,
-        woo_order_id: wooOrderResult.woo_order_id || null,
-        warning: wooOrderResult.warning || null,
-        is_demo: false
-      };
+          // Don't create fallback order if custom endpoint already created one
+          if (result.woo_order_id) {
+            console.log('✅ Custom endpoint already created WooCommerce order:', result.woo_order_id);
+            return {
+              success: true,
+              token: result.token,
+              redirect_url: result.redirect_url,
+              order_id: requestData.order_id,
+              woo_order_id: result.woo_order_id,
+              warning: null,
+              is_demo: false
+            };
+          }
+          
+          // Only create fallback if custom endpoint didn't create order
+          const wooOrderResult = await createWooCommerceOrderFromMobile(requestData, result);
+          
+          return {
+            success: true,
+            token: result.token,
+            redirect_url: result.redirect_url,
+            order_id: requestData.order_id,
+            woo_order_id: wooOrderResult.woo_order_id || null,
+            warning: wooOrderResult.warning || null,
+            is_demo: false
+          };
 
     } catch (error) {
       console.error('❌ Error creating Snap transaction via custom endpoint:', error);
