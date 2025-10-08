@@ -3,7 +3,7 @@
  * Handles caching of location data (coordinates + address details)
  */
 
-import { AddressRedux } from '@redux';
+import { actions as AddressRedux } from '@redux/AddressRedux';
 
 class LocationCacheService {
   
