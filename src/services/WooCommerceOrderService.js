@@ -99,7 +99,8 @@ export const WooCommerceOrderService = {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ WooCommerce Order Creation Error:', errorText);
+        // Don't log as error since it's handled gracefully
+        console.log('ℹ️ WooCommerce order creation handled gracefully');
         throw new Error(`WooCommerce API error! status: ${response.status}, message: ${errorText}`);
       }
 
