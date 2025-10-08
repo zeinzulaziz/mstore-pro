@@ -234,17 +234,17 @@ const createWooCommerceOrderFromMobile = async (requestData, midtransResponse) =
     const lineItems = requestData.item_details?.map((item, index) => {
       console.log(`🔍 Processing item ${index}:`, JSON.stringify(item, null, 2));
       
-      // For shipping items, use special handling
-      if (item.id === 'shipping') {
-        const shippingItem = {
-          name: item.name || 'Shipping Cost',
-          quantity: item.quantity || 1,
-          total: (item.price || 0).toString(),
-          // Don't set product_id for shipping
-        };
-        console.log('📦 Shipping item created:', JSON.stringify(shippingItem, null, 2));
-        return shippingItem;
-      }
+          // For shipping items, use special handling
+          if (item.id === 'shipping') {
+            const shippingItem = {
+              name: item.name || 'Shipping Cost',
+              quantity: item.quantity || 1,
+              total: (item.price || item.total || 0).toString(),
+              // Don't set product_id for shipping
+            };
+            console.log('📦 Shipping item created:', JSON.stringify(shippingItem, null, 2));
+            return shippingItem;
+          }
       
       // For regular products, try to use valid product_id or create custom line item
       const productId = parseInt(item.id);

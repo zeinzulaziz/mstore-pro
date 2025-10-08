@@ -48,23 +48,23 @@ export const WooCommerceIntegration = {
           postcode: orderData.shipping?.postcode || '',
           country: orderData.shipping?.country || 'ID'
         },
-        line_items: orderData.line_items?.map(item => {
-          // Only include product_id if it's a valid positive number
-          const productId = parseInt(item.product_id);
-          if (productId && productId > 0) {
-            return {
-              product_id: productId,
-              quantity: item.quantity || 1,
-            };
-          } else {
-            // Create custom line item without product_id
-            return {
-              name: item.name || 'Custom Product',
-              quantity: item.quantity || 1,
-              total: (item.price || 0).toString(),
-            };
-          }
-        }) || [],
+            line_items: orderData.line_items?.map(item => {
+              // Only include product_id if it's a valid positive number
+              const productId = parseInt(item.product_id);
+              if (productId && productId > 0) {
+                return {
+                  product_id: productId,
+                  quantity: item.quantity || 1,
+                };
+              } else {
+                // Create custom line item without product_id
+                return {
+                  name: item.name || 'Custom Product',
+                  quantity: item.quantity || 1,
+                  total: (item.price || item.total || 0).toString(),
+                };
+              }
+            }) || [],
         shipping_lines: orderData.selectedShippingMethod ? [{
           method_title: orderData.selectedShippingMethod.service_name || 'Shipping',
           method_id: orderData.selectedShippingMethod.courier_code || 'shipping',

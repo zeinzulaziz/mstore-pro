@@ -48,31 +48,31 @@ export const WooCommerceOrderService = {
           postcode: orderData.shipping?.postcode || '',
           country: orderData.shipping?.country || 'ID'
         },
-        line_items: orderData.line_items?.map((item, index) => {
-          console.log(`🔍 WooCommerceOrderService - Processing item ${index}:`, JSON.stringify(item, null, 2));
-          
-          // Only include product_id if it's a valid positive number
-          const productId = parseInt(item.product_id);
-          console.log(`🔍 Product ID for item ${index}:`, productId, 'Original product_id:', item.product_id);
-          
-          if (productId && productId > 0) {
-            const productItem = {
-              product_id: productId,
-              quantity: item.quantity || 1,
-            };
-            console.log('✅ Valid product item created:', JSON.stringify(productItem, null, 2));
-            return productItem;
-          } else {
-            // Create custom line item without product_id
-            const customItem = {
-              name: item.name || 'Custom Product',
-              quantity: item.quantity || 1,
-              total: (item.price || 0).toString(),
-            };
-            console.log('⚠️ Custom line item created:', JSON.stringify(customItem, null, 2));
-            return customItem;
-          }
-        }) || [],
+            line_items: orderData.line_items?.map((item, index) => {
+              console.log(`🔍 WooCommerceOrderService - Processing item ${index}:`, JSON.stringify(item, null, 2));
+              
+              // Only include product_id if it's a valid positive number
+              const productId = parseInt(item.product_id);
+              console.log(`🔍 Product ID for item ${index}:`, productId, 'Original product_id:', item.product_id);
+              
+              if (productId && productId > 0) {
+                const productItem = {
+                  product_id: productId,
+                  quantity: item.quantity || 1,
+                };
+                console.log('✅ Valid product item created:', JSON.stringify(productItem, null, 2));
+                return productItem;
+              } else {
+                // Create custom line item without product_id
+                const customItem = {
+                  name: item.name || 'Custom Product',
+                  quantity: item.quantity || 1,
+                  total: (item.price || item.total || 0).toString(),
+                };
+                console.log('⚠️ Custom line item created:', JSON.stringify(customItem, null, 2));
+                return customItem;
+              }
+            }) || [],
         shipping_lines: orderData.selectedShippingMethod ? [{
           method_title: orderData.selectedShippingMethod.service_name || 'Shipping',
           method_id: orderData.selectedShippingMethod.courier_code || 'shipping',
