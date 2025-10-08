@@ -35,8 +35,8 @@ class OrderSummaryScreen extends PureComponent {
 
   onPaymentSuccess = (paymentData) => {
     this.setState({ isLoading: false });
-    // Navigate to order detail screen as success screen
-    this.props.navigation.navigate('OrderDetailScreen', {
+    // Navigate to success screen
+    this.props.navigation.navigate('OrderSuccessScreen', {
       orderData: this.props.route.params.orderData,
       paymentData,
     });
