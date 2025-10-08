@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 
-import * as AddressRedux from '@redux/AddressRedux';
+import { actions as AddressActions } from '@redux/AddressRedux';
 
 import {TextInput, SelectCountry} from '@components';
 import {Languages, withTheme, Config} from '@common';
@@ -42,7 +42,7 @@ const AddAddress = React.memo(props => {
   });
 
   const onSubmit = data => {
-    AddressRedux.actions.addAddress(dispatch, data);
+    AddressActions.addAddress(dispatch, data);
     props.onBack();
   };
 

@@ -497,13 +497,13 @@ const mapStateToProps = ({netInfo, user}) => ({netInfo, user});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux/UserRedux');
-  const AddressRedux = require('@redux/AddressRedux');
+  const { actions: AddressActions } = require('@redux/AddressRedux');
 
   return {
     login: (user, token) => dispatch(actions.login(user, token)),
     logout: () => dispatch(actions.logout()),
     initAddresses: customerInfo => {
-      AddressRedux.actions.initAddresses(dispatch, customerInfo);
+      AddressActions.initAddresses(dispatch, customerInfo);
     },
   };
 };

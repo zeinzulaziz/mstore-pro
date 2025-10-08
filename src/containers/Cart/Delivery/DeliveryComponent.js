@@ -6,7 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import * as AddressRedux from '@redux/AddressRedux';
+import { actions as AddressActions } from '@redux/AddressRedux';
 
 import {Languages, withTheme} from '@common';
 import css from '@cart/styles';
@@ -41,7 +41,7 @@ const DeliveryComponent = React.memo(props => {
   }, []);
 
   const saveUserData = async data => {
-    AddressRedux.actions.updateSelectedAddress(dispatch, data);
+    AddressActions.updateSelectedAddress(dispatch, data);
 
     try {
       await AsyncStorage.setItem('@userInfo', JSON.stringify(data));
