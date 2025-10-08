@@ -3,7 +3,8 @@
  * Handles caching of location data (coordinates + address details)
  */
 
-import { actions as AddressActions } from '../redux/AddressRedux';
+// Import types directly to avoid import issues
+const CACHE_LOCATION_DATA = 'CACHE_LOCATION_DATA';
 
 class LocationCacheService {
   
@@ -22,13 +23,6 @@ class LocationCacheService {
    */
   static cacheLocationData(dispatch, locationData) {
     try {
-      console.log('🔍 AddressActions:', AddressActions);
-      console.log('🔍 cacheLocationData function:', AddressActions?.cacheLocationData);
-      
-      if (!AddressActions || !AddressActions.cacheLocationData) {
-        throw new Error('AddressActions.cacheLocationData is not available');
-      }
-      
       const cacheData = {
         ...locationData,
         timestamp: Date.now(),
@@ -37,7 +31,11 @@ class LocationCacheService {
       
       console.log('🗄️ Caching location data:', JSON.stringify(cacheData, null, 2));
       
-      AddressActions.cacheLocationData(dispatch, cacheData);
+      // Dispatch directly to avoid import issues
+      dispatch({ 
+        type: CACHE_LOCATION_DATA, 
+        locationData: cacheData 
+      });
       
       return {
         success: true,
@@ -90,7 +88,11 @@ class LocationCacheService {
   static clearCachedLocation(dispatch) {
     try {
       console.log('🗑️ Clearing cached location data');
-      AddressActions.cacheLocationData(dispatch, null);
+      // Dispatch directly to avoid import issues
+      dispatch({ 
+        type: CACHE_LOCATION_DATA, 
+        locationData: null 
+      });
       
       return {
         success: true,
