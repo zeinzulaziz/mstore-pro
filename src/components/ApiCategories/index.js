@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {toast} from '@app/Omni';
 import {Languages, Images, withTheme, Config} from '@common';
 import {TouchableScale} from '@components';
+import CacheService from '@services/CacheService';
 import {CategorySkeleton} from '../SkeletonLoader';
 
 import styles from './styles';
@@ -50,13 +51,19 @@ class ApiCategories extends PureComponent {
     try {
       this.setState({loading: true});
       
-      // Ambil semua kategori dari WooCommerce Store API
-      const res1 = await fetch(`${Config.WooCommerce.url}/wp-json/wc/store/v1/products/categories`);
-      const allCategories = await res1.json();
-      
-      // Ambil daftar ID kategori yang dipilih dari API custom
-      const res2 = await fetch(`${Config.WooCommerce.url}/wp-json/mytheme/v1/home-categories`);
-      const selectedIds = await res2.json();
+      const base = Config.WooCommerce.url;
+      // Cache both endpoints independently with 12h TTL
+      const allCategories = await CacheService.fetchWithCache(
+        'wc_all_categories_cache',
+        `${base}/wp-json/wc/store/v1/products/categories`,
+        { ttlMs: 12 * 60 * 60 * 1000 }
+      ) || [];
+
+      const selectedIds = await CacheService.fetchWithCache(
+        'home_categories_ids_cache',
+        `${base}/wp-json/mytheme/v1/home-categories`,
+        { ttlMs: 12 * 60 * 60 * 1000 }
+      ) || [];
       
       // console.log('All categories from WooCommerce:', allCategories.length);
       // console.log('Selected IDs from custom API:', selectedIds);

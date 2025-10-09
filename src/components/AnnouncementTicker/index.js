@@ -3,6 +3,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Animated, Dimensions, ActivityIndicator} from 'react-native';
 import {withTheme, Fonts} from '@common';
+import CacheService from '@services/CacheService';
 
 const {width} = Dimensions.get('window');
 
@@ -14,8 +15,12 @@ const AnnouncementTicker = ({theme = {}, endpoint}) => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const resp = await fetch(`${endpoint}/wp-json/mytheme/v1/announcement`);
-      const json = await resp.json();
+      const url = `${endpoint}/wp-json/mytheme/v1/announcement`;
+      const json = await CacheService.fetchWithCache(
+        'announcement_cache',
+        url,
+        { ttlMs: 6 * 60 * 60 * 1000 }
+      );
       let message = '';
       if (typeof json === 'string') {
         message = json;

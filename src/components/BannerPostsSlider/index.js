@@ -5,6 +5,7 @@ import {View, FlatList, TouchableOpacity, Image, Dimensions, Animated, ActivityI
 import LinearGradient from 'react-native-linear-gradient';
 import {withTheme, Tools, Constants, Images} from '@common';
 import {BannerSkeleton} from '../SkeletonLoader';
+import CacheService from '@services/CacheService';
 import {retryApiCall, isNetworkError} from '../../utils/apiRetry';
 
 const {width} = Dimensions.get('window');
@@ -122,15 +123,16 @@ const BannerPostsSlider = ({theme, onPressPost, endpoint, path = '/wp-json/wp/v2
       
       const data = await retryApiCall(
         async () => {
-          const resp = await fetch(postsEndpoint);
-          if (!resp.ok) {
-            throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
-          }
-          const json = await resp.json();
-          return Array.isArray(json) ? json : [];
+          const cached = await CacheService.fetchWithCache(
+            `banner_cache_${postsEndpoint}`,
+            postsEndpoint,
+            { ttlMs: 6 * 60 * 60 * 1000,
+              transform: (json) => Array.isArray(json) ? json : [] }
+          );
+          return cached || [];
         },
-        3, // max retries
-        1000 // initial delay
+        3,
+        1000
       );
       
       setItems(data);

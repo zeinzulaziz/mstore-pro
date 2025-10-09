@@ -254,37 +254,7 @@ export default {
     },
     {
       label: 'DarkTheme',
-    },
-    {
-      label: 'contactus',
-      routeName: 'CustomPage',
-      params: {
-        id: 10941,
-        title: 'contactus',
-      },
-    },
-    {
-      label: 'Privacy',
-      routeName: 'CustomPage',
-      params: {
-        url: 'https://inspireui.com/privacy',
-      },
-    },
-    {
-      label: 'termCondition',
-      routeName: 'CustomPage',
-      params: {
-        url: 'https://inspireui.com/term-of-service',
-      },
-    },
-    {
-      label: 'About',
-      routeName: 'CustomPage',
-      params: {
-        id: 10939,
-        title: 'About',
-      },
-    },
+    }
   ],
 
   // Homepage Layout setting

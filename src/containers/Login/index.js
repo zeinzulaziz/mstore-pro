@@ -452,23 +452,7 @@ class LoginScreen extends PureComponent {
               />
             )}
 
-            <ButtonIndex
-              text={Languages.FacebookLogin.toUpperCase()}
-              icon={Icons.MaterialCommunityIcons.Facebook}
-              containerStyle={styles.fbButton}
-              onPress={this.onFBLoginPressHandle}
-            />
-
-            <ButtonIndex
-              text={Languages.SMSLogin.toUpperCase()}
-              icon={Icons.MaterialCommunityIcons.SMS}
-              containerStyle={styles.smsButton}
-              onPress={() => {
-                this.setModalVisible('modalVisible', true);
-              }}
-            />
-            {this.renderModal()}
-            {this.renderVerificationCodeInput()}
+            {/* Social login options removed as requested */}
 
             <TouchableOpacity
               style={Styles.Common.ColumnCenter}
