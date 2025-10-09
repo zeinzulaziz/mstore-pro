@@ -724,7 +724,7 @@ class OrderSummary extends PureComponent {
               
               onProceedToPayment(orderDataWithMethods);
             }}
-            isLoading={isLoading}
+            isLoading={false}
             style={[
               styles.proceedButton,
               {

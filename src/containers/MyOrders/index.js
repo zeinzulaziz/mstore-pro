@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Animated, Platform, RefreshControl, FlatList, View} from 'react-native';
+import {Animated, Platform, RefreshControl, FlatList, View, TouchableOpacity, Text} from 'react-native';
 import {connect} from 'react-redux';
 
 import {AnimatedHeader} from '@components';
@@ -123,6 +123,23 @@ class MyOrders extends PureComponent {
           keyExtractor={(item, index) => `${item.id} || ${index}`}
           contentContainerStyle={styles.flatlist}
           ListEmptyComponent={() => null}
+          ListFooterComponent={() => (
+            <View style={{ paddingVertical: 20, alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={this.onRefresh}
+                style={{
+                  backgroundColor: '#FF6B35',
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  borderRadius: 20,
+                }}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                  {Languages?.Reload || 'Reload Orders'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           renderItem={this.renderRow}
           refreshControl={
             <RefreshControl
