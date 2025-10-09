@@ -116,9 +116,13 @@ const MapPicker = ({
 
     setIsSearching(true);
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1&accept-language=id`
-      );
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1&accept-language=id&email=support@doseofbeauty.id`;
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'DoseOfBeautyApp/1.0 (contact: support@doseofbeauty.id)',
+          'Referer': 'https://doseofbeauty.id'
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
