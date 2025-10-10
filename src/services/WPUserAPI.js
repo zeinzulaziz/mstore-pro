@@ -34,11 +34,6 @@ const WPUserAPI = {
 
     return request(_url);
   },
-  appleLogin: async (email, fullName, username) => {
-    const _url = `${url}/wp-json/api/flutter_user/apple_login?email=${email}&display_name=${fullName}&user_name=${username}${secure}`;
-
-    return request(_url);
-  },
   register: async ({
     username,
     email,

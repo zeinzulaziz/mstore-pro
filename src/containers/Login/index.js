@@ -4,11 +4,7 @@ import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {connect} from 'react-redux';
 import {WooWorker} from 'api-ecommerce';
-import appleAuth, {
-  AppleButton,
-} from '@invertase/react-native-apple-authentication';
 import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {get, has, trim} from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -305,70 +301,6 @@ class LoginScreen extends PureComponent {
     );
   };
 
-  // issues login https://github.com/invertase/react-native-apple-authentication#faqs
-  appleSignIn = async () => {
-    let error = false;
-    // sign in request
-    const responseObject = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-    });
-
-    // initialized first login, so apple don't allow login again, we will get data from the store to handle.
-    if (!responseObject || (responseObject && !responseObject.email)) {
-      const resp = await AsyncStorage.getItem(Constants.AppleData);
-      const appleData = resp ? JSON.parse(resp) : null;
-
-      if (appleData) {
-        responseObject.email = appleData.email;
-        responseObject.fullName = appleData.fullName;
-      } else {
-        error = true;
-      }
-    }
-
-    if (!error) {
-      const {
-        email,
-        fullName: {familyName, givenName, middleName},
-      } = responseObject;
-
-      await AsyncStorage.setItem(
-        Constants.AppleData,
-        JSON.stringify(responseObject),
-      );
-
-      this.setState({isLoading: true});
-
-      const fullName = `${familyName || ''} ${middleName || ''} ${
-        givenName || ''
-      }`;
-      const {login} = this.props;
-      const json = await WPUserAPI.appleLogin(
-        email,
-        fullName,
-        email.split('@')[0],
-      );
-
-      if (json === undefined) {
-        this.stopAndToast(Languages.GetDataError);
-      } else if (json.error) {
-        this.stopAndToast(json.error);
-      } else {
-        const customers = await WooWorker.getCustomerById(json.wp_user_id);
-
-        this._onBack();
-        login(customers, json.cookie);
-      }
-    } else {
-      // eslint-disable-next-line no-alert
-      alert(
-        'Currently, we can not get your email, please go to the ' +
-          'Settings > Apple ID, iCloud, iTunes & App Store > Password & Security > Apps Using Your Apple ID, ' +
-          'tap on your app and tap Stop Using Apple ID',
-      );
-    }
-  };
 
   render() {
     const {username, password, isLoading} = this.state;
@@ -442,17 +374,6 @@ class LoginScreen extends PureComponent {
               <View style={styles.separator(text)} />
             </View>
 
-            {appleAuth.isSupported && (
-              <AppleButton
-                style={styles.appleBtn}
-                cornerRadius={5}
-                buttonStyle={AppleButton.Style.BLACK}
-                buttonType={AppleButton.Type.SIGN_IN}
-                onPress={this.appleSignIn}
-              />
-            )}
-
-            {/* Social login options removed as requested */}
 
             <TouchableOpacity
               style={Styles.Common.ColumnCenter}

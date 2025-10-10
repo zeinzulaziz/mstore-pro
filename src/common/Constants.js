@@ -93,7 +93,6 @@ const Constants = {
     topMenu: 'top-menu',
   },
 
-  AppleData: '@appleData',
 
   ProductType: {
     simple: 'simple',

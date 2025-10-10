@@ -72,12 +72,6 @@ export default StyleSheet.create({
     borderRadius: 5,
     elevation: 1,
   },
-  appleBtn: {
-    flex: 1,
-    marginBottom: 10,
-    borderRadius: 5,
-    minHeight: 44,
-  },
   // ggButton: {
   //     marginVertical: 10,
   //     backgroundColor: Color.google,
