@@ -26,8 +26,46 @@ import {reducer as FilterRedux} from './FilterRedux';
 import {reducer as CustomerPointsRedux} from './CustomerPointsRedux';
 import ShippingRedux from './ShippingRedux';
 
+// State migration function to handle old keys
+const stateMigration = (state) => {
+  try {
+    // Define expected keys
+    const expectedKeys = [
+      'app', 'categories', 'products', 'netInfo', 'toast', 'user', 'carts',
+      'wishList', 'news', 'layouts', 'language', 'payments', 'countries',
+      'currency', 'sideMenu', 'tags', 'addresses', 'brands', 'filters',
+      'customerPoints', 'shipping'
+    ];
+    
+    // Find unexpected keys
+    const unexpectedKeys = Object.keys(state).filter(key => !expectedKeys.includes(key));
+    
+    if (unexpectedKeys.length > 0) {
+      console.log('🔄 Redux state migration: Found unexpected keys:', unexpectedKeys);
+      
+      // Remove unexpected keys
+      const migratedState = {};
+      expectedKeys.forEach(key => {
+        if (state.hasOwnProperty(key)) {
+          migratedState[key] = state[key];
+        }
+      });
+      
+      console.log('✅ Redux state migration completed successfully');
+      return migratedState;
+    }
+    
+    return state;
+  } catch (error) {
+    console.error('❌ Error during Redux state migration:', error);
+    // Return empty state if migration fails
+    return {};
+  }
+};
+
 const config = {
   key: 'root',
+  version: 1, // Increment this when making breaking changes to state structure
   storage: AsyncStorage,
   blacklist: [
     'netInfo',
@@ -44,6 +82,7 @@ const config = {
     'user',      // Cache user data
     'carts',     // Cache cart data
   ],
+  migrate: stateMigration,
 };
 
 export default persistCombineReducers(config, {

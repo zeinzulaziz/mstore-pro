@@ -95,17 +95,17 @@ const HorizonList = React.memo(
           <>
             {typeof layoutVerticalLayout !== 'undefined' && layoutVerticalLayout.layout === 'circleCategory' && (
               <View style={{paddingHorizontal: 15, paddingVertical: 20}}>
-                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 15, color: '#333'}}>
+                {/* <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 15, color: '#333'}}>
                   Categories
-                </Text>
-                <Categories
+                </Text> */}
+                {/* <Categories
                   items={language.lang === Constants.Languages.en ? Config.HomeCategories : Config.HomeCategories_AR}
                   onPress={(category) => {
                     // Handle category press
                     console.log('Category pressed:', category);
                   }}
                   config={{column: 1}}
-                />
+                /> */}
               </View>
             )}
             {typeof layoutVerticalLayout !== 'undefined' && layoutVerticalLayout.layout !== 'circleCategory' && (

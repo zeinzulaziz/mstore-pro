@@ -142,7 +142,12 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: '#FFF5F0',
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    width: '100%',
+    flexBasis: '100%',
+    minWidth: '400px',
   },
   cardContainer: {
     borderRadius: 20,
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    width: '100%',
   },
   cardGradient: {
     borderRadius: 20,
@@ -218,13 +224,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rewardsLabel: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#8B4513',
-    fontWeight: '500',
+    fontWeight: '400',
   },
   rewardsPoints: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: 'normal',
     color: '#000000',
     marginTop: 2,
   },

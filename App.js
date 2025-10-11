@@ -12,6 +12,7 @@ import 'react-native-gesture-handler';
 import {Config} from '@common';
 import {getNotification} from '@app/Omni';
 import store from '@store/configureStore';
+import {autoFixReduxState} from '@utils/ReduxStateManager';
 
 import Router from './src/Router';
 
@@ -19,6 +20,13 @@ enableScreens();
 
 export default class ReduxWrapper extends Component {
   async componentDidMount() {
+    // Auto-fix Redux state if there are unexpected keys
+    try {
+      await autoFixReduxState();
+    } catch (error) {
+      console.error('❌ Error during Redux state auto-fix:', error);
+    }
+
     const notification = await getNotification();
 
     if (notification) {
